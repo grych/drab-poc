@@ -17,7 +17,11 @@ defmodule DrabPoc.Router do
   #   get "create_channel", DrabController, :create_channel
   # end
 
-  scope "/", DrabPoc do
+  scope "/" do
+    get "/", Elph.PageController, :redirect_to_drab
+  end
+
+  scope "/drab", DrabPoc do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
