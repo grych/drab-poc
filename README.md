@@ -11,8 +11,8 @@ First, have Erlang and Elixir installed. Then install hex
 
 Download and install ELPH:
 
-    git clone git@github.com:grych/elph.git
-    cd elph
+    git clone git@github.com:grych/drab-poc.git
+    cd drab-poc
     mix deps.get
 
 Get node.js and npm. Then install brunch packages:
