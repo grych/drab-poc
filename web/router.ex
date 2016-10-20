@@ -18,7 +18,7 @@ defmodule DrabPoc.Router do
   # end
 
   scope "/" do
-    get "/", Elph.PageController, :redirect_to_drab
+    get "/", DrabPoc.PageController, :redirect_to_drab
   end
 
   scope "/drab", DrabPoc do
