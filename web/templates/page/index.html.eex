@@ -3,16 +3,16 @@
   In the <i>"good old times"</i> (and still now in the desktop application) the event handling was easy. The only you have to do is to create the event handler (remember <code>TForm1.Button1Click(Sender: TObject)</code>?) and you could do everything inside this handler: accessing data from models, manipulating user interface.
 </p>
 <p>
-  Now, while most of the applications are web, this is not so easy anymore. You need either to create a form and submit the data via POST or GET or use AJAX to send or retrieve data. All inteface manipulation is on the client side in Javascript. In practice, you need to write two application: client and server side.  
+  Now, while most of the applications are web, this is not so easy anymore. You need either to create a form and submit the data via POST or GET or use AJAX to send or retrieve data. All inteface manipulation is on the client side in Javascript. In practice, you need to write two applications: on the client and the server side.  
 </p>
 <p>
-  Additionally, because <code>http</code> is stateless and one-way protocol, it is not easy to communicate back from the server to the browser - like, for example, while doing long running processing, when there is a need to update status (eg. progress bar) or as the operator about something. Of course there are workarounds for this, like polling the server every few seconds to have a status, or even auto-refresh the page, but who likes workarounds? 
+  Additionally, because <code>http</code> is stateless and one-way protocol, it is not easy to communicate back from the server to the browser - like, for example, while executing long running processing, when there is a need to update status (eg. progress bar) or ask the operator about something (like "would you like to continue?"). Of course there are workarounds for this, like polling the server every few seconds to have a status, or even auto-refresh the page, but who likes workarounds? 
 </p>
 <p>
-  Drab is a concept of <b>having access to DOM objects on the server side</b>, just like in the good-old Delphi. Please review the following examples. BTW: <b>this is a proof-of-concept only</b>, a lot of things is still not working, some are hardcoded (this is a single controller application so far). Any comments, criticism, thoughts are welcome - <a href="mailto:grych@tg.pl?Subject=Drab">grych@tg.pl</a>.
+  Drab is a concept of <b>having an access to DOM objects on the server side</b>, just like in the good-old Delphi times. Please review the following examples. BTW: <b>this is a proof-of-concept only</b>, a lot of things is still not working, some are hardcoded (this is a single controller application so far). Any comments, criticism, thoughts are welcome - <a href="mailto:grych@tg.pl?Subject=Drab">grych@tg.pl</a>.
 </p>
 <p>
-  Drab is written using Phonenix on Elixir, so all the code below is HTML and Elixir. All the magic is available only because of the websockets. JS side depends on jQuery.
+  Drab is written using Phonenix on Elixir, so all the code below is HTML and Elixir. All the magic is available because of the websockets. JS side depends on jQuery. You can find a source code of this proof-of-concept <a href="https://github.com/grych/drab-poc">on Github</a>.
 </p>
 <p><small>Tomek "Grych" Gryszkiewicz 2016</small></p>
 <hr>
