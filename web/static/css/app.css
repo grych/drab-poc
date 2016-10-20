@@ -1,0 +1,14 @@
+/* This file is for your main application css. */
+.small-margins {
+  margin-left: 40px;
+  margin-right: 40px;
+}
+.font-console {
+  font-family: Consolas, Lucida Console, monospace;
+}
+h3, h4, h5 {
+  text-align: center;
+}
+.centered {
+  text-align: center;
+}

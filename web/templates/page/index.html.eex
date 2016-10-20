@@ -1,0 +1,86 @@
+<h3>Drab - Server Side DOM Access - proof of concept</h3>
+<p>
+  In the <i>"good old times"</i> (and still now in the desktop application) the event handling was easy. The only you have to do is to create the event handler (remember <code>TForm1.Button1Click(Sender: TObject)</code>?) and you could do everything inside this handler: accessing data from models, manipulating user interface.
+</p>
+<p>
+  Now, while most of the applications are web, this is not so easy anymore. You need either to create a form and submit the data via POST or GET or use AJAX to send or retrieve data. All inteface manipulation is on the client side in Javascript. In practice, you need to write two application: client and server side.  
+</p>
+<p>
+  Additionally, because <code>http</code> is stateless and one-way protocol, it is not easy to communicate back from the server to the browser - like, for example, while doing long running processing, when there is a need to update status (eg. progress bar) or as the operator about something. Of course there are workarounds for this, like polling the server every few seconds to have a status, or even auto-refresh the page, but who likes workarounds? 
+</p>
+<p>
+  Drab is a concept of <b>having access to DOM objects on the server side</b>, just like in the good-old Delphi. Please review the following examples. BTW: <b>this is a proof-of-concept only</b>, a lot of things is still not working, some are hardcoded (this is a single controller application so far). Any comments, criticism, thoughts are welcome - <a href="mailto:grych@tg.pl?Subject=Drab">grych@tg.pl</a>.
+</p>
+<p>
+  Drab is written using Phonenix on Elixir, so all the code below is HTML and Elixir. All the magic is available only because of the websockets. JS side depends on jQuery.
+</p>
+<p><small>Tomek "Grych" Gryszkiewicz 2016</small></p>
+<hr>
+<div class="row">
+  <div class="col-md-7">
+    <p>Here is the simplest example  - text input and the button. Clicking the button input text will be uppercased. Awesome!</p>
+    <p>
+      On the <b>client side</b> we have only HTML (notice - no javascript required anymore!) with the input and the button. The only thing which might be new is the <code>drab-click</code> attribute with "uppercase" value. What is this value? This is a name of the <b>function on the server side</b>, in <code>DrabPoc.PageController</code> module.
+<pre><%=~s(<input id="text_to_uppercase" value="uppercase me">
+<button drab-click="uppercase">Do it</button>)%></pre>
+    </p>
+    <p>
+      Below is this function. Let's repeat: clicking on the <code>&lt;button&gt;</code> in the browser runs <code>DrabPoc.PageController.uppercase/2</code> on server.
+<pre><%=~s[defmodule DrabPoc.PageController do
+  def uppercase(socket, sender) do
+    t = List.first(Drab.Query.val(socket, "#text_to_uppercase"))
+    Drab.Query.val(socket, "#text_to_uppercase", String.upcase(t))
+    {socket, sender}
+  end
+end]%></pre>
+      How does it work? <code>Drab.Query.val(socket, "#text_to_uppercase")</code> launches jQuery <code>$("#text_to_uppercase").val()</code> on the client side and returns it to the server. <code>List.first()</code> is used because jQuery always returns an array. Then, the returned string is converted to uppercase using <code>String.upcase</code> and passed to <code>Drab.Query.val/3</code> function, which - analogically to jQuery <code>.val(value)</code> sets the value of the input. 
+    </p>
+
+  </div>
+
+  <div class="col-md-5">
+    <p>
+      This is a live demo. Click the button to launch <code>DrabPoc.PageController.uppercase/2</code> on the server.
+      <br><br>
+      <input id="text_to_uppercase" value="uppercase me">
+      <button drab-click="uppercase">Do it</button>
+    </p>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-md-7">
+    <p>
+      Let's move to some more complicated functionality. Assume we have a process which is doing some stuff on the server side and we want to report back to the user after each completed step. We will use the progress bar controlled from the server. <br>
+      Client side is again very simple. Please notice the <code>drab-click</code> attribute, again. This time it will run <code>perform_long_process</code> function.
+<pre><%=~s[<div class="progress">
+  <div class="progress-bar" role="progressbar" style="width:0%">
+  </div>
+</div>
+<button drab-click="perform_long_process">Click me to start processing ...</button>]%></pre>
+      On the server we simulate a long processing by sleeping some random time. The interesting comes with <code>Drab.Query</code> module again: <code>Drab.Query.attr</code> retrieves (<code>/3</code>) or sets (<code>/4</code>) object attributes. In this case, we used it to set <code>style="width: XX%"</code>. <code>Drab.Query.html/3</code> in the next line, sets the progress bar text. Finally, after the loop progress bar changes its color to indicate success.
+<pre><%=~S[defmodule DrabPoc.PageController do
+  def perform_long_process(socket, sender) do
+    for i <- 1..10 do
+      :timer.sleep(:rand.uniform(750))
+      Drab.Query.attr(socket, ".progress-bar", "style", "width: #{10*i}%")
+      Drab.Query.html(socket, ".progress-bar", "#{10*i}%")
+    end
+    Drab.Query.add_class(socket, ".progress-bar", "progress-bar-success")
+    {socket, sender}
+  end
+end]%></pre>
+      Easy, huh? And <b>no javascript at all</b>.
+    </p>
+  </div>
+
+  <div class="col-md-5">
+    Click on a button to simulate long-running process on the server.
+    <div class="progress">
+      <div class="progress-bar" role="progressbar" style="width:0%">
+      </div>
+    </div>
+    <button drab-click="perform_long_process">Click me to start processing ...</button>
+  </div>
+</div>
+
