@@ -11,7 +11,8 @@ config :drab_poc, DrabPoc.Endpoint,
   secret_key_base: "oF0XMqxsrMysQgvn5Vufv29KXJZHLz2xkIl8GQK5S3ATW/2+ww+20Hp4B0YbbehY",
   render_errors: [view: DrabPoc.ErrorView, accepts: ~w(html json)],
   pubsub: [name: DrabPoc.PubSub,
-           adapter: Phoenix.PubSub.PG2]
+           adapter: Phoenix.PubSub.PG2],
+  static_url: [path: "/drab"]
 
 # Configures Elixir's Logger
 config :logger, :console,
