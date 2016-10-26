@@ -19,14 +19,14 @@
 <hr>
 <div class="row">
   <div class="col-md-7">
-    <p>Here is the simplest example  - text input and the button. Clicking the button input text will be uppercased. Awesome!</p>
+    <p>Here is the simplest example  - text input and the button. Clicking the button make input text uppercase. Awesome!</p>
     <p>
-      On the <b>client side</b> we have only HTML (notice - no javascript required anymore!) with the input and the button. The only thing which might be new is the <code>drab-click</code> attribute with "uppercase" value. What is this value? This is a name of the <b>function on the server side</b>, in <code>DrabPoc.PageController</code> module.
+      On the <b>client side</b> we have basic HTML with the input and the button:
 <pre><code class="html"><%=~s(<input id="text_to_uppercase" value="uppercase me">
 <button drab-click="uppercase">Do it</button>)%></code></pre>
     </p>
     <p>
-      Below is this function. Let's repeat: clicking on the <code>&lt;button&gt;</code> in the browser runs <code>DrabPoc.PageController.uppercase/2</code> on server.
+      The only thing which might be new is the <code>drab-click</code> attribute with "uppercase" value. What is this value? This is a name of the <b>function on the server side</b>, in <code>DrabPoc.PageController</code> module (see code below). Clicking on the <code>&lt;button&gt;</code> <em>in the browser</em> runs <code>DrabPoc.PageController.uppercase/2</code> <em>on the server</em>.
 <pre><code class="elixir"><%=~s[defmodule DrabPoc.PageController do
   def uppercase(socket, sender) do
     t = List.first(Drab.Query.val(socket, "#text_to_uppercase"))
@@ -59,7 +59,7 @@ end]%></code></pre>
   </div>
 </div>
 <button drab-click="perform_long_process">Click me to start processing ...</button>]%></code></pre>
-      On the server we simulate a long processing by sleeping some random time. The interesting comes with <code>Drab.Query</code> module again: <code>Drab.Query.attr</code> retrieves (<code>/3</code>) or sets (<code>/4</code>) object attributes. In this case, we used it to set <code>style="width: XX%"</code>. <code>Drab.Query.html/3</code> in the next line, sets the progress bar text. Finally, after the loop progress bar changes its color to indicate success.
+      On the server we simulate a long processing by sleeping some random time. The interesting comes with <code>Drab.Query</code> module again: <code>Drab.Query.attr</code> retrieves (<code>/3</code>) or sets (<code>/4</code>) object attributes. In this case, we used it to set <code>style="width: XX%"</code>. Nn the next line <code>Drab.Query.html/3</code> changes the text of the progress bar. Finally, after the loop finishes, progress bar changes its color to indicate success.
 <pre><code class="elixir"><%=~S[defmodule DrabPoc.PageController do
   def perform_long_process(socket, sender) do
     for i <- 1..10 do
@@ -114,10 +114,10 @@ end]%></code></pre>
   Drab.Query.html(socket, "#async_task_status", "finished")
   {socket, dom_sender}
 end/%></code></pre>
-    The code above runs asynchronously 5 Tasks, which just waits some time (up to 4 seconds) and after they "finish the job", shows that it is finished in the user interface by changing the boostrap class from <code>label-danger</code> to <code>label-success</code>. After launching he background tasks, it <code>Task.await/1</code> for all of the tasks to finish and then inform the user by changing the Task status to "finished".
+    The code above runs asynchronously 54 Tasks, which just waits some time (up to 4 seconds) and then communicates to the user by changing the boostrap class from <code>label-danger</code> to <code>label-success</code>. After launching he background tasks, it waits (<code>Task.await/1</code>) for all of the tasks to finish and then informs the user by changing the Task status to "finished".
     </p>
     <p>
-      You may think: what is the difference between this approach and running 54 AJAX requests which launches action on the controller side? Except of <code>Drab</code> natural beauty, you can't do it with AJAX. You browser <a href="http://www.stevesouders.com/blog/2008/03/20/roundup-on-parallel-connections/">limits the number of simultaneus connections</a>.
+      You may think: <b>what is the difference between this approach and running 54 AJAX requests which launches action on the controller side?</b> Except of <code>Drab</code> natural beauty, you can't do it with AJAX. You browser <a href="http://www.stevesouders.com/blog/2008/03/20/roundup-on-parallel-connections/">limits the number of simultaneus connections</a>.
     </p>
   </div>
   <div class="col-md-5">
