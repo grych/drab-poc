@@ -42,7 +42,7 @@ end]%></code></pre>
 
   <div class="col-md-5">
     <p>
-      This is a live demo. Click the button to launch <code>DrabPoc.PageController.uppercase/2</code> on the server.
+      This is a live demo. Click the button to launch <code>Drab.Controller.uppercase/2</code> on the server.
       <br><br>
       <input class="form-control" id="text_to_uppercase" value="uppercase me">
       <button class="btn btn-primary" drab-click="uppercase">Do it</button>
