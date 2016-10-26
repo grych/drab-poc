@@ -18,6 +18,7 @@ defmodule Drab do
     {:ok, socket}
   end
 
+
   def handle_cast({:onload, socket}, _) do
     # socket is coming from the first request from the client
     onload(socket)
@@ -25,7 +26,8 @@ defmodule Drab do
   end
 
   def handle_cast({:click, socket, %{"event_function" => evt_fun} = payload}, _) do
-    Logger.debug "***** #{inspect(payload)}"
+    # Logger.debug "***** #{inspect(socket)}"
+    # Logger.debug "***** #{inspect(payload)}"
     apply(@controller, String.to_atom(evt_fun), [socket, Map.delete(payload, "event_function")]) 
     {:noreply, socket}
   end

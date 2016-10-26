@@ -20,7 +20,7 @@ defmodule DrabPoc.DrabChannel do
   end
 
   def handle_in("click", payload, socket) do
-    # Logger.debug "====== #{inspect(payload)}"
+    Logger.debug "====== #{inspect(payload)}"
     GenServer.cast(socket.assigns.drab_pid, {:click, socket, payload})
     {:noreply, socket}
   end

@@ -38,6 +38,11 @@ defmodule Drab.Query do
     generic_query(socket, query, "toggleClass(#{Poison.encode!(value)})")
   end
 
+  def exchange_class(socket, query, from_value, to_value) do
+    generic_query(socket, query, "removeClass(#{Poison.encode!(from_value)})")
+    generic_query(socket, query, "addClass(#{Poison.encode!(to_value)})")
+  end
+
   defp generic_query(socket, query, get_function, value \\ nil) do
     myself = :erlang.term_to_binary(self())
     sender = Cipher.encrypt(myself)

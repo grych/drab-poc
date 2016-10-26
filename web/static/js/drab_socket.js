@@ -14,14 +14,14 @@ class DrabSocket {
       .receive("ok", resp => this.connected(resp, this))
   }
   connected(resp, him) {
-    console.log("Joined successfully", resp)
+    // console.log("Joined successfully", resp)
     him.channel.on("onload", (message) => {
       // console.log("onload message:", message)
     })
     // handler for "query" message from the server
     him.channel.on("query", (message) => {
       // console.log("he is:", him)
-      console.log("message: ", $(message))
+      // console.log("message: ", $(message))
       let r = $(message.query)
       // console.log("reply: ", r)
       let query_output = [
@@ -36,11 +36,12 @@ class DrabSocket {
     // register events
     $("[drab-click]").on("click", function(event) {
       let payload = {
-        // by default, we pass some sender attributes
+        // by default, we pass back some sender attributes
         id: $(this).attr("id"),
         text: $(this).text(),
         html: $(this).html(),
         val: $(this).val(),
+        data: $(this).data(),
         event_function: $(this).attr("drab-click")
       }
       him.channel.push("click", payload)
