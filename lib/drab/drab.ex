@@ -3,7 +3,7 @@ defmodule Drab do
   require IEx
   require Logger
   # still hardcoded
-  @controller DrabPoc.PageController
+  @controller Drab.Controller
 
   def onload(socket) do
     # Logger.debug inspect(controller())

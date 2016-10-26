@@ -1,9 +1,9 @@
-<h3 class="centered">Drab - Server Side DOM Access - proof of concept</h3>
+<h3 class="centered">Drab - Server Side DOM Access - Proof of Concept</h3>
 <p>
   In the <i>"good old times"</i> the event handling was easy. The only you have to do is to create the event handler (remember <code>TForm1.Button1Click(Sender: TObject)</code>?) and you could do everything inside this handler: accessing data from models, manipulating user interface, sending raw Ethernet packets to the coffee machine...
 </p>
 <p>
-  Now, while most of the applications are web based, it is not so easy anymore. You need either to create a form and submit the data via POST or GET or use AJAX to send or retrieve data. All inteface manipulation is on the client side. In practice, you need to write two applications: on the client and the server side.  
+  Now, whem the most of the applications are web based, it is not so easy anymore. You need either to create a form and submit the data via POST or GET or use AJAX to send or retrieve data. All inteface manipulation is on the client side. In practice, you need to write two applications: on the client and the server side.  
 </p>
 <p>
   Additionally, because <code>http</code> is stateless and one-way protocol, it is not easy to communicate back from the server to the browser - like, for example, while executing long running processing, when there is a need to update status (eg. progress bar) or ask the operator about something (like "would you like to continue?"). Of course there are workarounds for this, like polling the server every few seconds to have a status, or even auto-refresh the page, but they are just workarounds. The solution would be to have an access to the interface directly from the server side. And here comes <code>Drab</code>.
@@ -18,6 +18,7 @@
 <p><small>Tomek "Grych" Gryszkiewicz 2016</small></p>
 <hr>
 <div class="row">
+  <h4>Simple Input and Button Example</h4>
   <div class="col-md-7">
     <p>Here is the simplest example  - text input and the button. Clicking the button make input text uppercase. Awesome!</p>
     <p>
@@ -26,8 +27,8 @@
 <button drab-click="uppercase">Do it</button>)%></code></pre>
     </p>
     <p>
-      The only thing which might be new is the <code>drab-click</code> attribute with "uppercase" value. What is this value? This is a name of the <b>function on the server side</b>, in <code>DrabPoc.PageController</code> module (see code below). Clicking on the <code>&lt;button&gt;</code> <em>in the browser</em> runs <code>DrabPoc.PageController.uppercase/2</code> <em>on the server</em>.
-<pre><code class="elixir"><%=~s[defmodule DrabPoc.PageController do
+      The only thing which might be new is the <code>drab-click</code> attribute with "uppercase" value. What is this value? This is a name of the <b>function on the server side</b>, in <code>Drab.Controller</code> module (see code below). Clicking on the <code>&lt;button&gt;</code> <b>in the browser</b> runs <code>Drab.Controller.uppercase/2</code> <b>on the server</b>. <em>So far, the module Drab.Controller is hardcoded and common to the whole demo app</em>.
+<pre><code class="elixir"><%=~s[defmodule Drab.Controller do
   def uppercase(socket, sender) do
     t = List.first(Drab.Query.val(socket, "#text_to_uppercase"))
     Drab.Query.val(socket, "#text_to_uppercase", String.upcase(t))
@@ -50,6 +51,7 @@ end]%></code></pre>
 </div>
 <hr>
 <div class="row">
+  <h4>Long Running Process with Communication Back to Browser</h4>
   <div class="col-md-7">
     <p>
       Let's move to some more complicated functionality. Assume we have a process which is doing some stuff on the server side and we want to report back to the user after each completed step. We will use the progress bar controlled from the server. <br>
@@ -60,7 +62,7 @@ end]%></code></pre>
 </div>
 <button drab-click="perform_long_process">Click me to start processing ...</button>]%></code></pre>
       On the server we simulate a long processing by sleeping some random time. The interesting comes with <code>Drab.Query</code> module again: <code>Drab.Query.attr</code> retrieves (<code>/3</code>) or sets (<code>/4</code>) object attributes. In this case, we used it to set <code>style="width: XX%"</code>. Nn the next line <code>Drab.Query.html/3</code> changes the text of the progress bar. Finally, after the loop finishes, progress bar changes its color to indicate success.
-<pre><code class="elixir"><%=~S[defmodule DrabPoc.PageController do
+<pre><code class="elixir"><%=~S[defmodule Drab.Controller do
   def perform_long_process(socket, sender) do
     for i <- 1..10 do
       :timer.sleep(:rand.uniform(750))
@@ -86,6 +88,7 @@ end]%></code></pre>
 </div>
 <hr>
 <div class="row">
+  <h4>Tens of Tasks Running in Parallel on the Server and Communicating Back to Browser</h4>
   <div class="col-md-7">
     <p>
       In the next example we will emulate long running server process composed of a number of Tasks, which can be run asynchronously. We want to run it in parallel, change their status when they finish the job and - when all of them are finished - change the status of the whole process.
@@ -126,7 +129,7 @@ end/%></code></pre>
       <h4>Async task status: <span id="async_task_status" class="label label-primary">ready</span></h4>
       <div class="row">
         <%= for i <- 1..54 do %>
-          <div class="col-md-2 col-sm-4 centered">
+          <div class="col-md-2 col-xs-4 centered">
             <span class="task label label-danger" data-task_id="<%= i %>">Task #<%= i |> Integer.to_string |> String.rjust(2, ?0) %></span>
           </div>
         <% end %>
