@@ -88,7 +88,7 @@ end]%></code></pre>
 </div>
 <hr>
 <div class="row">
-  <h4>Tens of Tasks Running in Parallel on the Server and Communicating Back to Browser</h4>
+  <h4>Tens of Tasks Running in Parallel on the Server and Communicating Back to the Browser</h4>
   <div class="col-md-7">
     <p>
       In the next example we will emulate long running server process composed of a number of Tasks, which can be run asynchronously. We want to run it in parallel, change their status when they finish the job and - when all of them are finished - change the status of the whole process.
@@ -110,10 +110,10 @@ end]%></code></pre>
   Drab.Query.html(socket, "#async_task_status", "running")
   tasks = Enum.map(1..54, fn(i) -> Task.async(fn -> 
     :timer.sleep(:rand.uniform(4000))
-    Drab.Query.exchange_class(socket, ".task[data-task_id=#\{i\}]", "label-danger", "label-success")
+    Drab.Query.change_class(socket, ".task[data-task_id=#\{i\}]", "label-danger", "label-success")
     end)
   end)
-  Enum.map(tasks, fn(task) -> Task.await(task) end)
+  Enum.each(tasks, fn(task) -> Task.await(task) end)
   Drab.Query.html(socket, "#async_task_status", "finished")
   {socket, dom_sender}
 end/%></code></pre>

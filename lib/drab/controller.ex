@@ -1,7 +1,7 @@
 defmodule Drab.Controller do
   require Logger
   require IEx
-  
+
   # Drab events
   def uppercase(socket, dom_sender) do
     # socket to websocket
@@ -23,15 +23,18 @@ defmodule Drab.Controller do
   end
 
   def run_async_tasks(socket, dom_sender) do
-    Drab.Query.exchange_class(socket, ".task", "label-success", "label-danger")
+    Drab.Query.change_class(socket, ".task", "label-success", "label-danger")
     Drab.Query.html(socket, "#async_task_status", "running")
+    {_, begin_at_sec, begin_at_micsec } = :os.timestamp
     tasks = Enum.map(1..54, fn(i) -> Task.async(fn -> 
       :timer.sleep(:rand.uniform(4000))
-      Drab.Query.exchange_class(socket, ".task[data-task_id=#{i}]", "label-danger", "label-success")
+      Drab.Query.change_class(socket, ".task[data-task_id=#{i}]", "label-danger", "label-success")
       end)
     end)
-    Enum.map(tasks, fn(task) -> Task.await(task) end)
-    Drab.Query.html(socket, "#async_task_status", "finished")
+    Enum.each(tasks, fn(task) -> Task.await(task) end)
+    {_, end_at_sec, end_at_micsec } = :os.timestamp
+    Drab.Query.html(socket, "#async_task_status", 
+      "finished in #{((end_at_sec - begin_at_sec)*1000_000 + (end_at_micsec - begin_at_micsec))/1000_000} seconds")
     {socket, dom_sender}
   end
 
