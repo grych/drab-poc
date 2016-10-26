@@ -39,8 +39,8 @@ defmodule Drab.Query do
   end
 
   def exchange_class(socket, query, from_value, to_value) do
-    generic_query(socket, query, "removeClass(#{Poison.encode!(from_value)})")
-    generic_query(socket, query, "addClass(#{Poison.encode!(to_value)})")
+    add_class(socket, query, to_value)
+    remove_class(socket, query, from_value)
   end
 
   defp generic_query(socket, query, get_function, value \\ nil) do
