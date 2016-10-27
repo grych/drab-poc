@@ -47,7 +47,7 @@ class DrabSocket {
       him.channel.push("click", payload)
     })
     // initialize onload on server side
-    him.channel.push("onload")
+    him.channel.push("onload", {path: location.pathname, drab_return: window.drab_return})
   }
 }
 

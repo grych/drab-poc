@@ -1,3 +1,6 @@
+<%=Phoenix.Controller.controller_module(@conn)%>/
+<%=Phoenix.Controller.action_name(@conn)%>
+
 <h3 class="centered">Drab - Server Side DOM Access - Proof of Concept</h3>
 <p>
   In the <i>"good old times"</i> the event handling was easy. The only you have to do is to create the event handler (remember <code>TForm1.Button1Click(Sender: TObject)</code>?) and you could do everything inside this handler: accessing data from models, manipulating user interface, sending raw Ethernet packets to the coffee machine...

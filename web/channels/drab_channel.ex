@@ -14,13 +14,19 @@ defmodule DrabPoc.DrabChannel do
     {:noreply, assign(socket, query, reply)}
   end
 
-  def handle_in("onload", _, socket) do
-    GenServer.cast(socket.assigns.drab_pid, {:onload, socket})
-    {:noreply, socket}
+  def handle_in("onload", %{"path" => url_path, "drab_return" => controller_and_action}, socket) do
+    # Client side provides the url path (location.path), which is a base to determine the name of the Drab Controller
+    # Logger.debug ":-:-: payload on load: #{inspect(payload)}"
+    [controller, action] = String.split(Cipher.decrypt(controller_and_action), "#")
+    socket_assigned = socket 
+      |> assign(:controller, String.to_existing_atom(controller))
+      |> assign(:action, String.to_existing_atom(action))
+    GenServer.cast(socket.assigns.drab_pid, {:onload, socket_assigned})
+    {:noreply, socket_assigned}
   end
 
   def handle_in("click", payload, socket) do
-    Logger.debug "====== #{inspect(payload)}"
+    # Logger.debug "====== #{inspect(payload)}"
     GenServer.cast(socket.assigns.drab_pid, {:click, socket, payload})
     {:noreply, socket}
   end
