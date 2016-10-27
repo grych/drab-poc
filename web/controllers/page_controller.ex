@@ -26,10 +26,11 @@ defmodule DrabPoc.PageController do
   def perform_long_process(socket, dom_sender) do
     for i <- 1..10 do
       :timer.sleep(:rand.uniform(750))
-      Drab.Query.attr(socket, ".progress-bar", "style", "width: #{10*i}%")
-      Drab.Query.html(socket, ".progress-bar", "#{10*i}%")
+      socket 
+        |> attr(".progress-bar", "style", "width: #{10*i}%")
+        |> html(".progress-bar", "#{10*i}%")
     end
-    Drab.Query.add_class(socket, ".progress-bar", "progress-bar-success")
+    add_class(socket, ".progress-bar", "progress-bar-success")
     {socket, dom_sender}
   end
 
@@ -51,7 +52,7 @@ defmodule DrabPoc.PageController do
 
   # DRAB callbacks
   def page_loaded(socket) do
-    Drab.Query.attr(socket, ".progress-bar", "style", "width: 0%")
+    # Drab.Query.attr(socket, ".progress-bar", "style", "width: 0%")
     socket
   end
 

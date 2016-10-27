@@ -12,7 +12,7 @@
   Additionally, because <code>http</code> is stateless and one-way protocol, it is not easy to communicate back from the server to the browser - like, for example, while executing long running processing, when there is a need to update status (eg. progress bar) or ask the operator about something (like "would you like to continue?"). Of course there are workarounds for this, like polling the server every few seconds to have a status, or even auto-refresh the page, but they are just workarounds. The solution would be to have an access to the interface directly from the server side. And here comes <code>Drab</code>.
 </p>
 <p>
-  <code>Drab</code> is a concept of <b>having an access to DOM objects on the server side</b>, just like in the good-old Delphi times. Please review the following examples. Warning: <b>this is a proof-of-concept only</b>, a lot of things are still not implemented, some are hardcoded (this is a single controller application so far). Any comments, criticism, thoughts are welcome - <a href="mailto:grych@tg.pl?Subject=Drab">grych@tg.pl</a>. Please give me you feedback how do you like this concept!
+  <code>Drab</code> is a concept of <b>having an access to DOM objects on the server side</b>, just like in the good-old Delphi times. Please review the following examples. Warning: <b>this is a proof-of-concept only</b>, a lot of things are still not implemented, some are hardcoded. Any comments, criticism, thoughts are welcome - <a href="mailto:grych@tg.pl?Subject=Drab">grych@tg.pl</a>. Please give me you feedback how do you like this concept!
 </p>
 <p>
   Drab is written using Phonenix on Elixir, so all the code below is HTML and Elixir (no Javascript!). <b>This page is a living demo - all examples are actually working in Drab</b>.
@@ -30,8 +30,9 @@
 <button drab-click="uppercase">Do it</button>)%></code></pre>
     </p>
     <p>
-      The only thing which might be new is the <code>drab-click</code> attribute with "uppercase" value. What is this value? This is a name of the <b>function on the server side</b>, in <code>Drab.Controller</code> module (see code below). Clicking on the <code>&lt;button&gt;</code> <b>in the browser</b> runs <code>Drab.Controller.uppercase/2</code> <b>on the server</b>. <em>So far, the module Drab.Controller is hardcoded and common to the whole demo app</em>.
-<pre><code class="elixir"><%=~s[defmodule Drab.Controller do
+      The only thing which might be new is the <code>drab-click</code> attribute with "uppercase" value. What is this value? This is a name of the <b>function on the server side</b>, in <code>DrabPoc.PageController</code> module (see code below). Clicking on the <code>&lt;button&gt;</code> <b>in the browser</b> runs <code>DrabPoc.PageController.uppercase/2</code> <b>on the server!</b>
+<pre><code class="elixir"><%=~s[defmodule DrabPoc.PageController do
+  use Drab.Controller
   def uppercase(socket, sender) do
     t = List.first(Drab.Query.val(socket, "#text_to_uppercase"))
     Drab.Query.val(socket, "#text_to_uppercase", String.upcase(t))
@@ -39,6 +40,8 @@
   end
 end]%></code></pre>
       How does it work? <code>Drab.Query.val(socket, "#text_to_uppercase")</code> launches jQuery <code>$("#text_to_uppercase").val()</code> on the client side and returns it to the server. <code>List.first()</code> is used because jQuery always returns an array. Then, the returned string is converted to uppercase using <code>String.upcase</code> and passed to <code>Drab.Query.val/3</code> function, which - analogically to jQuery <code>.val(value)</code> sets the value of the input. 
+      <br>
+      Notice that error handlers are placed in the Phoenix Controller, but you need to apply <code>use Drab.Controller</code> to do the magic begin.
     </p>
 
   </div>
@@ -65,16 +68,15 @@ end]%></code></pre>
 </div>
 <button drab-click="perform_long_process">Click me to start processing ...</button>]%></code></pre>
       On the server we simulate a long processing by sleeping some random time. The interesting comes with <code>Drab.Query</code> module again: <code>Drab.Query.attr</code> retrieves (<code>/3</code>) or sets (<code>/4</code>) object attributes. In this case, we used it to set <code>style="width: XX%"</code>. Nn the next line <code>Drab.Query.html/3</code> changes the text of the progress bar. Finally, after the loop finishes, progress bar changes its color to indicate success.
-<pre><code class="elixir"><%=~S[defmodule Drab.Controller do
-  def perform_long_process(socket, sender) do
-    for i <- 1..10 do
-      :timer.sleep(:rand.uniform(750))
-      Drab.Query.attr(socket, ".progress-bar", "style", "width: #{10*i}%")
-      Drab.Query.html(socket, ".progress-bar", "#{10*i}%")
-    end
-    Drab.Query.add_class(socket, ".progress-bar", "progress-bar-success")
-    {socket, sender}
+<pre><code class="elixir"><%=~S[def perform_long_process(socket, sender) do
+  for i <- 1..10 do
+    :timer.sleep(:rand.uniform(750))
+    socket 
+      |> attr(".progress-bar", "style", "width: #{10*i}%")
+      |> html(".progress-bar", "#{10*i}%")
   end
+  Drab.Query.add_class(socket, ".progress-bar", "progress-bar-success")
+  {socket, sender}
 end]%></code></pre>
       Easy, huh? And <b>no need to code javascript at all</b>.
     </p>

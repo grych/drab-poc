@@ -8,6 +8,8 @@ defmodule Drab.Query do
 
   def html(socket, query, value) do
     generic_query(socket, query, "html(#{Poison.encode!(value)})")
+    # setter functions returns socket, so can be piped
+    socket
   end
 
   def val(socket, query) do
@@ -16,6 +18,7 @@ defmodule Drab.Query do
 
   def val(socket, query, value) do
     generic_query(socket, query, "val(#{Poison.encode!(value)})")
+    socket
   end
 
   def attr(socket, query, att) do
@@ -24,23 +27,28 @@ defmodule Drab.Query do
 
   def attr(socket, query, att, value) do
     generic_query(socket, query, "attr(#{Poison.encode!(att)}, #{Poison.encode!(value)})")
+    socket
   end
 
   def add_class(socket, query, value) do
     generic_query(socket, query, "addClass(#{Poison.encode!(value)})")
+    socket
   end
 
   def remove_class(socket, query, value) do
     generic_query(socket, query, "removeClass(#{Poison.encode!(value)})")
+    socket
   end
 
   def toggle_class(socket, query, value) do
     generic_query(socket, query, "toggleClass(#{Poison.encode!(value)})")
+    socket
   end
 
   def change_class(socket, query, from_value, to_value) do
     add_class(socket, query, to_value)
     remove_class(socket, query, from_value)
+    socket
   end
 
   defp generic_query(socket, query, get_function, value \\ nil) do
