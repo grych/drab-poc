@@ -75,7 +75,7 @@ end]%></code></pre>
       |> attr(".progress-bar", "style", "width: #{10*i}%")
       |> html(".progress-bar", "#{10*i}%")
   end
-  Drab.Query.add_class(socket, ".progress-bar", "progress-bar-success")
+  add_class(socket, ".progress-bar", "progress-bar-success")
   {socket, sender}
 end]%></code></pre>
       All <em>setter</em> functions (functions which manipulates DOM objects, like <code>Drab.Query.attr/4</code>) return <code>socket</code> which allows us to use the pipe syntax. Additionally, there is no need to use the whole <code>Drab.Query</code> module path, <code>use Drab.Controller</code> provides the required imports.

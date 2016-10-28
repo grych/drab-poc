@@ -1,4 +1,4 @@
-defmodule DrabPoc.DrabSocket do
+defmodule Drab.Socket do
   use Phoenix.Socket
 
   ## Channels

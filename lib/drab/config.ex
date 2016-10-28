@@ -1,3 +1,3 @@
 defmodule Drab.Config do
-  defstruct controller: nil, onload: :onload 
+  defstruct commander: nil, onload: nil 
 end
