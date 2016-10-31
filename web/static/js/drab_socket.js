@@ -33,18 +33,37 @@ class DrabSocket {
       ]
       him.channel.push("query", {ok: query_output})
     })
-    // register events
-    $("[drab-click]").on("click", function(event) {
-      let payload = {
+
+    // Drab Events
+    function payload(who, event) {
+      setid(who)
+      return {
         // by default, we pass back some sender attributes
-        id: $(this).attr("id"),
-        text: $(this).text(),
-        html: $(this).html(),
-        val: $(this).val(),
-        data: $(this).data(),
-        event_function: $(this).attr("drab-click")
+        id:   who.attr("id"),
+        text: who.text(),
+        html: who.html(),
+        val:  who.val(),
+        data: who.data(),
+        drab_id: who.attr("drab-id"),
+        event_function: who.attr(`drab-${event}`)
       }
-      him.channel.push("click", payload)
+    }
+    function setid(whom) {
+      whom.attr("drab-id", uuid.v1())
+    }
+    // TODO: after rejoin the even handler is doubled or tripled
+    //       hacked with off(), bit I don't like it as a solution 
+    $("[drab-click]").off('click').on("click", function(event) {
+      him.channel.push("event", {event: "click", payload: payload($(this), "click")})
+    })
+    $("[drab-change]").off('change').on("change", function(event) {
+      him.channel.push("event", {event: "change", payload: payload($(this), "change")})
+    })
+    $("[drab-keyup]").off('keyup').on("keyup", function(event) {
+      him.channel.push("event", {event: "keyup", payload: payload($(this), "keyup")})
+    })
+    $("[drab-keydown]").off('keydown').on("keydown", function(event) {
+      him.channel.push("event", {event: "keydown", payload: payload($(this), "keydown")})
     })
     // initialize onload on server side
     him.channel.push("onload", {path: location.pathname, drab_return: window.drab_return})

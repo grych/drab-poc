@@ -2,7 +2,7 @@ defmodule Drab.Socket do
   use Phoenix.Socket
 
   ## Channels
-  channel "drab:*", DrabPoc.DrabChannel
+  channel "drab:*", Drab.Channel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket

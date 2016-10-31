@@ -44,9 +44,19 @@ defmodule DrabPoc.PageCommander do
     {socket, dom_sender}
   end
 
+  def clicked_sleep_button(socket, dom_sender) do
+    prop(socket, this(dom_sender), "disabled", true)
+    :timer.sleep(dom_sender["data"]["sleep"] * 1000)
+    prop(socket, this(dom_sender), "disabled", false)
+  end
+
+  def changed_input(socket, dom_sender) do
+    html(socket, "#display_placeholder", String.upcase(dom_sender["val"]))
+  end
+
   # Drab Callbacks
   def page_loaded(socket) do
-    # Drab.Query.attr(socket, ".progress-bar", "style", "width: 33%")
+    html(socket, "#display_placeholder", "Value set on the server side")
     socket
   end
 end

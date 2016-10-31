@@ -2,6 +2,10 @@ defmodule Drab.Query do
   require IEx
   require Logger
 
+  def this(dom_sender) do
+    "[drab-id='#{dom_sender["drab_id"]}']"
+  end
+
   def html(socket, query) do
     generic_query(socket, query, "html()")
   end
@@ -26,7 +30,16 @@ defmodule Drab.Query do
   end
 
   def attr(socket, query, att, value) do
-    generic_query(socket, query, "attr(#{Poison.encode!(att)}, #{Poison.encode!(value)})")
+    generic_query(socket, query, "attr(#{Poison.encode!(att)}, #{escape_value(value)})")
+    socket
+  end
+
+  def prop(socket, query, att) do
+    generic_query(socket, query, "prop(#{Poison.encode!(att)})")
+  end
+
+  def prop(socket, query, att, value) do
+    generic_query(socket, query, "prop(#{Poison.encode!(att)}, #{escape_value(value)})")
     socket
   end
 
@@ -59,5 +72,12 @@ defmodule Drab.Query do
       {:got_results_from_client, reply} ->
         reply
     end
+  end
+
+  defp escape_value(value) when is_boolean(value) do
+    "#{inspect(value)}"
+  end
+  defp escape_value(value) do
+    "#{Poison.encode!(value)}"
   end
 end

@@ -1,6 +1,3 @@
-<%=Phoenix.Controller.controller_module(@conn)%>/
-<%=Phoenix.Controller.action_name(@conn)%>
-
 <h3 class="centered">Drab - Server Side DOM Access - Proof of Concept</h3>
 <p>
   In the <i>"good old times"</i> the event handling was easy. The only you have to do is to create the event handler (remember <code>TForm1.Button1Click(Sender: TObject)</code>?) and you could do everything inside this handler: accessing data from models, manipulating user interface, sending raw Ethernet packets to the coffee machine...
@@ -30,9 +27,9 @@
 <button drab-click="uppercase">Do it</button>)%></code></pre>
     </p>
     <p>
-      The only thing which might be new is the <code>drab-click</code> attribute with "uppercase" value. What is this value? This is a name of the <b>function on the server side</b>, in <code>DrabPoc.PageController</code> module (see code below). Clicking on the <code>&lt;button&gt;</code> <b>in the browser</b> runs <code>DrabPoc.PageController.uppercase/2</code> <b>on the server!</b>
-<pre><code class="elixir"><%=~s[defmodule DrabPoc.PageController do
-  use Drab.Controller
+      The only thing which might be new is the <code>drab-click</code> attribute with "uppercase" value. What is this value? This is a name of the <b>function on the server side</b>, in <code>DrabPoc.PageCommander</code> module (see code below). Clicking on the <code>&lt;button&gt;</code> <b>in the browser</b> runs <code>DrabPoc.PageCommander.uppercase/2</code> <b>on the server!</b>
+<pre><code class="elixir"><%=~s[defmodule DrabPoc.PageCommander do
+  use Drab.Commander
   def uppercase(socket, sender) do
     t = List.first(Drab.Query.val(socket, "#text_to_uppercase"))
     Drab.Query.val(socket, "#text_to_uppercase", String.upcase(t))
@@ -40,8 +37,6 @@
   end
 end]%></code></pre>
       How does it work? <code>Drab.Query.val(socket, "#text_to_uppercase")</code> launches jQuery <code>$("#text_to_uppercase").val()</code> on the client side and returns it to the server. <code>List.first()</code> is used because jQuery always returns an array. Then, the returned string is converted to uppercase using <code>String.upcase</code> and passed to <code>Drab.Query.val/3</code> function, which - analogically to jQuery <code>.val(value)</code> sets the value of the input. 
-      <br>
-      Notice that error handlers are placed in the Phoenix Controller, but you need to apply <code>use Drab.Controller</code> to do the magic begin.
     </p>
 
   </div>
@@ -78,8 +73,11 @@ end]%></code></pre>
   add_class(socket, ".progress-bar", "progress-bar-success")
   {socket, sender}
 end]%></code></pre>
-      All <em>setter</em> functions (functions which manipulates DOM objects, like <code>Drab.Query.attr/4</code>) return <code>socket</code> which allows us to use the pipe syntax. Additionally, there is no need to use the whole <code>Drab.Query</code> module path, <code>use Drab.Controller</code> provides the required imports.
+      All <em>setter</em> functions (functions which manipulates DOM objects, like <code>Drab.Query.attr/4</code>) return <code>socket</code> which allows us to use the pipe syntax. Additionally, there is no need to use the whole <code>Drab.Query</code> module path, <code>use Drab.Commander</code> provides the required imports.
       Easy, huh? And <b>no need to code javascript at all</b>.
+    </p>
+    <p>
+      By the way, when you click the button again while it is processing, you'll observe the strange phenomenas. This is because all processing in Drab is asynchroneus, so clicking the button again launches another process on the server side and both the processes changes the properties of the same DOM object. What a mess! This is why the buttons should be disable when corresponding action is processing on the server. It will be exaplained in a few moments.
     </p>
   </div>
 
@@ -111,16 +109,16 @@ end]%></code></pre>
 <button drab-click="run_async_tasks">Start async task</button>)%></code></pre>
     </p>
     <p>
-      The whole processing is on the server side. Clicking the button runs <code>run_async_tasks/2</code> function on the controller:
+      The whole processing is on the server side. Clicking the button runs <code>run_async_tasks/2</code> function on the server side:
 <pre><code class="elixir"><%=~s/def run_async_tasks(socket, dom_sender) do
-  Drab.Query.html(socket, "#async_task_status", "running")
+  html(socket, "#async_task_status", "running")
   tasks = Enum.map(1..54, fn(i) -> Task.async(fn -> 
     :timer.sleep(:rand.uniform(4000))
-    Drab.Query.change_class(socket, ".task[data-task_id=#\{i\}]", "label-danger", "label-success")
+    change_class(socket, ".task[data-task_id=#\{i\}]", "label-danger", "label-success")
     end)
   end)
   Enum.each(tasks, fn(task) -> Task.await(task) end)
-  Drab.Query.html(socket, "#async_task_status", "finished")
+  html(socket, "#async_task_status", "finished")
   {socket, dom_sender}
 end/%></code></pre>
     The code above runs asynchronously 54 Tasks, which just waits some time (up to 4 seconds) and then communicates to the user by changing the boostrap class from <code>label-danger</code> to <code>label-success</code>. After launching he background tasks, it waits (<code>Task.await/1</code>) for all of the tasks to finish and then informs the user by changing the Task status to "finished".
@@ -146,4 +144,64 @@ end/%></code></pre>
   </div>
 </div>
 <hr>
-
+<div class="row">
+  <h4>Access to the Sender DOM Object Properties and Async Explained</h4>
+  <div class="col-md-7">
+    <p>
+      The next example shows how we can retrieve the information from <code>data</code> attribute. We've simple set up few buttons, each with the same event function <code>clicked_sleep_button</code>:
+      <pre><code class="html"><%=~s(<button drab-click="clicked_sleep_button" data-sleep="1">Sleep 1 second</button>
+<button drab-click="clicked_sleep_button" data-sleep="2">Sleep 2 seconds</button>
+<button drab-click="clicked_sleep_button" data-sleep="3">Sleep 3 seconds</button>)%></code></pre>
+    </p>
+    <p>
+      On the server side code is not very sophisticated as well. The whole functionality is to sleep for a few seconds. But the number of seconds is given with <code>data</code> property in <code>dom_sender</code> variable. Please notice that this variable contains more interesting values to be used, like <code>val</code>, <code>html</code> or <code>text</code>. All this will be in the documentation, some day.
+      <pre><code class="elixir"><%=~s/def clicked_sleep_button(socket, dom_sender) do
+  prop(socket, this(dom_sender), "disabled", true)
+  :timer.sleep(dom_sender["data"]["sleep"] * 1000)
+  prop(socket, this(dom_sender), "disabled", false)
+end/%></code></pre>
+      With this example we introduce <code>this/1</code> function, which allows you to operate on the DOM object in similar way as with <code>$(this)</code>. That's how we can disable the right button only!
+    </p>
+    <p>
+      Observe that when one button is "processing", you can click another one. This is because <strong>Drab requests are asynchroneus on the server side</strong>. This is why it is good to disable button while processing on the server side.
+  </div>
+  <div class="col-md-5">
+    <p>
+      Click on the button to sleep<br>
+      <button drab-click="clicked_sleep_button" class="btn btn-primary" data-sleep="1">Sleep 1 second</button>
+      <button drab-click="clicked_sleep_button" class="btn btn-primary" data-sleep="2">Sleep 2 seconds</button>
+      <button drab-click="clicked_sleep_button" class="btn btn-primary" data-sleep="3">Sleep 3 seconds</button>
+    </p>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <h4>Page Load and Some More Events</h4>
+  <div class="col-md-7">
+    <p>
+      Analogically to <code>page load</code> Javascript event, it is possible to run a callback after the client page is loaded (<em>so far it is running every time the websockets connect, so it should be called "onconnect"</em>). Do do it, we need to declare and write a function:
+<pre><code class="elixir"><%=~s/defmodule DrabPoc.PageCommander do
+  use Drab.Commander, onload: :page_loaded
+  def page_loaded(socket) do
+    html(socket, "#display_placeholder", "Value set on the server side")
+    socket
+  end
+end/%></code></pre>
+    </p>
+    <p>
+      And this is to show you that not only <code>change</code> event is already supported by Drab :) Remember, this is just a proof of concept.
+      <pre><code class="html"><%=~s(<input drab-keyup="changed_input">
+<div id="display_placeholder">Some text here</div>)%></code></pre>
+      <pre><code class="elixir"><%=~s/def changed_input(socket, dom_sender) do
+  html(socket, "#display_placeholder", String.upcase(dom_sender["val"]))
+end/%></code></pre>
+    </p>
+  </div>
+  <div class="col-md-5">
+    <p>
+      Start typing down there:
+      <input drab-keyup="changed_input" class="form-control">
+      <div id="display_placeholder">Some text here</div>
+    </p>
+  </div>
+</div>
