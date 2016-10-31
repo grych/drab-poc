@@ -77,7 +77,7 @@ end]%></code></pre>
       Easy, huh? And <b>no need to code javascript at all</b>.
     </p>
     <p>
-      By the way, when you click the button again while it is processing, you'll observe the strange phenomenas. This is because all processing in Drab is asynchroneus, so clicking the button again launches another process on the server side and both the processes changes the properties of the same DOM object. What a mess! This is why the buttons should be disable when corresponding action is processing on the server. It will be exaplained in a few moments.
+      By the way, when you click the button again while it is processing, you'll observe the strange phenomenas. This is because all processing in Drab is asynchronous, so clicking the button again launches another process on the server side and both the processes changes the properties of the same DOM object. What a mess! This is why the buttons should be disable when corresponding action is processing on the server. It will be exaplained in a few moments.
     </p>
   </div>
 
@@ -163,7 +163,7 @@ end/%></code></pre>
       With this example we introduce <code>this/1</code> function, which allows you to operate on the DOM object in similar way as with <code>$(this)</code>. That's how we can disable the right button only!
     </p>
     <p>
-      Observe that when one button is "processing", you can click another one. This is because <strong>Drab requests are asynchroneus on the server side</strong>. This is why it is good to disable button while processing on the server side.
+      Observe that when one button is "processing", you can click another one. This is because <strong>Drab requests are asynchronous on the server side</strong>. This is why it is good to disable button while processing on the server side.
   </div>
   <div class="col-md-5">
     <p>

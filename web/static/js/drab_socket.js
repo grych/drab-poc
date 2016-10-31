@@ -53,18 +53,26 @@ class DrabSocket {
     }
     // TODO: after rejoin the even handler is doubled or tripled
     //       hacked with off(), bit I don't like it as a solution 
-    $("[drab-click]").off('click').on("click", function(event) {
-      him.channel.push("event", {event: "click", payload: payload($(this), "click")})
-    })
-    $("[drab-change]").off('change').on("change", function(event) {
-      him.channel.push("event", {event: "change", payload: payload($(this), "change")})
-    })
-    $("[drab-keyup]").off('keyup').on("keyup", function(event) {
-      him.channel.push("event", {event: "keyup", payload: payload($(this), "keyup")})
-    })
-    $("[drab-keydown]").off('keydown').on("keydown", function(event) {
-      him.channel.push("event", {event: "keydown", payload: payload($(this), "keydown")})
-    })
+    let events = ["click", "change", "keyup", "keydown"]
+    for (let ev of events) {
+      // let ev = events[i]
+      // console.log(ev)
+      $(`[drab-${ev}]`).off(ev).on(ev, function(event) {
+        him.channel.push("event", {event: ev, payload: payload($(this), ev)})
+      })
+    }
+    // $("[drab-click]").off('click').on("click", function(event) {
+    //   him.channel.push("event", {event: "click", payload: payload($(this), "click")})
+    // })
+    // $("[drab-change]").off('change').on("change", function(event) {
+    //   him.channel.push("event", {event: "change", payload: payload($(this), "change")})
+    // })
+    // $("[drab-keyup]").off('keyup').on("keyup", function(event) {
+    //   him.channel.push("event", {event: "keyup", payload: payload($(this), "keyup")})
+    // })
+    // $("[drab-keydown]").off('keydown').on("keydown", function(event) {
+    //   him.channel.push("event", {event: "keydown", payload: payload($(this), "keydown")})
+    // })
     // initialize onload on server side
     him.channel.push("onload", {path: location.pathname, drab_return: window.drab_return})
   }
