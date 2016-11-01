@@ -14,6 +14,7 @@ use Mix.Config
 config :drab_poc, DrabPoc.Endpoint,
   http: [port: {:system, "PORT"}],
   url: [host: "tg.pl", port: 443],
+  # url: [host: "localhost", port: 4000],
   cache_static_manifest: "priv/static/manifest.json"
 
 # Do not print debug messages in production
