@@ -13,7 +13,7 @@
 </p>
 <p>
   Drab is written using Phonenix on Elixir, so all the code below is HTML and Elixir (no Javascript!). <b>This page is a living demo - all examples are actually working in Drab</b>.
-  All the magic is available because of the websockets. JS side depends on jQuery. You can find a source code of this page <a href="https://github.com/grych/drab-poc">on Github</a>.
+  All the magic is available because of the websockets. JS side depends on jQuery. You can find a source code of this page <a href="https://github.com/grych/drab-poc">on Github</a>, and the <a href="https://github.com/grych/drab">source code of the Drab himself - here</a>.
 </p>
 <p><small>Tomek "Grych" Gryszkiewicz 2016</small></p>
 <hr>
