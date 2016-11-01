@@ -1,7 +1,7 @@
 import "phoenix_html"
 
-import DrabSocket from "./drab_socket"
-let ds = new DrabSocket()
+import Drab from "./drab"
+let ds = new Drab()
 
 import hljs from "highlight.js"
 hljs.initHighlightingOnLoad()
