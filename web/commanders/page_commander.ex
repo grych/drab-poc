@@ -15,7 +15,7 @@ defmodule DrabPoc.PageCommander do
   def perform_long_process(socket, dom_sender) do
     steps = :rand.uniform(100)
     for i <- 1..steps do
-      :timer.sleep(:rand.uniform(500))
+      :timer.sleep(:rand.uniform(500)) # simulate real work
       socket 
         |> attr(".progress-bar", "style", "width: #{i * 100 / steps}%")
         |> html(".progress-bar", "#{Float.round(i * 100 / steps, 2)}%")
@@ -32,7 +32,7 @@ defmodule DrabPoc.PageCommander do
 
     {_, begin_at_sec, begin_at_micsec } = :os.timestamp
     tasks = Enum.map(1..54, fn(i) -> Task.async(fn -> 
-      :timer.sleep(:rand.uniform(4000))
+      :timer.sleep(:rand.uniform(4000)) # simulate real work
       change_class(socket, ".task[data-task_id=#{i}]", "label-danger", "label-success")
       end)
     end)

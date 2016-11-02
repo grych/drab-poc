@@ -33,6 +33,3 @@ config :logger, :console, format: "[$level] $message\n"
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20
 
-config :cipher, keyphrase: "alsfvaosfvaoisfvaoisfv",
-                ivphrase: "alsnvoaisfvrnovirnv",
-                magic_token: "aifvaj9fva9fsvmfinvasknf"
