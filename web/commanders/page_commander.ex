@@ -13,11 +13,12 @@ defmodule DrabPoc.PageCommander do
   end
 
   def perform_long_process(socket, dom_sender) do
-    for i <- 1..10 do
-      :timer.sleep(:rand.uniform(750))
+    steps = :rand.uniform(100)
+    for i <- 1..steps do
+      :timer.sleep(:rand.uniform(500))
       socket 
-        |> attr(".progress-bar", "style", "width: #{10*i}%")
-        |> html(".progress-bar", "#{10*i}%")
+        |> attr(".progress-bar", "style", "width: #{i * 100 / steps}%")
+        |> html(".progress-bar", "#{Float.round(i * 100 / steps, 2)}%")
     end
     add_class(socket, ".progress-bar", "progress-bar-success")
 

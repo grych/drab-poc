@@ -63,15 +63,16 @@ end]%></code></pre>
 </div>
 <button drab-click="perform_long_process">Click me to start processing ...</button>]%></code></pre>
       On the server we simulate a long processing by sleeping some random time. The interesting comes with <code>Drab.Query</code> module again: <code>Drab.Query.attr</code> retrieves (<code>/3</code>) or sets (<code>/4</code>) object attributes. In this case, we used it to set <code>style="width: XX%"</code>. Nn the next line <code>Drab.Query.html/3</code> changes the text of the progress bar. Finally, after the loop finishes, progress bar changes its color to indicate success.
-<pre><code class="elixir"><%=~S[def perform_long_process(socket, sender) do
-  for i <- 1..10 do
-    :timer.sleep(:rand.uniform(750))
+<pre><code class="elixir"><%=~S[def perform_long_process(socket, dom_sender) do
+  steps = :rand.uniform(100)
+  for i <- 1..steps do
+    :timer.sleep(:rand.uniform(500))
     socket 
-      |> attr(".progress-bar", "style", "width: #{10*i}%")
-      |> html(".progress-bar", "#{10*i}%")
+      |> attr(".progress-bar", "style", "width: #{i * 100 / steps}%")
+      |> html(".progress-bar", "#{Float.round(i * 100 / steps, 2)}%")
   end
   add_class(socket, ".progress-bar", "progress-bar-success")
-  {socket, sender}
+  {socket, dom_sender}
 end]%></code></pre>
       All <em>setter</em> functions (functions which manipulates DOM objects, like <code>Drab.Query.attr/4</code>) return <code>socket</code> which allows us to use the pipe syntax. Additionally, there is no need to use the whole <code>Drab.Query</code> module path, <code>use Drab.Commander</code> provides the required imports.
       Easy, huh? And <b>no need to code javascript at all</b>.
@@ -113,7 +114,7 @@ end]%></code></pre>
 <pre><code class="elixir"><%=~s/def run_async_tasks(socket, dom_sender) do
   html(socket, "#async_task_status", "running")
   tasks = Enum.map(1..54, fn(i) -> Task.async(fn -> 
-    :timer.sleep(:rand.uniform(4000))
+    :timer.sleep(:rand.uniform(4000)) # simulate real task
     change_class(socket, ".task[data-task_id=#\{i\}]", "label-danger", "label-success")
     end)
   end)
