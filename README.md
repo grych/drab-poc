@@ -2,14 +2,16 @@
 
 ## Accessing DOM objects from the server side.
 
-Visit [`https://tg.pl/drab`](https://tg.pl/drab) for description
+This is a souce code for [Drab Proof of Concept](https://tg.pl/drab) page.
+
+Please check the [Drab Source](https://github.com/grych/drab).
 
 ## Installation
 First, have Erlang and Elixir installed. Then install hex
 
     mix local.hex
 
-Download and install ELPH:
+Download and install Drab-Poc:
 
     git clone git@github.com:grych/drab-poc.git
     cd drab-poc
