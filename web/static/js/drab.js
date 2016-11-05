@@ -1,1 +1,1 @@
-../../../../../apps/drab/web/static/js/drab.js
+../../../../drab/web/static/js/drab.js
