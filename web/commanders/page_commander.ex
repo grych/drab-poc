@@ -20,7 +20,7 @@ defmodule DrabPoc.PageCommander do
         |> update(attr: "style", set: "width: #{i * 100 / steps}%", on: ".progress-bar")
         |> update(:html, set: "#{Float.round(i * 100 / steps, 2)}%", on: ".progress-bar")
     end
-    socket |> insert(class: "progress-bar-success", to: ".progress-bar")
+    socket |> insert(class: "progress-bar-success", into: ".progress-bar")
 
     {socket, dom_sender}
   end
