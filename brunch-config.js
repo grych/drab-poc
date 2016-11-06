@@ -64,7 +64,16 @@ exports.config = {
   },
 
   npm: {
-    enabled: true
+    enabled: true,
+    whitelist: [
+      "jquery",
+      "boostrap",
+      "boostrap-select",
+      "highlight.js",
+      "phoenix",
+      "phoenix_html",
+      // "drab"
+    ]
   },
     // JQuery should be global, as we want to have an access to it in the console
   npm: {globals: {
