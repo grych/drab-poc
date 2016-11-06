@@ -13,18 +13,15 @@ defmodule DrabPoc.Router do
     plug :accepts, ["json"]
   end
 
-  # scope "/drab/", DrabPoc do
-  #   get "create_channel", DrabController, :create_channel
-  # end
-
   scope "/" do
     get "/", DrabPoc.PageController, :redirect_to_drab
   end
 
-  scope "/drab/", DrabPoc do
+  scope "/drab", DrabPoc do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
+    get "/docs", DocsController, :index
   end
 
   # Other scopes may use custom stacks.

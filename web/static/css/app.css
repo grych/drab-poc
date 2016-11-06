@@ -12,3 +12,7 @@ h3, h4, h5 {
 .centered {
   text-align: center;
 }
+.small-border {
+  border: 1px dashed grey;
+  padding: 2px 2px 2px 2px;
+}
