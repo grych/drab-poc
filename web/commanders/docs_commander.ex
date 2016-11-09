@@ -22,6 +22,12 @@ defmodule DrabPoc.DocsCommander do
     {socket, dom_sender}
   end
 
+  def qs_4_click(socket, dom_sender) do
+    css = socket |> select(css: "font", from: ".qs_2")
+    socket |> update(:text, set: css, on: "#qs_4_out")
+    {socket, dom_sender}
+  end
+
   def qu_1_click(socket, dom_sender) do
     socket |> update(:text, set: "new <u>text</u>", on: "#qu_1_span")
     {socket, dom_sender}
@@ -39,6 +45,11 @@ defmodule DrabPoc.DocsCommander do
 
   def qu_4_click(socket, dom_sender) do
     socket |> update(class: "btn-primary", set: "btn-danger", on: this(dom_sender))
+    {socket, dom_sender}
+  end
+  
+  def qu_5_click(socket, dom_sender) do
+    socket |> update(css: "border", set: "3px solid red", on: this(dom_sender))
     {socket, dom_sender}
   end
 
@@ -79,15 +90,24 @@ defmodule DrabPoc.DocsCommander do
   end
 
   def a_1_click(socket, dom_sender) do
-    socket |> alert("Message")
+    socket |> alert("Title", "Just a message")
     {socket, dom_sender}
   end
 
   def a_2_click(socket, dom_sender) do
+    {button, _} =
+      socket |> alert("Message", "What is the answer?", ok: "42", cancel: "Don't know")
+    socket |> update(:text, set: "clicked #{button} button", on: this(dom_sender))
     {socket, dom_sender}
   end
 
   def a_3_click(socket, dom_sender) do
+    form = "<input name='first' class='form-control'><input id='second' class='form-control'>"
+    response = case socket |> alert("What's your name?", form, ok: "OK", cancel: "Forgot") do
+      { :ok, params } -> "first is #{params["first"]}, and second: #{params["second"]}"
+      { :cancel, _ }  -> "you cancelled!"
+    end
+    socket |> update(:text, set: response, on: this(dom_sender))
     {socket, dom_sender}
   end
 

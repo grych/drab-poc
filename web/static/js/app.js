@@ -1,4 +1,7 @@
 import "phoenix_html"
+// import Drab from "drab"
+
+var $ = require('jquery')
 
 global.bootstrap = require("bootstrap")
 // global.drab = require("drab")
@@ -10,5 +13,9 @@ hljs.configure({
   languages: ['elixir', 'html', 'javascript']
   })
 hljs.initHighlightingOnLoad()
+
+// require('dupa').Dupa.run()
+// require('drab').Drab.run('aaa')
+
 
 

@@ -23,6 +23,8 @@
     <br>
     <button drab-click="qs_3_click" class="btn btn-primary">socket |> select(attr: "class", from: ".qs_2")</button>
     <pre id="qs_3_out"> </pre>
+    <button drab-click="qs_4_click" class="btn btn-primary">socket |> select(css: "font", from: ".qs_2")</button>
+    <pre id="qs_4_out"> </pre>
     <br>
   </div>
 </div>
@@ -41,6 +43,7 @@
     <button drab-click="qu_2_click" class="btn btn-primary">socket |> update(:text, set: "new &lt;u&gthtml&lt;/u&gt;", on: "#qu_1_span")</button><br><br>
     <button drab-click="qu_3_click" class="btn btn-primary">socket |> update(attr: "style", set: "font-family: monospace", on: "#qu_1_span")</button><br><br>
     <button drab-click="qu_4_click" class="btn btn-primary">socket |> update(class: "btn-primary", set: "btn-danger", on: this(dom_sender))</button><br><br>
+    <button drab-click="qu_5_click" class="btn btn-primary">socket |> update(css: "border", set: "3 px solid red", on: this(dom_sender))</button><br><br>
 
   </div>
 </div>
@@ -82,9 +85,9 @@
 </div>
 <hr>
 
-<h3 class="centered">Drab.Alert</h3>
+<h3 class="centered">Drab.Call</h3>
 <p>
-  <%= moduledoc(Drab.Alert) |> raw %>
+  <%= moduledoc(Drab.Call) |> raw %>
 </p>
 <hr>
 
@@ -92,14 +95,12 @@
   <h4>alert</h4>
   <div class="col-md-6">
     <p>
-      <%= funcdoc(Drab.Alert, {:alert, 2}) |> raw %>
+      <%= funcdoc(Drab.Call, {:alert, 4}) |> raw %>
     </p>
   </div>
   <div class="col-md-6">
-    <button drab-click="a_1_click" class="btn btn-primary">socket |> alert("Message")</button>
-    <button drab-click="a_2_click" class="btn btn-primary"></button>
-    <button drab-click="a_3_click" class="btn btn-primary"></button>
-    <button drab-click="a_4_click" class="btn btn-primary"></button>
-    <button drab-click="a_5_click" class="btn btn-primary"></button>
+    <button drab-click="a_1_click" class="btn btn-primary">socket |> alert("Title", "Just a message")</button><br><br>
+    <button drab-click="a_2_click" class="btn btn-primary">socket |> alert("Message", "What is the answer?", ok: "42", cancel: "Don't know")</button><br><br>
+    <button drab-click="a_3_click" class="btn btn-primary">socket |> alert("Your name?", "&lt;input name='name'&gt;", ok: "OK", cancel: "Forgot")</button>
   </div>
 </div>
