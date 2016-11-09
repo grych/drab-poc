@@ -76,10 +76,10 @@ end]%></code></pre>
   end
   socket |> insert(class: "progress-bar-success", into: ".progress-bar")
 
-    case socket |> alert("Finished!", "Do you want to retry?", ok: "Yes", cancel: "No!") do
-      {:ok, _} -> perform_long_process(socket, dom_sender)
-      {:cancel, _} -> {socket, dom_sender}
-    end
+  case socket |> alert("Finished!", "Do you want to retry?", ok: "Yes", cancel: "No!") do
+    {:ok, _}     -> perform_long_process(socket, dom_sender)
+    {:cancel, _} -> {socket, dom_sender}
+  end
 
   {socket, dom_sender}
 end]%></code></pre>
