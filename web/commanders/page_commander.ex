@@ -13,6 +13,8 @@ defmodule DrabPoc.PageCommander do
   end
 
   def perform_long_process(socket, dom_sender) do
+    socket |> delete(class: "progress-bar-success", from: ".progress-bar")
+
     steps = :rand.uniform(100)
     for i <- 1..steps do
       :timer.sleep(:rand.uniform(500)) # simulate real work
@@ -22,7 +24,11 @@ defmodule DrabPoc.PageCommander do
     end
     socket |> insert(class: "progress-bar-success", into: ".progress-bar")
 
-    {socket, dom_sender}
+    case socket |> alert("Finished!", "Do you want to retry?", ok: "Yes", cancel: "No!") do
+      {:ok, _} -> perform_long_process(socket, dom_sender)
+      {:cancel, _} -> {socket, dom_sender}
+    end
+
   end
 
   def run_async_tasks(socket, dom_sender) do

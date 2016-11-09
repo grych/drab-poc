@@ -65,6 +65,8 @@ end]%></code></pre>
 <button drab-click="perform_long_process">Click me to start processing ...</button>]%></code></pre>
       On the server we simulate a long processing by sleeping some random time. The interesting comes with <code>Drab.Query</code> module again: <code>Drab.Query.attr</code> retrieves (<code>/3</code>) or sets (<code>/4</code>) object attributes. In this case, we used it to set <code>style="width: XX%"</code>. Nn the next line <code>Drab.Query.html/3</code> changes the text of the progress bar. Finally, after the loop finishes, progress bar changes its color to indicate success.
 <pre><code class="elixir"><%=~S[def perform_long_process(socket, dom_sender) do
+  socket |> delete(class: "progress-bar-success", from: ".progress-bar")
+
   steps = :rand.uniform(100)
   for i <- 1..steps do
     :timer.sleep(:rand.uniform(500)) # simulate real work
@@ -74,10 +76,18 @@ end]%></code></pre>
   end
   socket |> insert(class: "progress-bar-success", into: ".progress-bar")
 
+    case socket |> alert("Finished!", "Do you want to retry?", ok: "Yes", cancel: "No!") do
+      {:ok, _} -> perform_long_process(socket, dom_sender)
+      {:cancel, _} -> {socket, dom_sender}
+    end
+
   {socket, dom_sender}
 end]%></code></pre>
       All <em>setter</em> functions (functions which manipulates DOM objects) return <code>socket</code> which allows us to use the pipe syntax. Additionally, there is no need to use the whole <code>Drab.Query</code> module path, <code>use Drab.Commander</code> provides the required imports.
       Easy, huh? And <b>no need to code javascript at all</b>.
+    </p>
+    <p>
+      Now focus on <code>Drab.Call.alert/4</code> - the function which shows the bootstrap modal window on the browser and waits for the user input. Please notice that nothing is updated until you close the alert box. And because you can put your own form in the alert box, this is the easiest way to get the user input. Alert boxes return not only the name of the clicked button, but as well the names and values of all inputs in the modal window.
     </p>
     <p>
       By the way, when you click the button again while it is processing, you'll observe the strange phenomenas. This is because all processing in Drab is asynchronous, so clicking the button again launches another process on the server side and both the processes changes the properties of the same DOM object. What a mess! This is why the buttons should be disable when corresponding action is processing on the server. It will be exaplained in a few moments.
