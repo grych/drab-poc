@@ -92,7 +92,7 @@
 <hr>
 
 <div class="row">
-  <h4>alert</h4>
+  <h4>alert/4</h4>
   <div class="col-md-6">
     <p>
       <%= funcdoc(Drab.Call, {:alert, 4}) |> raw %>

@@ -103,7 +103,7 @@ defmodule DrabPoc.DocsCommander do
 
   def a_3_click(socket, dom_sender) do
     form = "<input name='first' class='form-control'><input id='second' class='form-control'>"
-    response = case socket |> alert("What's your name?", form, ok: "OK", cancel: "Forgot") do
+    response = case socket |> alert("What's your name?", form, ok: "A juści", cancel: "Poniechaj") do
       { :ok, params } -> "first is #{params["first"]}, and second: #{params["second"]}"
       { :cancel, _ }  -> "you cancelled!"
     end

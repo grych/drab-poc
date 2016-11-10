@@ -80,8 +80,6 @@ end]%></code></pre>
     {:ok, _}     -> perform_long_process(socket, dom_sender)
     {:cancel, _} -> {socket, dom_sender}
   end
-
-  {socket, dom_sender}
 end]%></code></pre>
       All <em>setter</em> functions (functions which manipulates DOM objects) return <code>socket</code> which allows us to use the pipe syntax. Additionally, there is no need to use the whole <code>Drab.Query</code> module path, <code>use Drab.Commander</code> provides the required imports.
       Easy, huh? And <b>no need to code javascript at all</b>.
