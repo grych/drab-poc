@@ -95,7 +95,7 @@
   <h4>alert/4</h4>
   <div class="col-md-6">
     <p>
-      <%= funcdoc(Drab.Call, {:alert, 4}) |> raw %>
+      <%= funcdoc(Drab.Call, {:alert, 5}) |> raw %>
     </p>
   </div>
   <div class="col-md-6">
