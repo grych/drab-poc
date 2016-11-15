@@ -1,7 +1,7 @@
 import "phoenix_html"
 // import Drab from "drab"
 
-var $ = require('jquery')
+// var $ = require('jquery')
 
 global.bootstrap = require("bootstrap")
 // global.drab = require("drab")
