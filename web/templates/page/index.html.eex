@@ -1,6 +1,6 @@
 <h3 class="centered">Drab - Server Side DOM Access - Proof of Concept</h3>
 <p>
-  In the <i>"good old times"</i> the event handling was easy. The only thing you have to do is to create the event handler (remember <code>TForm1.Button1Click(Sender: TObject)</code>?) and you could do everything inside this handler: accessing data from models, manipulating user interface, sending raw Ethernet packets to the coffee machine...
+  In the <i>"good old times"</i> the event handling was easy. The only thing you had to do was to create the event handler (remember <code>TForm1.Button1Click(Sender: TObject)</code>?) and you could do everything inside this handler: accessing data from models, manipulating user interface, sending raw Ethernet packets to the coffee machine...
 </p>
 <p>
   Nowadays, when the most of the applications are web based, it is not so easy anymore. You need either to create a form and submit the data via POST or GET or use AJAX to send or retrieve data. Whole interface manipulation is on the client side. In practice, you need to write two applications: on the client and the server side.  
@@ -54,14 +54,14 @@ end]%></code></pre>
   <h4>Long Running Process with Communication Back to Browser</h4>
   <div class="col-md-7">
     <p>
-      Let's move to some more complicated functionality. Assume we have a process which is doing some stuff on the server side and we want to report back to the user after each completed step. We will use the progress bar controlled from the server. <br>
+      Let's move to some more complicated functionality. Assume having a process which is doing some stuff on the server side and we want to report back to the user after each completed step. We will use the progress bar controlled from the server. <br>
       Client side is again very simple. Please notice the <code>drab-click</code> attribute, again. This time it will run <code>perform_long_process</code> function.
 <pre><code class="html"><%=~s[<div class="progress">
   <div class="progress-bar" role="progressbar" style="width:0%">
   </div>
 </div>
 <button drab-click="perform_long_process">Click me to start processing ...</button>]%></code></pre>
-      On the server we simulate a long processing by sleeping some random time. The interesting comes with <code>Drab.Query</code> module again: <code>Drab.Query.attr</code> retrieves (<code>/3</code>) or sets (<code>/4</code>) object attributes. In this case, we used it to set <code>style="width: XX%"</code>. Nn the next line <code>Drab.Query.html/3</code> changes the text of the progress bar. Finally, after the loop finishes, progress bar changes its color to indicate success.
+      On the server we simulate a long processing by sleeping some random time. The interesting comes with <code>Drab.Query</code> module again: <code>Drab.Query.attr</code> retrieves (<code>/3</code>) or sets (<code>/4</code>) object attributes. In this case, we used it to set <code>style="width: XX%"</code>. The next line <code>Drab.Query.html/3</code> changes the text of the progress bar. Finally, after the loop finishes, progress bar changes its color to indicate success.
 <pre><code class="elixir"><%=~S[def perform_long_process(socket, dom_sender) do
   socket |> delete(class: "progress-bar-success", from: ".progress-bar")
 
@@ -79,7 +79,7 @@ end]%></code></pre>
     {:cancel, _} -> {socket, dom_sender}
   end
 end]%></code></pre>
-      All <em>setter</em> functions (functions which manipulates DOM objects) return <code>socket</code> which allows us to use the pipe syntax. Further there is no need to use the whole <code>Drab.Query</code> module path, <code>use Drab.Commander</code> provides the required imports.
+      All <em>setter</em> functions (functions which manipulate DOM objects) return <code>socket</code> which allows us to use the pipe syntax. Further there is no need to use the whole <code>Drab.Query</code> module path, <code>use Drab.Commander</code> provides the required imports.
       Easy, huh? And <b>no need to code javascript at all</b>.
     </p>
     <p>
