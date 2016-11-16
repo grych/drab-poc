@@ -1,18 +1,17 @@
 <h3 class="centered">Drab - Server Side DOM Access - Proof of Concept</h3>
 <p>
-  In the <i>"good old times"</i> the event handling was easy. The only you have to do is to create the event handler (remember <code>TForm1.Button1Click(Sender: TObject)</code>?) and you could do everything inside this handler: accessing data from models, manipulating user interface, sending raw Ethernet packets to the coffee machine...
+  In the <i>"good old times"</i> the event handling was easy. The only thing you have to do is to create the event handler (remember <code>TForm1.Button1Click(Sender: TObject)</code>?) and you could do everything inside this handler: accessing data from models, manipulating user interface, sending raw Ethernet packets to the coffee machine...
 </p>
 <p>
-  Now, whem the most of the applications are web based, it is not so easy anymore. You need either to create a form and submit the data via POST or GET or use AJAX to send or retrieve data. All inteface manipulation is on the client side. In practice, you need to write two applications: on the client and the server side.  
+  Nowadays, when the most of the applications are web based, it is not so easy anymore. You need either to create a form and submit the data via POST or GET or use AJAX to send or retrieve data. Whole interface manipulation is on the client side. In practice, you need to write two applications: on the client and the server side.  
 </p>
 <p>
-  Additionally, because <code>http</code> is stateless and one-way protocol, it is not easy to communicate back from the server to the browser - like, for example, while executing long running processing, when there is a need to update status (eg. progress bar) or ask the operator about something (like "would you like to continue?"). Of course there are workarounds for this, like polling the server every few seconds to have a status, or even auto-refresh the page, but they are just workarounds. The solution would be to have an access to the interface directly from the server side. And here comes <code>Drab</code>.
+  Additionally, because <code>http</code> is stateless and a one-way protocol, it is not easy to communicate back from the server to the browser. Like, for example, during execution of the long running process, when there is a need to update status (eg. progress bar) or ask the operator about something (like "would you like to continue?"). Of course there are workarounds for this, like polling the server every few seconds to have a status, or even auto-refreshing the page, but those are just a dirty workarounds. The solution would be to allow an access to the interface directly from the server side. And here comes the <code>Drab</code>.
 </p>
 <p>
-  <code>Drab</code> is a concept of <b>having an access to DOM objects on the server side</b>, just like in the good-old Delphi times. Please review the following examples. Warning: <b>this is a proof-of-concept only</b>, a lot of things are still not implemented, some are hardcoded. Any comments, criticism, thoughts are welcome - <a href="mailto:grych@tg.pl?Subject=Drab">grych@tg.pl</a>. Please give me you feedback how do you like this concept!
-</p>
+  <code>Drab</code> is a concept of <b>providing an access to DOM objects on the server side</b>, just like in the good-old Delphi times. Please review the following examples. Warning: <b>this is a proof-of-concept only</b>, a lot of things are still not implemented, some are hardcoded. Any comments, criticism, thoughts are welcome - <a href="mailto:grych@tg.pl?Subject=Drab">grych@tg.pl</a>. Your feedback is highly appreciated!
 <p>
-  Drab is written using Phonenix on Elixir, so all the code below is HTML and Elixir (no Javascript!). <b>This page is a living demo - all examples are actually working in Drab</b>.
+  Drab is written using Phonenix on Elixir, so all the code below is HTML and Elixir (no Javascript!). <b>This page is a living demo - all examples are actually working on Drab</b>.
   All the magic is available because of the websockets. JS side depends on jQuery. You can find a source code of this page <a href="https://github.com/grych/drab-poc">on Github</a>, and the <a href="https://github.com/grych/drab">source code of the Drab himself - here</a>.
 </p>
 <p><small>Tomek "Grych" Gryszkiewicz 2016</small></p>
@@ -27,16 +26,15 @@
 <button drab-click="uppercase">Do it</button>)%></code></pre>
     </p>
     <p>
-      The only thing which might be new is the <code>drab-click</code> attribute with "uppercase" value. What is this value? This is a name of the <b>function on the server side</b>, in <code>DrabPoc.PageCommander</code> module (see code below). Clicking on the <code>&lt;button&gt;</code> <b>in the browser</b> runs <code>DrabPoc.PageCommander.uppercase/2</code> <b>on the server!</b>
+      The only thing which might be considered new is the <code>drab-click</code> attribute with "uppercase" value. What does this value mean? This is a name of the <b>function on the server side</b>, in <code>DrabPoc.PageCommander</code> module (see the code). Clicking on the <code>&lt;button&gt;</code> <b>in the browser</b> runs <code>DrabPoc.PageCommander.uppercase/2</code> <b>on the server!</b>
 <pre><code class="elixir"><%=~s[defmodule DrabPoc.PageCommander do
   use Drab.Commander
   def uppercase(socket, sender) do
     t = socket |> select(:val, from: "#text_to_uppercase") |> List.first()
     socket |> update(:val, set: String.upcase(t), on: "#text_to_uppercase")
-
-    {socket, sender}
   end
 end]%></code></pre>
+    <p>
       How does it work? <code>Drab.Query.select(socket, :val, from: "#text_to_uppercase")</code> launches jQuery <code>$("#text_to_uppercase").val()</code> on the client side and returns it to the server. <code>List.first()</code> is used because jQuery always returns an array. Then, the returned string is converted to uppercase using <code>String.upcase</code> and passed to <code>Drab.Query.update/3</code> function, which - analogically to jQuery <code>.val(value)</code> sets the value of the input. 
     </p>
 
@@ -81,7 +79,7 @@ end]%></code></pre>
     {:cancel, _} -> {socket, dom_sender}
   end
 end]%></code></pre>
-      All <em>setter</em> functions (functions which manipulates DOM objects) return <code>socket</code> which allows us to use the pipe syntax. Additionally, there is no need to use the whole <code>Drab.Query</code> module path, <code>use Drab.Commander</code> provides the required imports.
+      All <em>setter</em> functions (functions which manipulates DOM objects) return <code>socket</code> which allows us to use the pipe syntax. Further there is no need to use the whole <code>Drab.Query</code> module path, <code>use Drab.Commander</code> provides the required imports.
       Easy, huh? And <b>no need to code javascript at all</b>.
     </p>
     <p>
@@ -93,7 +91,7 @@ end]%></code></pre>
   </div>
 
   <div class="col-md-5">
-    Click on a button to simulate long-running process on the server.
+    Click a button to simulate long-running process on the server.
     <div class="progress">
       <div class="progress-bar" role="progressbar" style="width:0%">
       </div>
@@ -136,8 +134,6 @@ end]%></code></pre>
   socket |> update(:html,
     set: "finished",
     on: "#async_task_status")
-
-  {socket, dom_sender}
 end/%></code></pre>
     The code above runs asynchronously 54 Tasks, which just waits some time (up to 4 seconds) and then communicates to the user by changing the boostrap class from <code>label-danger</code> to <code>label-success</code>. After launching he background tasks, it waits (<code>Task.await/1</code>) for all of the tasks to finish and then informs the user by changing the Task status to "finished".
     </p>
@@ -185,7 +181,7 @@ end/%></code></pre>
   </div>
   <div class="col-md-5">
     <p>
-      Click on the button to sleep<br>
+      Click the button to sleep<br>
       <button drab-click="clicked_sleep_button" class="btn btn-primary" data-sleep="1">Sleep 1 second</button>
       <button drab-click="clicked_sleep_button" class="btn btn-primary" data-sleep="2">Sleep 2 seconds</button>
       <button drab-click="clicked_sleep_button" class="btn btn-primary" data-sleep="3">Sleep 3 seconds</button>
