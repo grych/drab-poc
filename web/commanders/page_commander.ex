@@ -8,7 +8,7 @@ defmodule DrabPoc.PageCommander do
   def uppercase(socket, dom_sender) do
     t = socket |> select(:val, from: "#text_to_uppercase") |> List.first()
     socket |> update(:val, set: String.upcase(t), on: "#text_to_uppercase")
-
+    Logger.debug("****** #{inspect(socket)}")
     {socket, dom_sender}
   end
 
@@ -53,9 +53,9 @@ defmodule DrabPoc.PageCommander do
   end
 
   def clicked_sleep_button(socket, dom_sender) do
-    socket |> update(prop: "disabled", set: true, on: this(dom_sender))
+    socket |> update(class: "btn-primary", set: "btn-danger", on: this(dom_sender))
     :timer.sleep(dom_sender["data"]["sleep"] * 1000)
-    socket |> update(prop: "disabled", set: false, on: this(dom_sender))
+    socket |> update(class: "btn-danger", set: "btn-primary", on: this(dom_sender))
   end
 
   def changed_input(socket, dom_sender) do

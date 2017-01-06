@@ -1,4 +1,4 @@
-<h3 class="centered">Drab - Server Side DOM Access - Proof of Concept</h3>
+<h3 class="centered">Drab - Server Side DOM Access</h3>
 <p>
   In the <i>"good old times"</i> the event handling was easy. The only thing you had to do was to create the event handler (remember <code>TForm1.Button1Click(Sender: TObject)</code>?) and you could do everything inside this handler: accessing data from models, manipulating user interface, sending raw Ethernet packets to the coffee machine...
 </p>
@@ -9,10 +9,17 @@
   Additionally, because <code>http</code> is stateless and a one-way protocol, it is not easy to communicate back from the server to the browser. Like, for example, during execution of the long running process, when there is a need to update status (eg. progress bar) or ask the operator about something (like "would you like to continue?"). Of course there are workarounds for this, like polling the server every few seconds to have a status, or even auto-refreshing the page, but those are just a dirty workarounds. The solution would be to allow an access to the interface directly from the server side. And here comes the <code>Drab</code>.
 </p>
 <p>
-  <code>Drab</code> is a concept of <b>providing an access to DOM objects on the server side</b>, just like in the good-old Delphi times. Please review the following examples. Warning: <b>this is a proof-of-concept only</b>, a lot of things are still not implemented, some are hardcoded. Any comments, criticism, thoughts are welcome - <a href="mailto:grych@tg.pl?Subject=Drab">grych@tg.pl</a>. Your feedback is highly appreciated!
+  <code>Drab</code> is a concept of <b>providing an access to DOM objects on the server side</b>, just like in the good-old Delphi times. Please review the following examples. Warning: <b>this is an early beta version</b>, a lot of things are still not implemented, some are hardcoded. Any comments, criticism, thoughts are welcome - <a href="mailto:grych@tg.pl?Subject=Drab">grych@tg.pl</a>. Your feedback is highly appreciated!
 <p>
   Drab is written using Phonenix on Elixir, so all the code below is HTML and Elixir (no Javascript!). <b>This page is a living demo - all examples are actually working on Drab</b>.
   All the magic is available because of the websockets. JS side depends on jQuery. You can find a source code of this page <a href="https://github.com/grych/drab-poc">on Github</a>, and the <a href="https://github.com/grych/drab">source code of the Drab himself - here</a>.
+</p>
+<p>
+  In general, Drab treats the client browser as a database privider and gives the way to <code>select</code>, <code>update</code>, <code>insert</code> and <code>delete</code> objects or object attributes:
+<pre><code class="elixir"><%=~s/select(something, from: selector)
+insert(something, into: selector)
+delete(selector) or delete(something, from: selector)
+update(something, set: new_value, on: selector)/%></code></pre>
 </p>
 <p><small>Tomek "Grych" Gryszkiewicz 2016</small></p>
 <hr>
@@ -26,7 +33,7 @@
 <button drab-click="uppercase">Do it</button>)%></code></pre>
     </p>
     <p>
-      The only thing which might be considered new is the <code>drab-click</code> attribute with "uppercase" value. What does this value mean? This is a name of the <b>function on the server side</b>, in <code>DrabPoc.PageCommander</code> module (see the code). Clicking on the <code>&lt;button&gt;</code> <b>in the browser</b> runs <code>DrabPoc.PageCommander.uppercase/2</code> <b>on the server!</b>
+      The only thing which might be considered new is the <code>drab-click</code> attribute with "uppercase" value. What does this value mean? This is a name of the <b>function on the server side</b>, in <code>DrabPoc.PageCommander</code> module (see the code below). Clicking on the <code>&lt;button&gt;</code> <b>in the browser</b> runs <code>DrabPoc.PageCommander.uppercase/2</code> <b>on the server!</b>
 <pre><code class="elixir"><%=~s[defmodule DrabPoc.PageCommander do
   use Drab.Commander
   def uppercase(socket, sender) do
@@ -37,7 +44,6 @@ end]%></code></pre>
     <p>
       How does it work? <code>Drab.Query.select(socket, :val, from: "#text_to_uppercase")</code> launches jQuery <code>$("#text_to_uppercase").val()</code> on the client side and returns it to the server. <code>List.first()</code> is used because jQuery always returns an array. Then, the returned string is converted to uppercase using <code>String.upcase</code> and passed to <code>Drab.Query.update/3</code> function, which - analogically to jQuery <code>.val(value)</code> sets the value of the input. 
     </p>
-
   </div>
 
   <div class="col-md-5">
@@ -84,9 +90,6 @@ end]%></code></pre>
     </p>
     <p>
       Now focus on <code>Drab.Call.alert/4</code> - the function which shows the bootstrap modal window on the browser and waits for the user input. Please notice that nothing is updated until you close the alert box. And because you can put your own form in the alert box, this is the easiest way to get the user input. Alert boxes return not only the name of the clicked button, but as well the names and values of all inputs in the modal window.
-    </p>
-    <p>
-      By the way, when you click the button again while it is processing, you'll observe the strange phenomenas. This is because all processing in Drab is asynchronous, so clicking the button again launches another process on the server side and both the processes changes the properties of the same DOM object. What a mess! This is why the buttons should be disable when corresponding action is processing on the server. It will be exaplained in a few moments.
     </p>
   </div>
 
@@ -159,7 +162,7 @@ end/%></code></pre>
 </div>
 <hr>
 <div class="row">
-  <h4>Access to the Sender DOM Object Properties and Async Explained</h4>
+  <h4>Access to the Sender DOM Object Properties</h4>
   <div class="col-md-7">
     <p>
       The next example shows how we can retrieve the information from <code>data</code> attribute. We've simple set up few buttons, each with the same event function <code>clicked_sleep_button</code>:
@@ -168,16 +171,17 @@ end/%></code></pre>
 <button drab-click="clicked_sleep_button" data-sleep="3">Sleep 3 seconds</button>)%></code></pre>
     </p>
     <p>
-      On the server side code is not very sophisticated as well. The whole functionality is to sleep for a few seconds. But the number of seconds is given with <code>data</code> property in <code>dom_sender</code> variable. Please notice that this variable contains more interesting values to be used, like <code>val</code>, <code>html</code> or <code>text</code>. All this will be in the documentation, some day.
+      On the server side the code is not very sophisticated as well. The whole functionality is to sleep for a few seconds. But the sleep interval is given with <code>data</code> property in <code>dom_sender</code> variable. Please notice that this variable contains more interesting values to be used, like <code>val</code>, <code>html</code> or <code>text</code>. 
       <pre><code class="elixir"><%=~s/def clicked_sleep_button(socket, dom_sender) do
-  socket |> update(prop: "disabled", set: true, on: this(dom_sender))
+  socket |> update(class: "btn-primary", set: "btn-danger", on: this(dom_sender))
   :timer.sleep(dom_sender["data"]["sleep"] * 1000)
-  socket |> update(prop: "disabled", set: false, on: this(dom_sender))
+  socket |> update(class: "btn-danger", set: "btn-primary", on: this(dom_sender))
 end/%></code></pre>
-      With this example we introduce <code>this/1</code> function, which allows you to operate on the DOM object in similar way as with <code>$(this)</code>. That's how we can disable the right button only!
+      With this example we introduce <code>this/1</code> function, which allows you to operate on the DOM object in similar way as with <code>$(this)</code>. This is a way to use one event handle for multiple object.
     </p>
     <p>
-      Observe that when one button is "processing", you can click another one. This is because <strong>Drab requests are asynchronous on the server side</strong>. This is why it is good to disable button while processing on the server side.
+      Observe that when one button is "processing", you can click another one. This is because <strong>Drab requests are asynchronous on the server side</strong>. And this is a reason why buttons are disabled by default while processing - it is blocking the user from running the same action for few times. You may override this behaviour in `config.exs` with:
+      <pre><code class="elixir"><%=~s/config :drab, disable_controls_while_processing: false/%></code></pre>
   </div>
   <div class="col-md-5">
     <p>
@@ -202,7 +206,7 @@ end/%></code></pre>
 end/%></code></pre>
     </p>
     <p>
-      And this is to show you that not only <code>change</code> event is already supported by Drab :) Remember, this is just a proof of concept.
+      And this is to show you that not only <code>click</code> event is already supported by Drab :)
       <pre><code class="html"><%=~s(<input drab-keyup="changed_input">
 <div id="display_placeholder">Some text here</div>)%></code></pre>
       <pre><code class="elixir"><%=~s/def changed_input(socket, dom_sender) do
@@ -223,7 +227,7 @@ end/%></code></pre>
 <p>
   <ul>
     <li>
-      <a href="/drab/docs">Documentation</a>
+      <h2><a href="/drab/docs">Documentation with more examples</a></h2>
     </li>
     <li><a href="https://github.com/grych/drab">Drab source</a></li>
     <li><a href="https://github.com/grych/drab-poc">This page source</a></li>

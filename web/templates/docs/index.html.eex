@@ -13,17 +13,17 @@
   </div>
   <div class="col-md-6">
     <input type="text" id="qs_1_text" value="text input value">
-    <button drab-click="qs_1_click" class="btn btn-primary">socket |> select(:val, from: "#qs_1_text")</button>
+    <button drab-click="qs_1_click" class="btn btn-primary">select(:val, from: "#qs_1_text")</button>
     <pre id="qs_1_out"> </pre>
     <br>
     <span class="qs_2 small-border">First span with class qs_2</span>&nbsp;
     <span class="qs_2 small-border">Second span with class qs_2</span>&nbsp;
-    <button drab-click="qs_2_click" class="btn btn-primary">socket |> select(:html, from: ".qs_2")</button>
+    <button drab-click="qs_2_click" class="btn btn-primary">select(:html, from: ".qs_2")</button>
     <pre id="qs_2_out"> </pre>
     <br>
-    <button drab-click="qs_3_click" class="btn btn-primary">socket |> select(attr: "class", from: ".qs_2")</button>
+    <button drab-click="qs_3_click" class="btn btn-primary">select(attr: "class", from: ".qs_2")</button>
     <pre id="qs_3_out"> </pre>
-    <button drab-click="qs_4_click" class="btn btn-primary">socket |> select(css: "font", from: ".qs_2")</button>
+    <button drab-click="qs_4_click" class="btn btn-primary">select(css: "font", from: ".qs_2")</button>
     <pre id="qs_4_out"> </pre>
     <br>
   </div>
@@ -39,11 +39,11 @@
   </div>
   <div class="col-md-6">
     <span id="qu_1_span" class="small-border">span with <b>some</b> text</span><br><br>
-    <button drab-click="qu_1_click" class="btn btn-primary">socket |> update(:text, set: "new &lt;u&gttext&lt;/u&gt;", on: "#qu_1_span")</button><br><br>
-    <button drab-click="qu_2_click" class="btn btn-primary">socket |> update(:text, set: "new &lt;u&gthtml&lt;/u&gt;", on: "#qu_1_span")</button><br><br>
-    <button drab-click="qu_3_click" class="btn btn-primary">socket |> update(attr: "style", set: "font-family: monospace", on: "#qu_1_span")</button><br><br>
-    <button drab-click="qu_4_click" class="btn btn-primary">socket |> update(class: "btn-primary", set: "btn-danger", on: this(dom_sender))</button><br><br>
-    <button drab-click="qu_5_click" class="btn btn-primary">socket |> update(css: "border", set: "3 px solid red", on: this(dom_sender))</button><br><br>
+    <button drab-click="qu_1_click" class="btn btn-primary">update(:text, set: "new &lt;u&gttext&lt;/u&gt;", on: "#qu_1_span")</button><br><br>
+    <button drab-click="qu_2_click" class="btn btn-primary">update(:text, set: "new &lt;u&gthtml&lt;/u&gt;", on: "#qu_1_span")</button><br><br>
+    <button drab-click="qu_3_click" class="btn btn-primary">update(attr: "style", set: "font-family: monospace", on: "#qu_1_span")</button><br><br>
+    <button drab-click="qu_4_click" class="btn btn-primary">update(class: "btn-primary", set: "btn-danger", on: this(dom_sender))</button><br><br>
+    <button drab-click="qu_5_click" class="btn btn-primary">update(css: "border", set: "3 px solid red", on: this(dom_sender))</button><br><br>
 
   </div>
 </div>
@@ -58,10 +58,10 @@
   </div>
   <div class="col-md-6">
     <span id="qi_1_span" class="small-border">span with some text</span><br><br>
-    <button drab-click="qi_1_click" class="btn btn-primary">socket |> insert("&lt;b&gt; inserted &lt;/b&gt;", before: "#qi_1_span")</button><br><br>
-    <button drab-click="qi_2_click" class="btn btn-primary">socket |> insert("&lt;i&gt; inserted &lt;/i&gt;", after: "#qi_1_span")</button><br><br>
-    <button drab-click="qi_3_click" class="btn btn-primary">socket |> insert("&lt;u&gt; prepended &lt;/u&gt;", prepend: "#qi_1_span")</button><br><br>
-    <button drab-click="qi_4_click" class="btn btn-primary">socket |> insert("&lt;small&gt; appended &lt;/small&gt;", append: "#qi_1_span")</button><br><br>
+    <button drab-click="qi_1_click" class="btn btn-primary">insert("&lt;b&gt; inserted &lt;/b&gt;", before: "#qi_1_span")</button><br><br>
+    <button drab-click="qi_2_click" class="btn btn-primary">insert("&lt;i&gt; inserted &lt;/i&gt;", after: "#qi_1_span")</button><br><br>
+    <button drab-click="qi_3_click" class="btn btn-primary">insert("&lt;u&gt; prepended &lt;/u&gt;", prepend: "#qi_1_span")</button><br><br>
+    <button drab-click="qi_4_click" class="btn btn-primary">insert("&lt;small&gt; appended &lt;/small&gt;", append: "#qi_1_span")</button><br><br>
   </div>
 </div>
 <hr>
@@ -74,13 +74,13 @@
     </p>
   </div>
   <div class="col-md-6">
-    <button drab-click="qd_1_click" class="btn btn-primary">socket |> delete(class: "btn btn-primary", from: this(dom_sender))</button>
+    <button drab-click="qd_1_click" class="btn btn-primary">delete(class: "btn btn-primary", from: this(dom_sender))</button>
     <br><br>
     <pre id="qd_2_pre">node to be cleared</pre>
-    <button drab-click="qd_2_click" class="btn btn-primary">socket |> delete(from: "#qd_2_pre")</button>
+    <button drab-click="qd_2_click" class="btn btn-primary">delete(from: "#qd_2_pre")</button>
     <br><br>
     <pre id="qd_3_pre">node to be removed</pre>
-    <button drab-click="qd_3_click" class="btn btn-primary">socket |> delete("#qd_3_pre")</button>
+    <button drab-click="qd_3_click" class="btn btn-primary">delete("#qd_3_pre")</button>
   </div>
 </div>
 <hr>
@@ -99,8 +99,8 @@
     </p>
   </div>
   <div class="col-md-6">
-    <button drab-click="a_1_click" class="btn btn-primary">socket |> alert("Title", "Just a message")</button><br><br>
-    <button drab-click="a_2_click" class="btn btn-primary">socket |> alert("Message", "What is the answer?", ok: "42", cancel: "Don't know")</button><br><br>
-    <button drab-click="a_3_click" class="btn btn-primary">socket |> alert("Your name?", "&lt;input name='name'&gt;", ok: "OK", cancel: "Forgot")</button>
+    <button drab-click="a_1_click" class="btn btn-primary">alert("Title", "Just a message")</button><br><br>
+    <button drab-click="a_2_click" class="btn btn-primary">alert("Message", "What is the answer?", ok: "42", cancel: "Don't know")</button><br><br>
+    <button drab-click="a_3_click" class="btn btn-primary">alert("Your name?", "&lt;input name='name'&gt;", ok: "OK", cancel: "Forgot")</button>
   </div>
 </div>
