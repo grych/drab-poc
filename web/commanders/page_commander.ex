@@ -60,7 +60,7 @@ defmodule DrabPoc.PageCommander do
   end
 
   def changed_input(socket, dom_sender) do
-    socket |> update(:text, set: String.upcase(dom_sender["val"]),  on: "#display_placeholder")
+    socket |> update!(:text, set: String.upcase(dom_sender["val"]),  on: "#display_placeholder")
   end
 
   # Drab Callbacks
