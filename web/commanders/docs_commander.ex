@@ -89,6 +89,11 @@ defmodule DrabPoc.DocsCommander do
     {socket, dom_sender}
   end
 
+  def qe_1_click(socket, dom_sender) do
+    socket |> execute(:focus, on: "#qe_1_text")
+    {socket, dom_sender}
+  end
+
   def a_1_click(socket, dom_sender) do
     socket |> alert("Title", "Just a message")
     {socket, dom_sender}
@@ -118,6 +123,7 @@ defmodule DrabPoc.DocsCommander do
   def a_5_click(socket, dom_sender) do
     {socket, dom_sender}
   end
+
 
   def page_loaded(socket) do
     socket

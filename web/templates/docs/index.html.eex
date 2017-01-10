@@ -85,6 +85,21 @@
 </div>
 <hr>
 
+<div class="row">
+  <h4>execute/2</h4>
+  <div class="col-md-6">
+    <p>
+      <%= funcdoc(Drab.Query, {:execute, 2}) |> raw %>
+    </p>
+  </div>
+  <div class="col-md-6">
+    <input type="text" id="qe_1_text" value="text input">
+    <button drab-click="qe_1_click" class="btn btn-primary">execute(:focus, on: "#qe_1_text")</button>
+    <br><br>
+  </div>
+</div>
+<hr>
+
 <h3 class="centered">Drab.Call</h3>
 <p>
   <%= moduledoc(Drab.Call) |> raw %>
