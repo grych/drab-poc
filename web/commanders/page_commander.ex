@@ -7,8 +7,9 @@ defmodule DrabPoc.PageCommander do
   # Drab Events
   def uppercase(socket, dom_sender) do
     t = socket |> select(:val, from: "#text_to_uppercase") |> List.first()
-    socket |> update(:val, set: String.upcase(t), on: "#text_to_uppercase")
-    Logger.debug("****** #{inspect(socket)}")
+    {:ok, updated} = socket |> update(:val, set: String.upcase(t), on: "#text_to_uppercase")
+    Logger.debug("****** UPDATED: #{inspect(updated)}")
+    Logger.debug("****** SOCKET:  #{inspect(socket)}")
     {socket, dom_sender}
   end
 
@@ -18,9 +19,8 @@ defmodule DrabPoc.PageCommander do
     steps = :rand.uniform(100)
     for i <- 1..steps do
       :timer.sleep(:rand.uniform(500)) # simulate real work
-      socket 
-        |> update(attr: "style", set: "width: #{i * 100 / steps}%", on: ".progress-bar")
-        |> update(:html, set: "#{Float.round(i * 100 / steps, 2)}%", on: ".progress-bar")
+      socket |> update(attr: "style", set: "width: #{i * 100 / steps}%", on: ".progress-bar")
+      socket |> update(:html, set: "#{Float.round(i * 100 / steps, 2)}%", on: ".progress-bar")
     end
     socket |> insert(class: "progress-bar-success", into: ".progress-bar")
 
@@ -34,6 +34,7 @@ defmodule DrabPoc.PageCommander do
   def run_async_tasks(socket, dom_sender) do
     socket 
       |> update(class: "label-success", set: "label-danger", on: ".task")
+    socket 
       |> update(:text, set: "running", on: "#async_task_status")
 
     {_, begin_at_sec, begin_at_micsec } = :os.timestamp

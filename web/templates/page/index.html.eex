@@ -74,9 +74,8 @@ end]%></code></pre>
   steps = :rand.uniform(100)
   for i <- 1..steps do
     :timer.sleep(:rand.uniform(500)) # simulate real work
-    socket 
-      |> update(attr: "style", set: "width: #{i * 100 / steps}%", on: ".progress-bar")
-      |> update(:html, set: "#{Float.round(i * 100 / steps, 2)}%", on: ".progress-bar")
+    socket |> update(attr: "style", set: "width: #{i * 100 / steps}%", on: ".progress-bar")
+    socket |> update(:html, set: "#{Float.round(i * 100 / steps, 2)}%", on: ".progress-bar")
   end
   socket |> insert(class: "progress-bar-success", into: ".progress-bar")
 
@@ -85,7 +84,6 @@ end]%></code></pre>
     {:cancel, _} -> {socket, dom_sender}
   end
 end]%></code></pre>
-      All <em>setter</em> functions (functions which manipulate DOM objects) return <code>socket</code> which allows us to use the pipe syntax. Further there is no need to use the whole <code>Drab.Query</code> module path, <code>use Drab.Commander</code> provides the required imports.
       Easy, huh? And <b>no need to code javascript at all</b>.
     </p>
     <p>
@@ -123,9 +121,8 @@ end]%></code></pre>
     <p>
       The whole processing is on the server side. Clicking the button runs <code>run_async_tasks/2</code> function on the server side:
 <pre><code class="elixir"><%=~s/def run_async_tasks(socket, dom_sender) do
-  socket 
-    |> update(class: "label-success", set: "label-danger", on: ".task")
-    |> update(:text, set: "running", on: "#async_task_status")
+  socket |> update(class: "label-success", set: "label-danger", on: ".task")
+  socket |> update(:text, set: "running", on: "#async_task_status")
 
   tasks = Enum.map(1..54, fn(i) -> Task.async(fn -> 
     :timer.sleep(:rand.uniform(4000)) # simulate real work
