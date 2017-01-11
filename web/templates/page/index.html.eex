@@ -217,7 +217,6 @@ end/%></code></pre>
     </p>
     <p>
       Did you notice the <code>update!/2</code> (with bang!) function? This one works exactly like <code>update/2</code>, but it <strong>broadcasts to all the browsers</strong> on which the current page is opened. Open another browser window or even another browser and observe what is going on when you type in this input.
-      <br> Take a look on <a href="/drab/docs">docs</a> to learn more.
     </p>
   </div>
   <div class="col-md-5">
@@ -233,7 +232,7 @@ end/%></code></pre>
 <p>
   <ul>
     <li>
-      <h2><a href="/drab/docs">Documentation with more examples</a></h2>
+      <h3><a href="/drab/docs">Documentation with more examples</a></h3>
     </li>
     <li><a href="https://github.com/grych/drab">Drab source</a></li>
     <li><a href="https://github.com/grych/drab-poc">This page source</a></li>

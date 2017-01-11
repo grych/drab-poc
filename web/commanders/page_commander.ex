@@ -11,6 +11,8 @@ defmodule DrabPoc.PageCommander do
     Logger.debug("****** UPDATED: #{inspect(updated)}")
     Logger.debug("****** SOCKET:  #{inspect(socket)}")
     Logger.debug("****** DOM_SENDER: #{inspect(dom_sender)}")
+    socket |> console("Hey, this is PageCommander from the server side!")
+
     {socket, dom_sender}
   end
 
