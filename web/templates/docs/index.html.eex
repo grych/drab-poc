@@ -1,3 +1,9 @@
+<h3 class="centered">Drab</h3>
+<p>
+  <%= moduledoc(Drab) |> raw %>
+</p>
+<hr>
+
 <h3 class="centered">Drab.Query</h3>
 <p>
   <%= moduledoc(Drab.Query) |> raw %>

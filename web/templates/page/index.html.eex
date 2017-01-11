@@ -1,4 +1,8 @@
-<h3 class="centered">Drab - Server Side DOM Access</h3>
+<h3 class="centered">Drab - Access the User Interface from the Server Side</h3>
+<h4 class="centered">
+  The jQuery in Elixir
+</h3>
+
 <p>
   In the <i>"good old times"</i> the event handling was easy. The only thing you had to do was to create the event handler (remember <code>TForm1.Button1Click(Sender: TObject)</code>?) and you could do everything inside this handler: accessing data from models, manipulating user interface, sending raw Ethernet packets to the coffee machine...
 </p>
@@ -11,8 +15,8 @@
 <p>
   <code>Drab</code> is a concept of <b>providing an access to DOM objects on the server side</b>, just like in the good-old Delphi times. Please review the following examples. Warning: <b>this is an early beta version</b>, a lot of things are still not implemented, some are hardcoded. Any comments, criticism, thoughts are welcome - <a href="mailto:grych@tg.pl?Subject=Drab">grych@tg.pl</a>. Your feedback is highly appreciated!
 <p>
-  Drab is written using Phonenix on Elixir, so all the code below is HTML and Elixir (no Javascript!). <b>This page is a living demo - all examples are actually working on Drab</b>.
-  All the magic is available because of the websockets. JS side depends on jQuery. You can find a source code of this page <a href="https://github.com/grych/drab-poc">on Github</a>, and the <a href="https://github.com/grych/drab">source code of the Drab himself - here</a>.
+  Drab is written using Phoenix on Elixir, so all the code in examples is HTML and Elixir (no Javascript!). <b>This page is a living demo - all examples are actually working on the Drab server</b>.
+  You can find a source code of this page <a href="https://github.com/grych/drab-poc">on Github</a>, and the <a href="https://github.com/grych/drab">source code of the Drab himself - here</a>.
 </p>
 <p>
   In general, Drab treats the client browser as a database privider and gives the way to <code>select</code>, <code>update</code>, <code>insert</code> and <code>delete</code> objects or object attributes:
@@ -28,12 +32,12 @@ update(something, set: new_value, on: selector)/%></code></pre>
   <div class="col-md-7">
     <p>Here is the simplest example  - text input and the button. Clicking the button make input text uppercase. Awesome!</p>
     <p>
-      On the <b>client side</b> we have basic HTML with the input and the button:
+      On the <b>client side</b> we have a basic HTML with the input and the button:
 <pre><code class="html"><%=~s(<input id="text_to_uppercase" value="uppercase me">
-<button drab-click="uppercase">Do it</button>)%></code></pre>
+<button drab-event="click" drab-hander="uppercase">Do it</button>)%></code></pre>
     </p>
     <p>
-      The only thing which might be considered new is the <code>drab-click</code> attribute with "uppercase" value. What does this value mean? This is a name of the <b>function on the server side</b>, in <code>DrabPoc.PageCommander</code> module (see the code below). Clicking on the <code>&lt;button&gt;</code> <b>in the browser</b> runs <code>DrabPoc.PageCommander.uppercase/2</code> <b>on the server!</b>
+      The only thing which might be considered new is the pair of <code>drab-event</code> and <code>drab-handler</code> attributes. What do this values mean? <code>drab-event</code> is obviously a name of the event, and <code>drab-handler</code> is a name of the <b>Elixir function on the server side</b>, in <code>DrabPoc.PageCommander</code> module (see the code below). Clicking on the <code>&lt;button&gt;</code> <b>in the browser</b> runs <code>DrabPoc.PageCommander.uppercase/2</code> <b>on the server.</b>
 <pre><code class="elixir"><%=~s[defmodule DrabPoc.PageCommander do
   use Drab.Commander
   def uppercase(socket, sender) do
@@ -42,7 +46,7 @@ update(something, set: new_value, on: selector)/%></code></pre>
   end
 end]%></code></pre>
     <p>
-      How does it work? <code>Drab.Query.select(socket, :val, from: "#text_to_uppercase")</code> launches jQuery <code>$("#text_to_uppercase").val()</code> on the client side and returns it to the server. <code>List.first()</code> is used because jQuery always returns an array. Then, the returned string is converted to uppercase using <code>String.upcase</code> and passed to <code>Drab.Query.update/3</code> function, which - analogically to jQuery <code>.val(value)</code> sets the value of the input. 
+      How does it work? <code>Drab.Query.select(socket, :val, from: "#text_to_uppercase")</code> launches jQuery <code>$("#text_to_uppercase").val()</code> on the client side and returns it to the server. <code>List.first()</code> is used because jQuery always returns an array. Then, the returned string is converted to uppercase using <code>String.upcase</code> and passed to <code>Drab.Query.update/3</code> function, which - analogically to jQuery <code>.val(value)</code> - sets the value of the input. 
     </p>
   </div>
 
@@ -51,7 +55,7 @@ end]%></code></pre>
       This is a live demo. Click the button to launch <code>Drab.Controller.uppercase/2</code> on the server.
       <br><br>
       <input class="form-control" id="text_to_uppercase" value="uppercase me">
-      <button class="btn btn-primary" drab-click="uppercase">Do it</button>
+      <button class="btn btn-primary" id="uppercase_button" drab-event="click" drab-handler="uppercase">Do it</button>
     </p>
   </div>
 </div>
@@ -61,13 +65,13 @@ end]%></code></pre>
   <div class="col-md-7">
     <p>
       Let's move to some more complicated functionality. Assume having a process which is doing some stuff on the server side and we want to report back to the user after each completed step. We will use the progress bar controlled from the server. <br>
-      Client side is again very simple. Please notice the <code>drab-click</code> attribute, again. This time it will run <code>perform_long_process</code> function.
+      Client side is very simple, again. Please notice the <code>drab-handler</code> attribute - this time it will run <code>perform_long_process</code> function on the server side.
 <pre><code class="html"><%=~s[<div class="progress">
   <div class="progress-bar" role="progressbar" style="width:0%">
   </div>
 </div>
-<button drab-click="perform_long_process">Click me to start processing ...</button>]%></code></pre>
-      On the server we simulate a long processing by sleeping some random time. The interesting comes with <code>Drab.Query</code> module again: <code>Drab.Query.attr</code> retrieves (<code>/3</code>) or sets (<code>/4</code>) object attributes. In this case, we used it to set <code>style="width: XX%"</code>. The next line <code>Drab.Query.html/3</code> changes the text of the progress bar. Finally, after the loop finishes, progress bar changes its color to indicate success.
+<button drab-handler="perform_long_process" drab-event="click">Click me to start processing ...</button>]%></code></pre>
+      On the server we simulate a long processing by sleeping some random time. The interesting comes with <code>Drab.Query</code> module again: <code>Drab.Query.attr</code> retrieves (<code>/3</code>) or sets (<code>/4</code>) object attributes. In this case, we used it to set <code>style="width: XX%"</code>. The next line <code>Drab.Query.html/3</code> changes the text of the progress bar. 
 <pre><code class="elixir"><%=~S[def perform_long_process(socket, dom_sender) do
   socket |> delete(class: "progress-bar-success", from: ".progress-bar")
 
@@ -87,7 +91,7 @@ end]%></code></pre>
       Easy, huh? And <b>no need to code javascript at all</b>.
     </p>
     <p>
-      Now focus on <code>Drab.Call.alert/4</code> - the function which shows the bootstrap modal window on the browser and waits for the user input. Please notice that nothing is updated until you close the alert box. And because you can put your own form in the alert box, this is the easiest way to get the user input. Alert boxes return not only the name of the clicked button, but as well the names and values of all inputs in the modal window.
+      Now take a look on <code>Drab.Call.alert/4</code> - the function which shows the bootstrap modal window on the browser and waits for the user input. Please notice that nothing is updated until you close the alert box. And because you can put your own form in the alert box, this is the easiest way to get the user input. Alert boxes return not only the name of the clicked button, but as well the names and values of all inputs in the modal window.
     </p>
   </div>
 
@@ -105,10 +109,10 @@ end]%></code></pre>
   <h4>Tens of Tasks Running in Parallel on the Server and Communicating Back to the Browser</h4>
   <div class="col-md-7">
     <p>
-      In the next example we will emulate long running server process composed of a number of Tasks, which can be run asynchronously. We want to run it in parallel, change their status when they finish the job and - when all of them are finished - change the status of the whole process.
+      In the next example we will emulate long running server Process composed of a number of Tasks, which can be run asynchronously. We want to run it in parallel, change their status when they finish the job and - when all of them are done - change the status of the whole process.
     </p>
     <p>
-      HTML side contains button with <code>drab-click</code> attribute and few DIVs which displays the status of the process and tasks:
+      HTML side contains button and few DIVs which displays the status of the process and tasks:
 <pre><code class="html"><%=~s(Async task status: 
 <span id="async_task_status" class="label label-primary">
   ready
@@ -117,6 +121,7 @@ end]%></code></pre>
   ...
 <span class="task label label-danger" data-task_id="54">Task 54</span>
 <button drab-click="run_async_tasks">Start async task</button>)%></code></pre>
+    Did you notice <code>drab-click</code> attribute? This is a shorthand for <code>drab-event</code> and <code>drab-handler</code> combination. There is a number of such shorthands for most popular events, see documentation for more.
     </p>
     <p>
       The whole processing is on the server side. Clicking the button runs <code>run_async_tasks/2</code> function on the server side:
@@ -135,10 +140,10 @@ end]%></code></pre>
     set: "finished",
     on: "#async_task_status")
 end/%></code></pre>
-    The code above runs asynchronously 54 Tasks, which just waits some time (up to 4 seconds) and then communicates to the user by changing the boostrap class from <code>label-danger</code> to <code>label-success</code>. After launching he background tasks, it waits (<code>Task.await/1</code>) for all of the tasks to finish and then informs the user by changing the Task status to "finished".
+    The code above runs asynchronously 54 Tasks, which just wait some time (up to 4 seconds) and then communicate to the user by changing the boostrap class from <code>label-danger</code> to <code>label-success</code>. After launching the background tasks, it waits (<code>Task.await/1</code>) for all of the tasks to finish and then informs the user by changing the Task status to "finished".
     </p>
     <p>
-      You may think: <b>what is the difference between this approach and running 54 AJAX requests which launches action on the controller side?</b> Except of <code>Drab</code> natural beauty, you can't do it with AJAX. You browser <a href="http://www.stevesouders.com/blog/2008/03/20/roundup-on-parallel-connections/">limits the number of simultaneus connections</a>.
+      You may think: <b>what is the difference between this approach and running 54 AJAX requests which launches action on the controller side?</b> Well, except of <code>Drab</code> natural beauty, you can't do it with AJAX. You browser <a href="http://www.stevesouders.com/blog/2008/03/20/roundup-on-parallel-connections/">limits the number of simultaneus connections</a>.
     </p>
   </div>
   <div class="col-md-5">
@@ -174,7 +179,7 @@ end/%></code></pre>
   :timer.sleep(dom_sender["data"]["sleep"] * 1000)
   socket |> update(class: "btn-danger", set: "btn-primary", on: this(dom_sender))
 end/%></code></pre>
-      With this example we introduce <code>this/1</code> function, which allows you to operate on the DOM object in similar way as with <code>$(this)</code>. This is a way to use one event handle for multiple object.
+      With this example we introduce <code>this/1</code> function, which allows you to operate on the DOM object in similar way as with <code>$(this)</code> in JS. This is a way to use one event handler for multiple objects.
     </p>
     <p>
       Observe that when one button is "processing", you can click another one. This is because <strong>Drab requests are asynchronous on the server side</strong>. And this is a reason why buttons are disabled by default while processing - it is blocking the user from running the same action for few times. You may override this behaviour in `config.exs` with:
@@ -211,7 +216,8 @@ end/%></code></pre>
 end/%></code></pre>
     </p>
     <p>
-      Did you notice the <code>update!/2</code> (with bang!) function? This one works exactly like <code>update/2</code>, but it <strong>broadcasts to all the browsers</strong> on which the current page is opened. Take a look on <a href="/drab/docs">docs</a> to learn more.
+      Did you notice the <code>update!/2</code> (with bang!) function? This one works exactly like <code>update/2</code>, but it <strong>broadcasts to all the browsers</strong> on which the current page is opened. Open another browser window or even another browser and observe what is going on when you type in this input.
+      <br> Take a look on <a href="/drab/docs">docs</a> to learn more.
     </p>
   </div>
   <div class="col-md-5">

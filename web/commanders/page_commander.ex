@@ -10,6 +10,7 @@ defmodule DrabPoc.PageCommander do
     {:ok, updated} = socket |> update(:val, set: String.upcase(t), on: "#text_to_uppercase")
     Logger.debug("****** UPDATED: #{inspect(updated)}")
     Logger.debug("****** SOCKET:  #{inspect(socket)}")
+    Logger.debug("****** DOM_SENDER: #{inspect(dom_sender)}")
     {socket, dom_sender}
   end
 
@@ -29,6 +30,7 @@ defmodule DrabPoc.PageCommander do
       {:cancel, _} -> {socket, dom_sender}
     end
 
+    {socket, dom_sender}
   end
 
   def run_async_tasks(socket, dom_sender) do
