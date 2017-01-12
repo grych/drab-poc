@@ -1,0 +1,1 @@
+<button id="_drab_modal_button_unspecified" name="unspecified" type="button" class="btn btn-default drab-modal-button" data-dismiss="modal"><%= label %></button>

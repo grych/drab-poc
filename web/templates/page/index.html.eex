@@ -71,21 +71,24 @@ end]%></code></pre>
   </div>
 </div>
 <button drab-handler="perform_long_process" drab-event="click">Click me to start processing ...</button>]%></code></pre>
-      On the server we simulate a long processing by sleeping some random time. The interesting comes with <code>Drab.Query</code> module again: <code>Drab.Query.attr</code> retrieves (<code>/3</code>) or sets (<code>/4</code>) object attributes. In this case, we used it to set <code>style="width: XX%"</code>. The next line <code>Drab.Query.html/3</code> changes the text of the progress bar. 
+      On the server we simulate a long processing by sleeping some random time. After the nap, <code>update/3</code> sets the <code>"style"</code> attribute of the <code>progress-bar</code> to <code>width: XX%</code> and then, the html of the progress bar node to <code>"XX%"</code>. We keep it doing it until it reaches 100%, then we <code>insert(class: "progress-bar-success", into: ".progress-bar")</code>. Lets repeat this code in English: <strong>insert</strong> the <strong>class</strong> <em>progress-bar-success</em> <strong>into</strong> the <em>.progress-bar</em> selector. This is why I prefer the pipe syntax - Drab functions are more readable with it.
+      <br>
+      Notice that updates can be stacked, because all Drab setter functions return <code>socket</code>.
 <pre><code class="elixir"><%=~S[def perform_long_process(socket, dom_sender) do
   socket |> delete(class: "progress-bar-success", from: ".progress-bar")
 
   steps = :rand.uniform(100)
   for i <- 1..steps do
     :timer.sleep(:rand.uniform(500)) # simulate real work
-    socket |> update(attr: "style", set: "width: #{i * 100 / steps}%", on: ".progress-bar")
-    socket |> update(:html, set: "#{Float.round(i * 100 / steps, 2)}%", on: ".progress-bar")
+    socket  
+      |> update(attr: "style", set: "width: #{i * 100 / steps}%", on: ".progress-bar")
+      |> update(:html, set: "#{Float.round(i * 100 / steps, 2)}%", on: ".progress-bar")
   end
   socket |> insert(class: "progress-bar-success", into: ".progress-bar")
 
   case socket |> alert("Finished!", "Do you want to retry?", ok: "Yes", cancel: "No!") do
     {:ok, _}     -> perform_long_process(socket, dom_sender)
-    {:cancel, _} -> {socket, dom_sender}
+    {:cancel, _} -> :do_nothin
   end
 end]%></code></pre>
       Easy, huh? And <b>no need to code javascript at all</b>.
@@ -126,8 +129,9 @@ end]%></code></pre>
     <p>
       The whole processing is on the server side. Clicking the button runs <code>run_async_tasks/2</code> function on the server side:
 <pre><code class="elixir"><%=~s/def run_async_tasks(socket, dom_sender) do
-  socket |> update(class: "label-success", set: "label-danger", on: ".task")
-  socket |> update(:text, set: "running", on: "#async_task_status")
+  socket 
+    |> update(class: "label-success", set: "label-danger", on: ".task")
+    |> update(:text, set: "running", on: "#async_task_status")
 
   tasks = Enum.map(1..54, fn(i) -> Task.async(fn -> 
     :timer.sleep(:rand.uniform(4000)) # simulate real work
@@ -203,7 +207,9 @@ end/%></code></pre>
 <pre><code class="elixir"><%=~s/defmodule DrabPoc.PageCommander do
   use Drab.Commander, onload: :page_loaded
   def page_loaded(socket) do
-    socket |> update(:html, set: "Value set on the server side", on: "#display_placeholder")
+    socket 
+    |> update(:html, set: "Value set on the server side", on: "#display_placeholder")
+    |> console("Launched onload callback")
   end
 end/%></code></pre>
     </p>

@@ -7,13 +7,10 @@ defmodule DrabPoc.PageCommander do
   # Drab Events
   def uppercase(socket, dom_sender) do
     t = socket |> select(:val, from: "#text_to_uppercase") |> List.first()
-    {:ok, updated} = socket |> update(:val, set: String.upcase(t), on: "#text_to_uppercase")
-    Logger.debug("****** UPDATED: #{inspect(updated)}")
+    socket |> update(:val, set: String.upcase(t), on: "#text_to_uppercase")
     Logger.debug("****** SOCKET:  #{inspect(socket)}")
     Logger.debug("****** DOM_SENDER: #{inspect(dom_sender)}")
     socket |> console("Hey, this is PageCommander from the server side!")
-
-    {socket, dom_sender}
   end
 
   def perform_long_process(socket, dom_sender) do
@@ -22,23 +19,21 @@ defmodule DrabPoc.PageCommander do
     steps = :rand.uniform(100)
     for i <- 1..steps do
       :timer.sleep(:rand.uniform(500)) # simulate real work
-      socket |> update(attr: "style", set: "width: #{i * 100 / steps}%", on: ".progress-bar")
-      socket |> update(:html, set: "#{Float.round(i * 100 / steps, 2)}%", on: ".progress-bar")
+      socket 
+        |> update(attr: "style", set: "width: #{i * 100 / steps}%", on: ".progress-bar")
+        |> update(:html, set: "#{Float.round(i * 100 / steps, 2)}%", on: ".progress-bar")
     end
     socket |> insert(class: "progress-bar-success", into: ".progress-bar")
 
-    case socket |> alert("Finished!", "Do you want to retry?", ok: "Yes", cancel: "No!") do
+    case socket |> alert("Finished!", "Do you want to retry?", buttons: [ok: "Yes", cancel: "No!"]) do
       {:ok, _} -> perform_long_process(socket, dom_sender)
-      {:cancel, _} -> {socket, dom_sender}
+      {:cancel, _} -> :do_nothing
     end
-
-    {socket, dom_sender}
   end
 
-  def run_async_tasks(socket, dom_sender) do
+  def run_async_tasks(socket, _dom_sender) do
     socket 
       |> update(class: "label-success", set: "label-danger", on: ".task")
-    socket 
       |> update(:text, set: "running", on: "#async_task_status")
 
     {_, begin_at_sec, begin_at_micsec } = :os.timestamp
@@ -53,8 +48,6 @@ defmodule DrabPoc.PageCommander do
     socket |> update(:html, set: 
       "finished in #{((end_at_sec - begin_at_sec)*1000_000 + (end_at_micsec - begin_at_micsec))/1000_000} seconds",
       on: "#async_task_status")
-
-    {socket, dom_sender}
   end
 
   def clicked_sleep_button(socket, dom_sender) do
@@ -69,7 +62,8 @@ defmodule DrabPoc.PageCommander do
 
   # Drab Callbacks
   def page_loaded(socket) do
-    socket |> update(:html, set: "Value set on the server side", on: "#display_placeholder")
-    socket
+    socket 
+    |> update(:html, set: "Value set on the server side", on: "#display_placeholder")
+    |> console("Launched onload callback")
   end
 end

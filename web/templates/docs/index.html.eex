@@ -116,12 +116,39 @@
   <h4>alert/4</h4>
   <div class="col-md-6">
     <p>
-      <%= funcdoc(Drab.Call, {:alert, 5}) |> raw %>
+      <%= funcdoc(Drab.Call, {:alert, 4}) |> raw %>
     </p>
   </div>
   <div class="col-md-6">
     <button drab-click="a_1_click" class="btn btn-primary">alert("Title", "Just a message")</button><br><br>
     <button drab-click="a_2_click" class="btn btn-primary">alert("Message", "What is the answer?", ok: "42", cancel: "Don't know")</button><br><br>
-    <button drab-click="a_3_click" class="btn btn-primary">alert("Your name?", "&lt;input name='name'&gt;", ok: "OK", cancel: "Forgot")</button>
+    <button drab-click="a_3_click" class="btn btn-primary">alert("Your name?", "&lt;input name='name'&gt;", ok: "A juści", cancel: "Poniechaj")</button><br><br>
+    <button drab-click="a_4_click" class="btn btn-primary">alert(..., ..., buttons: [ok: "Yes", cancel: "No", unspecified: "Not sure"])</button><br><br>
+    <button drab-click="a_5_click" class="btn btn-primary">alert("Timeout", "I will disapear in a few seconds", timeout: 5)</button><br><br>
+
   </div>
 </div>
+
+<h3 class="centered">Drab.Controller</h3>
+<p>
+  <%= moduledoc(Drab.Controller) |> raw %>
+</p>
+<hr>
+
+<h3 class="centered">Drab.Commander</h3>
+<p>
+  <%= moduledoc(Drab.Commander) |> raw %>
+</p>
+<hr>
+
+<h3 class="centered">Drab.Client</h3>
+<p>
+  <%= moduledoc(Drab.Client) |> raw %>
+</p>
+<hr>
+
+<h3 class="centered">Mix.Tasks.Drab.Gen.Commander</h3>
+<p>
+  <%= moduledoc(Mix.Tasks.Drab.Gen.Commander) |> raw %>
+</p>
+
