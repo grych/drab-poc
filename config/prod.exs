@@ -18,8 +18,12 @@ config :drab_poc, DrabPoc.Endpoint,
   cache_static_manifest: "priv/static/manifest.json"
 
 # Do not print debug messages in production
-config :logger, level: :info
-
+# config :logger, level: :info
+config :logger, backends: [{LoggerFileBackend, :log}]
+config :logger, :log,
+  path: "logs/drab_poc.log",
+  level: :debug
+  
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key
