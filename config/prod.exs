@@ -22,8 +22,8 @@ config :drab_poc, DrabPoc.Endpoint,
 config :logger, backends: [{LoggerFileBackend, :log}]
 config :logger, :log,
   path: "logs/drab_poc.log",
-  level: :debug
-  
+  level: :info
+
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key
