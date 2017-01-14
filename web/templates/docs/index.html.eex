@@ -46,7 +46,7 @@
   <div class="col-md-6">
     <span id="qu_1_span" class="small-border">span with <b>some</b> text</span><br><br>
     <button drab-click="qu_1_click" class="btn btn-primary">update(:text, set: "new &lt;u&gttext&lt;/u&gt;", on: "#qu_1_span")</button><br><br>
-    <button drab-click="qu_2_click" class="btn btn-primary">update(:text, set: "new &lt;u&gthtml&lt;/u&gt;", on: "#qu_1_span")</button><br><br>
+    <button drab-click="qu_2_click" class="btn btn-primary">update(:html, set: "new &lt;u&gthtml&lt;/u&gt;", on: "#qu_1_span")</button><br><br>
     <button drab-click="qu_3_click" class="btn btn-primary">update(attr: "style", set: "font-family: monospace", on: "#qu_1_span")</button><br><br>
     <button drab-click="qu_4_click" class="btn btn-primary">update(class: "btn-primary", set: "btn-danger", on: this(dom_sender))</button><br><br>
     <button drab-click="qu_5_click" class="btn btn-primary">update(css: "border", set: "3 px solid red", on: this(dom_sender))</button><br><br>
