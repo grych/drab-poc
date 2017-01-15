@@ -236,10 +236,8 @@ end/%></code></pre>
 <hr>
 <h3>Links</h3>
 <p>
+  <h3><a href="/drab/docs">Documentation with more examples</a></h3>
   <ul>
-    <li>
-      <h3><a href="/drab/docs">Documentation with more examples</a></h3>
-    </li>
     <li><a href="https://github.com/grych/drab">Drab source</a></li>
     <li><a href="https://github.com/grych/drab-poc">This page source</a></li>
   </ul>
