@@ -71,7 +71,7 @@ end]%></code></pre>
   </div>
 </div>
 <button drab-handler="perform_long_process" drab-event="click">Click me to start processing ...</button>]%></code></pre>
-      On the server we simulate a long processing by sleeping some random time. After the nap, <code>update/3</code> sets the <code>"style"</code> attribute of the <code>progress-bar</code> to <code>width: XX%</code> and then, the html of the progress bar node to <code>"XX%"</code>. We keep it doing it until it reaches 100%, then we <code>insert(class: "progress-bar-success", into: ".progress-bar")</code>. Lets repeat this code in English: <strong>insert</strong> the <strong>class</strong> <em>progress-bar-success</em> <strong>into</strong> the <em>.progress-bar</em> selector. This is why I prefer the pipe syntax - Drab functions are more readable with it.
+      On the server we simulate a long processing by sleeping some random time. After the nap, <code>update/3</code> sets the <code>css("width")</code> of the <code>progress-bar</code> to <code>XX%</code> and then, the html of the progress bar node to <code>"XX%"</code>. We keep it doing it until it reaches 100%, then we <code>insert(class: "progress-bar-success", into: ".progress-bar")</code>. Lets repeat this code in English: <strong>insert</strong> the <strong>class</strong> <em>progress-bar-success</em> <strong>into</strong> the <em>.progress-bar</em> selector. This is why I prefer the pipe syntax - Drab functions are more readable with it.
       <br>
       Notice that updates can be stacked, because all Drab setter functions return <code>socket</code>.
 <pre><code class="elixir"><%=~S[def perform_long_process(socket, dom_sender) do
@@ -81,7 +81,7 @@ end]%></code></pre>
   for i <- 1..steps do
     :timer.sleep(:rand.uniform(500)) # simulate real work
     socket  
-      |> update(attr: "style", set: "width: #{i * 100 / steps}%", on: ".progress-bar")
+      |> update(css: "width", set: "#{i * 100 / steps}%", on: ".progress-bar")
       |> update(:html, set: "#{Float.round(i * 100 / steps, 2)}%", on: ".progress-bar")
   end
   socket |> insert(class: "progress-bar-success", into: ".progress-bar")

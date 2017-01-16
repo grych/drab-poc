@@ -29,8 +29,14 @@
     <br>
     <button drab-click="qs_3_click" class="btn btn-primary">select(attr: "class", from: ".qs_2")</button>
     <pre id="qs_3_out"> </pre>
+    <button drab-click="qs_7_click" class="btn btn-primary">select(:classes, from: ".qs_2")</button>
+    <pre id="qs_7_out"> </pre>
     <button drab-click="qs_4_click" class="btn btn-primary">select(css: "font", from: ".qs_2")</button>
     <pre id="qs_4_out"> </pre>
+    <button drab-click="qs_5_click" class="btn btn-primary">select(:position, from: ".qs_2")</button>
+    <pre id="qs_5_out"> </pre>
+    <button drab-click="qs_6_click" class="btn btn-primary">select(:innerWidth, from: ".qs_2")</button>
+    <pre id="qs_6_out"> </pre>
     <br>
   </div>
 </div>
@@ -50,6 +56,12 @@
     <button drab-click="qu_3_click" class="btn btn-primary">update(attr: "style", set: "font-family: monospace", on: "#qu_1_span")</button><br><br>
     <button drab-click="qu_4_click" class="btn btn-primary">update(class: "btn-primary", set: "btn-danger", on: this(dom_sender))</button><br><br>
     <button drab-click="qu_5_click" class="btn btn-primary">update(css: "border", set: "3 px solid red", on: this(dom_sender))</button><br><br>
+    <button drab-click="qu_6_click" class="btn btn-primary">update(:height, set: "66px", on: this(dom_sender))</button><br><br>
+    <button drab-click="qu_7_click" class="btn btn-primary">update(:text, set: ["One", "Two", "Three"], on: this(dom_sender))</button><br><br>
+    <button drab-click="qu_8_click" class="btn btn-primary">update(css: "font-size", set: ["8px", "10px", "12px, "14px"], on: this(dom_sender))</button><br><br>
+    <button drab-click="qu_9_click" class="btn">update(:class, set: ["btn-warning", "btn-primary", "btn-danger"], on: this(dom_sender))</button><br><br>
+    <button drab-click="qu_10_click" class="btn">update(:class, toggle: "btn-primary", on: this(dom_sender))</button><br><br>
+
 
   </div>
 </div>
@@ -101,6 +113,8 @@
   <div class="col-md-6">
     <input type="text" id="qe_1_text" value="text input">
     <button drab-click="qe_1_click" class="btn btn-primary">execute(:focus, on: "#qe_1_text")</button>
+    <br><br>
+    <button drab-click="qe_2_click" class="btn btn-primary">execute(:toggle, on: "#qe_1_text")</button>
     <br><br>
   </div>
 </div>

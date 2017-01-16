@@ -24,6 +24,21 @@ defmodule DrabPoc.DocsCommander do
     socket |> update(:text, set: css, on: "#qs_4_out")
   end
 
+  def qs_5_click(socket, _dom_sender) do
+    position = socket |> select(:position, from: ".qs_2") |> inspect
+    socket |> update(:text, set: position, on: "#qs_5_out")
+  end
+
+  def qs_6_click(socket, _dom_sender) do
+    w = socket |> select(:innerWidth, from: ".qs_2") |> inspect
+    socket |> update(:text, set: w, on: "#qs_6_out")
+  end
+
+  def qs_7_click(socket, _dom_sender) do
+    c = socket |> select(:classes, from: ".qs_2") |> inspect
+    socket |> update(:text, set: c, on: "#qs_7_out")
+  end
+
   def qu_1_click(socket, _dom_sender) do
     socket |> update(:text, set: "new <u>text</u>", on: "#qu_1_span")
   end
@@ -42,6 +57,26 @@ defmodule DrabPoc.DocsCommander do
   
   def qu_5_click(socket, dom_sender) do
     socket |> update(css: "border", set: "3px solid red", on: this(dom_sender))
+  end
+
+  def qu_6_click(socket, dom_sender) do
+    socket |> update(:height, set: "66px", on: this(dom_sender))
+  end
+
+  def qu_7_click(socket, dom_sender) do
+    socket |> update(:text, set: ["One", "Two", "Three"], on: this(dom_sender))
+  end
+
+  def qu_8_click(socket, dom_sender) do
+    socket |> update(css: "font-size", set: ["8px", "10px", "12px", "14px"], on: this(dom_sender))
+  end
+
+  def qu_9_click(socket, dom_sender) do
+    socket |> update(:class, set: ["btn-warning", "btn-primary", "btn-danger"], on: this(dom_sender))
+  end
+
+  def qu_10_click(socket, dom_sender) do
+    socket |> update(:class, toggle: "btn-primary", on: this(dom_sender))
   end
 
   def qi_1_click(socket, _dom_sender) do
@@ -75,6 +110,10 @@ defmodule DrabPoc.DocsCommander do
 
   def qe_1_click(socket, _dom_sender) do
     socket |> execute(:focus, on: "#qe_1_text")
+  end
+
+  def qe_2_click(socket, dom_sender) do
+    socket |> execute(:toggle, on: "#qe_1_text")
   end
 
   def a_1_click(socket, _dom_sender) do

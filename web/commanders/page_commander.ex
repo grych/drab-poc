@@ -20,7 +20,7 @@ defmodule DrabPoc.PageCommander do
     for i <- 1..steps do
       :timer.sleep(:rand.uniform(500)) # simulate real work
       socket 
-        |> update(attr: "style", set: "width: #{i * 100 / steps}%", on: ".progress-bar")
+        |> update(css: "width", set: "#{i * 100 / steps}%", on: ".progress-bar")
         |> update(:html, set: "#{Float.round(i * 100 / steps, 2)}%", on: ".progress-bar")
     end
     socket |> insert(class: "progress-bar-success", into: ".progress-bar")
