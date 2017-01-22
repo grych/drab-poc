@@ -1,0 +1,8 @@
+<h3 class="centered">Drab - Access the User Interface from the Server Side</h3>
+<h4 class="centered">
+  A Page with Drab.Core only
+</h3>
+
+<button onclick="Drab.launch_event('click', 'clicked', {click: 'clickety-click'});">
+  onclick="Drab.launch_event('click', 'clicked', {click: 'clickety-click'})"
+</button>
