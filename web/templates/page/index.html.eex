@@ -94,7 +94,7 @@ end]%></code></pre>
       Easy, huh? And <b>no need to code javascript at all</b>.
     </p>
     <p>
-      Now take a look on <code>Drab.Call.alert/4</code> - the function which shows the bootstrap modal window on the browser and waits for the user input. Please notice that nothing is updated until you close the alert box. And because you can put your own form in the alert box, this is the easiest way to get the user input. Alert boxes return not only the name of the clicked button, but as well the names and values of all inputs in the modal window.
+      Now take a look on <code>Drab.Modal.alert/4</code> - the function which shows the bootstrap modal window on the browser and waits for the user input. Please notice that nothing is updated until you close the alert box. And because you can put your own form in the alert box, this is the easiest way to get the user input. Alert boxes return not only the name of the clicked button, but as well the names and values of all inputs in the modal window.
     </p>
   </div>
 

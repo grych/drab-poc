@@ -120,9 +120,9 @@
 </div>
 <hr>
 
-<h3 class="centered">Drab.Call</h3>
+<h3 class="centered">Drab.Modal</h3>
 <p>
-  <%= moduledoc(Drab.Call) |> raw %>
+  <%= moduledoc(Drab.Modal) |> raw %>
 </p>
 <hr>
 
@@ -130,7 +130,7 @@
   <h4>alert/4</h4>
   <div class="col-md-6">
     <p>
-      <%= funcdoc(Drab.Call, {:alert, 4}) |> raw %>
+      <%= funcdoc(Drab.Modal, {:alert, 4}) |> raw %>
     </p>
   </div>
   <div class="col-md-6">

@@ -112,7 +112,7 @@ defmodule DrabPoc.DocsCommander do
     socket |> execute(:focus, on: "#qe_1_text")
   end
 
-  def qe_2_click(socket, dom_sender) do
+  def qe_2_click(socket, _dom_sender) do
     socket |> execute(:toggle, on: "#qe_1_text")
   end
 
