@@ -1,4 +1,4 @@
-<h3 class="centered">Drab - Access the User Interface from the Server Side</h3>
+<h3 class="centered">Drab - Access the User Interface in browser from the Server Side</h3>
 <h4 class="centered">
   The jQuery in Elixir
 </h3>
@@ -236,6 +236,7 @@ end/%></code></pre>
 <hr>
 <h3>Links</h3>
 <p>
+  <h3><a href="/drab/nojquery">Drab without DOM, for react lovers</a></h3>
   <h3><a href="/drab/docs">Documentation with more examples</a></h3>
   <ul>
     <li><a href="https://github.com/grych/drab">Drab source</a></li>

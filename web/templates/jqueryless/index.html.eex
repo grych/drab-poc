@@ -3,6 +3,33 @@
   A Page with Drab.Core only
 </h3>
 
+<p>
+  By default, Drab uses DOM tree and jQuery for accessing the User Interface. But it is not required! You don't have to use all the jQuery-dependent modules. The only required module is <code>Drab.Core</code>, which contains basic communication functions to launch the javascript from the server side (<code>execjs</code> and <code>broadcastjs</code>) and few more. <br>
+  To enable/disable Drab Modules, use <code>modules</code> option in <code>use Drab.Commander</code> directive.
+<pre><code class="elixir">defmodule DrabPoc.JquerylessCommander do
+  use Drab.Commander, onload: :page_loaded, modules: [] # only default Drab.Core
+
+  def page_loaded(socket) do
+    socket |> execjs("console.log('Alert from the other side!');")
+  end
+
+  def clicked(socket, payload) do
+    socket |> console("You've sent me this: #{payload |> inspect}")
+  end
+end</code></pre>
+Module <code>Drab.Core</code> is always loaded. By default, modules <code>[Drab.Query, Drab.Modal]</code> are enabled. To disable them, use an empty list, like in the example above.
+</p>
+<p>
+  Module <code>Drab.core</code> also adds to the client side JS the basic method for launching the Elixir functions located in the Commander. This is <code>Drab.launch_event(event_name, function_name, arguments_map)</code>:
+<pre><code class='html'>&lt;button onclick="Drab.launch_event('click', 'clicked', {click: 'clickety-click'});"&gt;
+  onclick="Drab.launch_event('click', 'clicked', {click: 'clickety-click'})"
+&lt;/button&gt;
+</code></pre>
+</p>
+<p>
+Here is the live example of this code (open JS console to see the result): <br>
 <button onclick="Drab.launch_event('click', 'clicked', {click: 'clickety-click'});">
   onclick="Drab.launch_event('click', 'clicked', {click: 'clickety-click'})"
 </button>
+</p>
+  <h3><a href="/drab">Back to Drab</a></h3>

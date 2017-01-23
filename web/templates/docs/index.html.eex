@@ -142,6 +142,13 @@
 
   </div>
 </div>
+<hr>
+
+<h3 class="centered">Drab.Core</h3>
+<p>
+  <%= moduledoc(Drab.Core) |> raw %>
+</p>
+<hr>
 
 <h3 class="centered">Drab.Controller</h3>
 <p>

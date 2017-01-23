@@ -2,7 +2,7 @@ defmodule DrabPoc.PageCommander do
   require IEx
   require Logger
 
-  use Drab.Commander, onload: :page_loaded, modules: [:query, :modal]
+  use Drab.Commander, onload: :page_loaded, modules: [Drab.Query, Drab.Modal]
 
   # Drab Events
   def uppercase(socket, dom_sender) do
