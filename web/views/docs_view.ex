@@ -3,7 +3,7 @@ defmodule DrabPoc.DocsView do
 
   def moduledoc(module) do
     {_line, md} = Code.get_docs(module, :moduledoc)
-    Earmark.to_html(md, %Earmark.Options{code_class_prefix: "elixir"})
+    "<a name=#{inspect(module)}></a>#{Earmark.to_html(md, %Earmark.Options{code_class_prefix: "elixir"})}"
   end
 
   # function - a tuple of {funcion_name, arity}
