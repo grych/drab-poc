@@ -276,14 +276,14 @@ end/%></code></pre>
     Although Drab Session is a different entity than Plug Session (used in Controllers), it can inherit values from it by specify the keys to import in <code>use Drab.Commander inherit_session: []</code> clause. It is the way to manage user IDs, etc. <br>
     To show an example, we've put the key <code>:drab_test</code> to the Plug Session while rendering this page by the Controller:
     <pre><code class="elixir"><%=~S/defmodule DrabPoc.PageController do
-use DrabPoc.Web, :controller
-use Drab.Controller
+  use DrabPoc.Web, :controller
+  use Drab.Controller
 
-def index(conn, _params) do
-  conn = put_session(conn, :drab_test, "test string in Plug Session, set in the Controller")
-  render conn, "index.html"
-end
-/%></code></pre>
+  def index(conn, _params) do
+    conn = put_session(conn, :drab_test, "test string in Plug Session, set in the Controller")
+    render conn, "index.html"
+  end
+end/%></code></pre>
     To use it in the Commander, we need to explicitly import this tuple by inheriting it in the <code>PageCommander</code>:
 <pre><code class="elixir"><%=~S/defmodule DrabPoc.PageCommander do
 use Drab.Commander, 
@@ -294,8 +294,7 @@ use Drab.Commander,
     socket 
     |> update(:val, set: get_session(socket, :drab_test),on: "#show_session_test")
   end
-end
-/%></code></pre>
+end/%></code></pre>
     Notice that it works in the one-way only, you can't update the Plug Session from the Commander.
     </p>
   </div>
