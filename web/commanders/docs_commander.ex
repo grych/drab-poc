@@ -118,6 +118,7 @@ defmodule DrabPoc.DocsCommander do
 
   def a_1_click(socket, _dom_sender) do
     socket |> alert("Title", "Just a message")
+    socket
   end
 
   def a_2_click(socket, dom_sender) do
@@ -144,6 +145,28 @@ defmodule DrabPoc.DocsCommander do
   def a_5_click(socket, dom_sender) do
     {button, _} = socket |> alert("Timeout", "I will disapear in a few seconds", timeout: 5)
     socket |> update(:text, set: "clicked #{button} button", on: this(dom_sender))
+  end
+
+  def c_1_click(socket, dom_sender) do
+    ret = socket |> execjs("2 + 2")
+    socket |> update(:text, set: "Return value: #{ret}.", on: this(dom_sender))
+  end
+
+  def c_2_click(socket, _dom_sender) do
+    socket |> execjs("alert('Do you like alerts?')")
+  end
+
+  def c_3_click(socket, _dom_sender) do
+    socket |> broadcastjs("console.log('message to all')")
+  end
+
+  def c_4_click(socket, _dom_sender) do
+    socket |> put_session(:counter, get_session(socket, :counter, 0) + 1)
+  end
+
+  def c_5_click(socket, dom_sender) do
+    counter = get_session(socket, :counter)
+    socket |> update(:text, set: "get_session(:counter) returns: #{inspect(counter)}", on: this(dom_sender))
   end
 
 

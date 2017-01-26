@@ -2,7 +2,10 @@ defmodule DrabPoc.PageCommander do
   require IEx
   require Logger
 
-  use Drab.Commander, onload: :page_loaded, modules: [Drab.Query, Drab.Modal]
+  use Drab.Commander, 
+    onload: :page_loaded, 
+    modules: [Drab.Query, Drab.Modal],
+    inherit_session: [:drab_test]
 
   # Drab Events
   def uppercase(socket, dom_sender) do
@@ -29,6 +32,8 @@ defmodule DrabPoc.PageCommander do
       {:ok, _} -> perform_long_process(socket, dom_sender)
       {:cancel, _} -> :do_nothing
     end
+
+    socket
   end
 
   def run_async_tasks(socket, _dom_sender) do
@@ -60,10 +65,22 @@ defmodule DrabPoc.PageCommander do
     socket |> update!(:text, set: String.upcase(dom_sender["val"]),  on: "#display_placeholder")
   end
 
+  def increase_counter(socket, _dom_sender) do
+    counter = get_session(socket, :counter) || 0
+    put_session(socket, :counter, counter + 1)
+  end
+
+  def show_counter(socket, _dom_sender) do
+    counter = get_session(socket, :counter)
+    socket |> alert("Counter", "Counter value: #{counter}")
+    socket
+  end
+
   # Drab Callbacks
   def page_loaded(socket) do
     socket 
     |> update(:html, set: "Value set on the server side", on: "#display_placeholder")
     |> console("Launched onload callback")
+    |> update(:val, set: get_session(socket, :drab_test),on: "#show_session_test")
   end
 end

@@ -47,6 +47,8 @@ update(something, set: new_value, on: selector)/%></code></pre>
 end]%></code></pre>
     <p>
       How does it work? <code>Drab.Query.select(socket, :val, from: "#text_to_uppercase")</code> launches jQuery <code>$("#text_to_uppercase").val()</code> on the client side and returns it to the server. <code>List.first()</code> is used because jQuery always returns an array. Then, the returned string is converted to uppercase using <code>String.upcase</code> and passed to <code>Drab.Query.update/3</code> function, which - analogically to jQuery <code>.val(value)</code> - sets the value of the input. 
+    <br>
+      Drab Handler should always return <code>socket</code>.
     </p>
   </div>
 
@@ -88,8 +90,10 @@ end]%></code></pre>
 
   case socket |> alert("Finished!", "Do you want to retry?", ok: "Yes", cancel: "No!") do
     {:ok, _}     -> perform_long_process(socket, dom_sender)
-    {:cancel, _} -> :do_nothin
+    {:cancel, _} -> :do_nothing
   end
+
+  socket
 end]%></code></pre>
       Easy, huh? And <b>no need to code javascript at all</b>.
     </p>
@@ -203,7 +207,7 @@ end/%></code></pre>
   <h4>Page Load and Some More Events</h4>
   <div class="col-md-7">
     <p>
-      Analogically to <code>page load</code> Javascript event, it is possible to run a callback after the client page is loaded (<em>so far it is running every time the websockets connect, so it should be called "onconnect"</em>). Do do it, we need to declare and write a function:
+      Analogically to <code>page load</code> Javascript event, it is possible to run a callback after the client page is loaded (<em>so far it is running every time the websockets connect, so it should be called "onconnect"</em>).
 <pre><code class="elixir"><%=~s/defmodule DrabPoc.PageCommander do
   use Drab.Commander, onload: :page_loaded
   def page_loaded(socket) do
@@ -227,12 +231,85 @@ end/%></code></pre>
   </div>
   <div class="col-md-5">
     <p>
-      Start typing down there:
+      Start typing down here:
       <input drab-keyup="changed_input" class="form-control">
-      <div id="display_placeholder">Some text here</div>
+      <div id="display_placeholder"></div>
     </p>
   </div>
 </div>
+<hr>
+
+<div class="row">
+  <h4>Drab Session store</h4>
+  <div class="col-md-12">
+    <p>
+      Analogically to Plug, Drab can store the values in its own session. You have two commands, <code>put_session/3</code> and <code>get_session/2</code> to archive it. They works exactly the same as a "normal", Phoenix session, except:
+      <ul>
+        <li>Drab Session is not persist; it is there only on the Drab Page lifecycle - after leaving the page or reload it is gone forever</li>
+        <li>Drab Session is not the Plug Session! This is a different entity. Anyway you can easly inherity specific values from the grown boys Session - details below</li>
+        <li>Drab Session is stored on the client side and it is signed but - as the Plug Session cookie - not ciphered</li>
+      </ul>
+    </p>
+  </div>
+  <div class="col-md-7">
+    <p><pre><code class="elixir"><%=~S/def increase_counter(socket, _dom_sender) do
+  counter = get_session(socket, :counter) || 0
+  put_session(socket, :counter, counter + 1)
+end
+
+def show_counter(socket, _dom_sender) do
+  counter = get_session(socket, :counter)
+  socket |> alert("Counter", "Counter value: #{counter}")
+  socket
+end/%></code></pre>
+    </p>
+  </div>
+  <div class="col-md-5">
+    <p>
+      <button class="btn btn-primary" drab-click="increase_counter">Increase counter by 1</button><br><br>
+      <button class="btn btn-primary" drab-click="show_counter">Show the counter value</button>
+    </p>
+  </div>
+
+  <div class="col-md-7">
+    <p>
+    Although Drab Session is a different entity than Plug Session (used in Controllers), it can inherit values from it by specify the keys to import in <code>use Drab.Commander inherit_session: []</code> clause. It is the way to manage user IDs, etc. <br>
+    To show an example, we've put the key <code>:drab_test</code> to the Plug Session while rendering this page by the Controller:
+    <pre><code class="elixir"><%=~S/defmodule DrabPoc.PageController do
+use DrabPoc.Web, :controller
+use Drab.Controller
+
+def index(conn, _params) do
+  conn = put_session(conn, :drab_test, "test string in Plug Session, set in the Controller")
+  render conn, "index.html"
+end
+/%></code></pre>
+    To use it in the Commander, we need to explicitly import this tuple by inheriting it in the <code>PageCommander</code>:
+<pre><code class="elixir"><%=~S/defmodule DrabPoc.PageCommander do
+use Drab.Commander, 
+  onload: :page_loaded, 
+  inherit_session: [:drab_test]
+
+  def page_loaded(socket) do
+    socket 
+    |> update(:val, set: get_session(socket, :drab_test),on: "#show_session_test")
+  end
+end
+/%></code></pre>
+    Notice that it works in the one-way only, you can't update the Plug Session from the Commander.
+    </p>
+  </div>
+  <div class="col-md-5">
+    <p>
+      Result of <code>get_session(socket, :drab_test)</code> in the <code>onload</code> hander: <br>
+      <input type="text" id="show_session_test" value="unknown..." class="form-control">
+    </p>
+  </div>
+
+</div>
+
+
+
 <hr>
 <h3>Links</h3>
 <p>

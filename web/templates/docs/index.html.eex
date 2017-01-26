@@ -148,6 +148,76 @@
 <p>
   <%= moduledoc(Drab.Core) |> raw %>
 </p>
+
+<div class="row">
+  <h4>execjs/2</h4>
+  <div class="col-md-6">
+    <p>
+      <%= funcdoc(Drab.Core, {:execjs, 2}) |> raw %>
+    </p>
+  </div>
+  <div class="col-md-6">
+    <button drab-click="c_1_click" class="btn btn-primary">
+      socket |> execjs("2 + 2")
+    </button><br><br>
+    <button drab-click="c_2_click" class="btn btn-primary">
+      socket |> execjs("alert('Do you like alerts?')")
+    </button>
+  </div>
+</div>
+
+<div class="row">
+  <h4>broadcastjs/2</h4>
+  <div class="col-md-6">
+    <p>
+      <%= funcdoc(Drab.Core, {:broadcastjs, 2}) |> raw %>
+    </p>
+  </div>
+  <div class="col-md-6">
+    <button drab-click="c_3_click" class="btn btn-primary">
+      socket |> broadcastjs("console.log('message to all')")
+    </button>
+  </div>
+</div>
+
+<div class="row">
+  <h4>put_sesion/3</h4>
+  <div class="col-md-6">
+    <p>
+      <%= funcdoc(Drab.Core, {:put_session, 3}) |> raw %>
+    </p>
+  </div>
+  <div class="col-md-6">
+    <button drab-click="c_4_click" class="btn btn-primary">
+      socket |> put_session(:counter, get_session(socket, :counter, 0) + 1)
+    </button>
+  </div>
+</div>
+
+<div class="row">
+  <h4>get_sesion/2</h4>
+  <div class="col-md-6">
+    <p>
+      <%= funcdoc(Drab.Core, {:get_session, 2}) |> raw %>
+    </p>
+  </div>
+  <div class="col-md-6">
+    <button drab-click="c_5_click" class="btn btn-primary">
+      socket |> get_session(:counter)
+    </button>
+  </div>
+</div>
+
+<div class="row">
+  <h4>get_sesion/3</h4>
+  <div class="col-md-6">
+    <p>
+      <%= funcdoc(Drab.Core, {:get_session, 3}) |> raw %>
+    </p>
+  </div>
+</div>
+
+
 <hr>
 
 <h3 class="centered">Drab.Controller</h3>
