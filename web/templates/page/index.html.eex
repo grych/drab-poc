@@ -200,7 +200,7 @@ end/%></code></pre>
 <pre><code class="elixir"><%=~s/defp file_change_loop(socket, file_path) do
   receive do
     {_pid, {:fswatch, :file_event}, {^file_path, _opts}} ->
-      socket |> update(:text, set: last_n_lines(file_path, 15), on: "#log_file")
+      socket |> update(:text, set: last_n_lines(file_path, 10), on: "#log_file")
   end
   file_change_loop(socket, file_path)
 end/%></code></pre>

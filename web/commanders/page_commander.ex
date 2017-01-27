@@ -95,7 +95,7 @@ defmodule DrabPoc.PageCommander do
   defp file_change_loop(socket, file_path) do
     receive do
       {_pid, {:fswatch, :file_event}, {^file_path, _opts}} ->
-        socket |> update(:text, set: last_n_lines(file_path, 15), on: "#log_file")
+        socket |> update(:text, set: last_n_lines(file_path, 10), on: "#log_file")
       any_other ->
         Logger.debug(inspect(any_other))
     end
