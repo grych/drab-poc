@@ -25,6 +25,7 @@ config :drab_poc, DrabPoc.Endpoint,
       ~r{web/templates/.*(eex)$}
     ]
   ]
+config :drab_poc, :watch_file, "/private/var/log/system.log"
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"

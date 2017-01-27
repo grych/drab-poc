@@ -24,6 +24,8 @@ config :logger, :log,
   path: "logs/drab_poc.log",
   level: :info
 
+config :drab_poc, :watch_file, "/private/var/log/nginx/access.log"
+
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key

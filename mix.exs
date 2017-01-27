@@ -4,7 +4,7 @@ defmodule DrabPoc.Mixfile do
 
   def project do
     [app: :drab_poc,
-     version: "0.2.1",
+     version: "0.2.2",
      elixir: "~> 1.3",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix, :gettext] ++ Mix.compilers,
@@ -18,7 +18,7 @@ defmodule DrabPoc.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {DrabPoc, []},
-     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext]]
+     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext, :sentix]]
   end
 
   # Specifies which paths to compile per environment.
@@ -38,7 +38,8 @@ defmodule DrabPoc.Mixfile do
      {:earmark, "~> 1.0.3"},
      {:drab, in_umbrella: true},
      # {:drab, path: "../drab"}
-     {:logger_file_backend, "~> 0.0.9"}
+     {:logger_file_backend, "~> 0.0.9"},
+     {:sentix, "~> 1.0"}
     ]
   end
 end

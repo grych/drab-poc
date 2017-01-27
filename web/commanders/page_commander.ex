@@ -76,11 +76,36 @@ defmodule DrabPoc.PageCommander do
     socket
   end
 
-  # Drab Callbacks
+  # Drab Callbacks 
   def page_loaded(socket) do
     socket 
-    |> update(:html, set: "Value set on the server side", on: "#display_placeholder")
     |> console("Launched onload callback")
     |> update(:val, set: get_session(socket, :drab_test),on: "#show_session_test")
+
+    spawn_link fn ->
+      file = Application.get_env(:drab_poc, :watch_file)
+      ### Sentix requires fswatch installed on the system
+      Sentix.start_link(:watcher, [file], monitor: :kqueue_monitor, latency: 2)
+      Sentix.subscribe(:watcher)
+      file_change_loop(socket, file)
+    end
+    socket 
+  end
+
+  defp file_change_loop(socket, file_path) do
+    receive do
+      {_pid, {:fswatch, :file_event}, {^file_path, _opts}} ->
+        socket |> update(:text, set: last_n_lines(file_path, 15), on: "#log_file")
+      any_other ->
+        Logger.debug(inspect(any_other))
+    end
+    file_change_loop(socket, file_path)
+  end
+
+  defp last_n_lines(file_path, lines) do
+    case System.cmd("tail", ["-#{lines}", file_path]) do
+      {stdout, 0} -> stdout
+      {stdout, retval} -> raise "last_n_lines: tail returned #{retval}. Stdout:\n#{stdout}"
+    end
   end
 end

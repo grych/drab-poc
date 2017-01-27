@@ -4,7 +4,7 @@ global.bootstrap = require("bootstrap")
 
 import hljs from "highlight.js"
 hljs.configure({
-  languages: ['elixir', 'html', 'javascript']
+  languages: ['elixir', 'html', 'javascript', 'accesslog']
   })
 hljs.initHighlightingOnLoad()
 

@@ -19,3 +19,7 @@ h3, h4, h5 {
 button {
   font-family: Consolas, "Lucida Console", monospace;
 }
+#log_file {
+  font-size: 10px;
+  /*height: 300px;*/
+}

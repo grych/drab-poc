@@ -171,6 +171,52 @@ end/%></code></pre>
   </div>
 </div>
 <hr>
+
+<div class="row">
+  <h4>Server-Side Events: Display the Growing File (tail -F)</h4>
+  <div class="col-md-7">
+    <p>
+      Another great example of Drab usage is to display the files, which are changing over the time, like log files. In the normal, Ajax world, you need to send a request periodically to refresh the view, and you never know, if the file changed or not. What a waste of resouces!
+    </p>
+    <p>
+      With Drab, you can utilize the events on the Server Side: in this case to use <code>fsevent</code> to trace the changes in the file. So you upgrade the UI view only in case when something really happened.
+    </p>
+    <p>
+      To enable the Server-Side event watcher, we are going to introduce the Drab Callbacks. This are simply events launched automatically, when page is loaded or when browser reconnects to the Server. To enable it you need to specify them in the Commander:
+<pre><code class="elixir"><%=~s/use Drab.Commander, onload: :page_loaded/%></code></pre>
+      <code>onload</code> launches when client connects to the server, only once. If you want run you code every time the client connects (reconnects - like after network crash etc), use <code>onconnect</code> callback.
+      <br>
+      In the handler function we run <code>Sentix</code> file watcher (it is a wrapper around <code>fswatch</code> utility). 
+<pre><code class="elixir"><%=~s/ def page_loaded(socket) do
+  spawn_link fn ->
+    file = Application.get_env(:drab_poc, :watch_file)
+    Sentix.start_link(:watcher, [file], monitor: :kqueue_monitor, latency: 2)
+    Sentix.subscribe(:watcher)
+    file_change_loop(socket, file)
+  end
+  socket 
+end/%></code></pre>
+      Watcher sends a message each time the file change. In this case we are going to update the <code>#log_file</code> div to present the last few lines of the file. 
+<pre><code class="elixir"><%=~s/defp file_change_loop(socket, file_path) do
+  receive do
+    {_pid, {:fswatch, :file_event}, {^file_path, _opts}} ->
+      socket |> update(:text, set: last_n_lines(file_path, 15), on: "#log_file")
+  end
+  file_change_loop(socket, file_path)
+end/%></code></pre>
+    </p>
+  </div>
+  <div class="col-md-5">
+    <p>
+      This is a realtime view of few last lines of the access.log of this page
+      <pre><code id="log_file" class="accesslog">
+... this pane will be updated when access.log change ...
+      </code></pre>
+    </p>
+  </div>
+</div>
+<hr>
+
 <div class="row">
   <h4>Access to the Sender DOM Object Properties</h4>
   <div class="col-md-7">
@@ -203,22 +249,12 @@ end/%></code></pre>
   </div>
 </div>
 <hr>
+
 <div class="row">
-  <h4>Page Load and Some More Events</h4>
+  <h4>Is Drab Quick Enough? Plus Broadcast</h4>
   <div class="col-md-7">
     <p>
-      Analogically to <code>page load</code> Javascript event, it is possible to run a callback after the client page is loaded (<em>so far it is running every time the websockets connect, so it should be called "onconnect"</em>).
-<pre><code class="elixir"><%=~s/defmodule DrabPoc.PageCommander do
-  use Drab.Commander, onload: :page_loaded
-  def page_loaded(socket) do
-    socket 
-    |> update(:html, set: "Value set on the server side", on: "#display_placeholder")
-    |> console("Launched onload callback")
-  end
-end/%></code></pre>
-    </p>
-    <p>
-      And this is to show you that not only <code>click</code> event is already supported by Drab :)
+      You may concern about Drab performance - is it quick enough to handle events in the realtime? The best to find it out is to check - lets say the <code>keyup</code> event. <em>Notice that this Demo Page runs on 2007 Mac Mini - not a speed daemon - with the consumer internet access</em>
       <pre><code class="html"><%=~s(<input drab-keyup="changed_input">
 <div id="display_placeholder">Some text here</div>)%></code></pre>
       <pre><code class="elixir"><%=~s/def changed_input(socket, dom_sender) do
@@ -226,7 +262,7 @@ end/%></code></pre>
 end/%></code></pre>
     </p>
     <p>
-      Did you notice the <code>update!/2</code> (with bang!) function? This one works exactly like <code>update/2</code>, but it <strong>broadcasts to all the browsers</strong> on which the current page is opened. Open another browser window or even another browser and observe what is going on when you type in this input.
+      Did you notice the <code>update!/2</code> (with bang!) function? This one works exactly like <code>update/2</code>, but it <strong>broadcasts to all the browsers</strong> on which the current page is opened. Open another browser window or even another browser and observe what is going on when you type in.
     </p>
   </div>
   <div class="col-md-5">
