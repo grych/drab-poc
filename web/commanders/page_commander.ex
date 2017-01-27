@@ -85,7 +85,7 @@ defmodule DrabPoc.PageCommander do
     spawn_link fn ->
       file = Application.get_env(:drab_poc, :watch_file)
       ### Sentix requires fswatch installed on the system
-      Sentix.start_link(:watcher, [file], monitor: :kqueue_monitor, latency: 2)
+      Sentix.start_link(:watcher, [file], monitor: :kqueue_monitor, latency: 0.75)
       Sentix.subscribe(:watcher)
       file_change_loop(socket, file)
     end
