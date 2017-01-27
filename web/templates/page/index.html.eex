@@ -210,7 +210,7 @@ end/%></code></pre>
     <p>
       This is a realtime view of few last lines of the access.log of this page
       <pre><code id="log_file" class="accesslog">
-... this pane will be updated when access.log change ...
+... this pane will update when access.log change ...
       </code></pre>
     </p>
   </div>
