@@ -176,7 +176,7 @@ end/%></code></pre>
   <h4>Server-Side Events: Display the Growing File (tail -F)</h4>
   <div class="col-md-7">
     <p>
-      Another great example of Drab usage is to display the files, which are changing over the time, like log files. In the normal, Ajax world, you need to send a request periodically to refresh the view, and you never know, if the file changed or not. What a waste of resouces!
+      Another great example of Drab usage is to display the files, which are changing over the time, like log files. In the normal, Ajax world, you need to send a request periodically to refresh the view, and you never know, if the file changed or not. What a waste of resources!
     </p>
     <p>
       With Drab, you can utilize the events on the Server Side: in this case to use <code>fsevent</code> to trace the changes in the file. So you upgrade the UI view only in case when something really happened.
@@ -190,7 +190,7 @@ end/%></code></pre>
 <pre><code class="elixir"><%=~s/ def page_loaded(socket) do
   spawn_link fn ->
     file = Application.get_env(:drab_poc, :watch_file)
-    Sentix.start_link(:watcher, [file], monitor: :kqueue_monitor, latency: 2)
+    Sentix.start_link(:watcher, [file], monitor: :kqueue_monitor, latency: 1)
     Sentix.subscribe(:watcher)
     file_change_loop(socket, file)
   end
@@ -316,7 +316,7 @@ end/%></code></pre>
   use Drab.Controller
 
   def index(conn, _params) do
-    conn = put_session(conn, :drab_test, "test string in Plug Session, set in the Controller")
+    conn = put_session(conn, :drab_test, "test string from the Plug Session, set in the Controller")
     render conn, "index.html"
   end
 end/%></code></pre>

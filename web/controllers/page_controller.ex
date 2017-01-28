@@ -8,7 +8,7 @@ defmodule DrabPoc.PageController do
   end
 
   def index(conn, _params) do
-    conn = put_session(conn, :drab_test, "test string in Plug Session, set in the Controller")
+    conn = put_session(conn, :drab_test, "test string from the Plug Session, set in the Controller")
     render conn, "index.html"
   end
 end
