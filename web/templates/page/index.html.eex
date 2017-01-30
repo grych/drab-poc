@@ -2,7 +2,6 @@
 <h4 class="centered">
   The jQuery in Elixir
 </h3>
-
 <p>
   In the <i>"good old times"</i> the event handling was easy. The only thing you had to do was to create the event handler (remember <code>TForm1.Button1Click(Sender: TObject)</code>?) and you could do everything inside this handler: accessing data from models, manipulating user interface, sending raw Ethernet packets to the coffee machine...
 </p>
@@ -13,23 +12,25 @@
   Additionally, because <code>http</code> is stateless and a one-way protocol, it is not easy to communicate back from the server to the browser. Like, for example, during execution of the long running process, when there is a need to update status (eg. progress bar) or ask the operator about something (like "would you like to continue?"). Of course there are workarounds for this, like polling the server every few seconds to have a status, or even auto-refreshing the page, but those are just a dirty workarounds. The solution would be to allow an access to the interface directly from the server side. And here comes the <code>Drab</code>.
 </p>
 <p>
-  <code>Drab</code> is a concept of <b>providing an access to DOM objects on the server side</b>, just like in the good-old Delphi times. Please review the following examples. Warning: <b>this is an early beta version</b>, a lot of things are still not implemented, some are hardcoded. Any comments, criticism, thoughts are welcome - <a href="mailto:grych@tg.pl?Subject=Drab">grych@tg.pl</a>. Your feedback is highly appreciated!
+  <code>Drab</code> is a concept of <b>providing an access to User Interface (DOM objects) on the server side</b>, just like in the 
+  good-old Delphi times. The examples below should give you an overview of how does it work. For more detailed instructions, please refer to the <a href="https://hexdocs.pm/drab">documentation</a>.
+</p>
 <p>
   Drab is written using Phoenix on Elixir, so all the code in examples is HTML and Elixir (no Javascript!). <b>This page is a living demo - all examples are actually working on the Drab server</b>.
   You can find a source code of this page <a href="https://github.com/grych/drab-poc">on Github</a>, and the <a href="https://github.com/grych/drab">source code of the Drab himself - here</a>.
-</p>
-<p>
-  In general, Drab treats the client browser as a database privider and gives the way to <code>select</code>, <code>update</code>, <code>insert</code> and <code>delete</code> objects or object attributes:
-<pre><code class="elixir"><%=~s/select(something, from: selector)
-insert(something, into: selector)
-delete(selector) or delete(something, from: selector)
-update(something, set: new_value, on: selector)/%></code></pre>
 </p>
 <p><small>Tomek "Grych" Gryszkiewicz 2016</small></p>
 <hr>
 <div class="row">
   <h4>Simple Input and Button Example</h4>
-  <div class="col-md-7">
+  <div class="col-md-8">
+    <p>
+      In general, Drab treats the client browser as a database privider and gives the way to <code>select</code>, <code>update</code>, <code>insert</code> and <code>delete</code> objects or object attributes:
+    <pre><code class="elixir"><%=~s/select(something, from: selector)
+    insert(something, into: selector)
+    delete(selector) or delete(something, from: selector)
+    update(something, set: new_value, on: selector)/%></code></pre>
+    </p>
     <p>Here is the simplest example  - text input and the button. Clicking the button make input text uppercase. Awesome!</p>
     <p>
       On the <b>client side</b> we have a basic HTML with the input and the button:
@@ -52,7 +53,7 @@ end]%></code></pre>
     </p>
   </div>
 
-  <div class="col-md-5">
+  <div class="col-md-4">
     <p>
       This is a live demo. Click the button to launch <code>Drab.Controller.uppercase/2</code> on the server.
       <br><br>
@@ -64,7 +65,7 @@ end]%></code></pre>
 <hr>
 <div class="row">
   <h4>Long Running Process with Communication Back to Browser</h4>
-  <div class="col-md-7">
+  <div class="col-md-8">
     <p>
       Let's move to some more complicated functionality. Assume having a process which is doing some stuff on the server side and we want to report back to the user after each completed step. We will use the progress bar controlled from the server. <br>
       Client side is very simple, again. Please notice the <code>drab-handler</code> attribute - this time it will run <code>perform_long_process</code> function on the server side.
@@ -102,7 +103,7 @@ end]%></code></pre>
     </p>
   </div>
 
-  <div class="col-md-5">
+  <div class="col-md-4">
     Click a button to simulate long-running process on the server.
     <div class="progress">
       <div class="progress-bar" role="progressbar" style="width:0%">
@@ -114,7 +115,7 @@ end]%></code></pre>
 <hr>
 <div class="row">
   <h4>Tens of Tasks Running in Parallel on the Server and Communicating Back to the Browser</h4>
-  <div class="col-md-7">
+  <div class="col-md-8">
     <p>
       In the next example we will emulate long running server Process composed of a number of Tasks, which can be run asynchronously. We want to run it in parallel, change their status when they finish the job and - when all of them are done - change the status of the whole process.
     </p>
@@ -154,7 +155,7 @@ end/%></code></pre>
       You may think: <b>what is the difference between this approach and running 54 AJAX requests which launches action on the controller side?</b> Well, except of <code>Drab</code> natural beauty, you can't do it with AJAX. You browser <a href="http://www.stevesouders.com/blog/2008/03/20/roundup-on-parallel-connections/">limits the number of simultaneus connections</a>.
     </p>
   </div>
-  <div class="col-md-5">
+  <div class="col-md-4">
     <p>
       Click the button below to simulate server-side long running process contains asynchronous tasks.
       <h4>Async task status: <span id="async_task_status" class="label label-primary">ready</span></h4>
@@ -174,7 +175,7 @@ end/%></code></pre>
 
 <div class="row">
   <h4>Server-Side Events: Display the Growing File (tail -F)</h4>
-  <div class="col-md-7">
+  <div class="col-md-8">
     <p>
       Another great example of Drab usage is to display the files, which are changing over the time, like log files. In the normal, Ajax world, you need to send a request periodically to refresh the view, and you never know, if the file changed or not. What a waste of resouces!
     </p>
@@ -206,7 +207,7 @@ end/%></code></pre>
 end/%></code></pre>
     </p>
   </div>
-  <div class="col-md-5">
+  <div class="col-md-4">
     <p>
       This is a realtime view of few last lines of the access.log of this page
       <pre><code id="log_file" class="accesslog">
@@ -219,7 +220,7 @@ end/%></code></pre>
 
 <div class="row">
   <h4>Access to the Sender DOM Object Properties</h4>
-  <div class="col-md-7">
+  <div class="col-md-8">
     <p>
       The next example shows how we can retrieve the information from <code>data</code> attribute. We've simple set up few buttons, each with the same event function <code>clicked_sleep_button</code>:
       <pre><code class="html"><%=~s(<button drab-click="clicked_sleep_button" data-sleep="1">Sleep 1 second</button>
@@ -239,12 +240,12 @@ end/%></code></pre>
       Observe that when one button is "processing", you can click another one. This is because <strong>Drab requests are asynchronous on the server side</strong>. And this is a reason why buttons are disabled by default while processing - it is blocking the user from running the same action for few times. You may override this behaviour in `config.exs` with:
       <pre><code class="elixir"><%=~s/config :drab, disable_controls_while_processing: false/%></code></pre>
   </div>
-  <div class="col-md-5">
+  <div class="col-md-4">
     <p>
-      Click the button to sleep<br>
-      <button drab-click="clicked_sleep_button" class="btn btn-primary" data-sleep="1">Sleep 1 second</button>
-      <button drab-click="clicked_sleep_button" class="btn btn-primary" data-sleep="2">Sleep 2 seconds</button>
-      <button drab-click="clicked_sleep_button" class="btn btn-primary" data-sleep="3">Sleep 3 seconds</button>
+      Click the button to launch sleep <br><br>
+      <button drab-click="clicked_sleep_button" class="btn btn-primary" data-sleep="1">Sleep 1 second</button><br><br>
+      <button drab-click="clicked_sleep_button" class="btn btn-primary" data-sleep="2">Sleep 2 seconds</button><br><br>
+      <button drab-click="clicked_sleep_button" class="btn btn-primary" data-sleep="3">Sleep 3 seconds</button><br><br>
     </p>
   </div>
 </div>
@@ -252,7 +253,7 @@ end/%></code></pre>
 
 <div class="row">
   <h4>Is Drab Quick Enough? Plus Broadcast</h4>
-  <div class="col-md-7">
+  <div class="col-md-8">
     <p>
       You may concern about Drab performance - is it quick enough to handle events in the realtime? The best to find it out is to check - lets say the <code>keyup</code> event. <em>Notice that this Demo Page runs on 2007 Mac Mini - not a speed daemon - with the consumer internet access</em>
       <pre><code class="html"><%=~s(<input drab-keyup="changed_input">
@@ -265,7 +266,7 @@ end/%></code></pre>
       Did you notice the <code>update!/2</code> (with bang!) function? This one works exactly like <code>update/2</code>, but it <strong>broadcasts to all the browsers</strong> on which the current page is opened. Open another browser window or even another browser and observe what is going on when you type in.
     </p>
   </div>
-  <div class="col-md-5">
+  <div class="col-md-4">
     <p>
       Start typing down here:
       <input drab-keyup="changed_input" class="form-control">
@@ -342,23 +343,22 @@ end/%></code></pre>
   </div>
 
 </div>
-
-
-
 <hr>
 <h3>Links</h3>
 <p>
-  <h3><a href="/drab/nojquery">Drab without DOM, for react lovers</a></h3>
-  <h3><a href="/drab/docs">Documentation with more examples</a></h3>
-  <ul>
-    <li><a href="https://github.com/grych/drab">Drab source</a></li>
-    <li><a href="https://github.com/grych/drab-poc">This page source</a></li>
-  </ul>
+  <h4><a href="/drab/docs">Documentation with more examples</a></h4>
+  <h4><a href="https://github.com/grych/drab">Drab source on Github</a></h4>
+  <h4><a href="/drab/nojquery">Drab without DOM, for react lovers</a></h4>
+  <h4><a href="https://github.com/grych/drab-poc">This page source</a></h4>
 </p>
 <hr>
 <p>
   <h4>
   &copy;2016 Tomek "Grych" Gryszkiewicz, <a href="mailto:grych@tg.pl">grych@tg.pl</a>
   </h4>
+</p>
+<hr>
+<p>
+  Warning: <b>this is an early beta version</b>, a lot of things are still not implemented, some are hardcoded. Any comments, criticism, thoughts are welcome - <a href="mailto:grych@tg.pl?Subject=Drab">grych@tg.pl</a>. Your feedback is highly appreciated!
 </p>
 
