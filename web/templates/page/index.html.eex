@@ -291,7 +291,7 @@ end/%></code></pre>
       </ul>
     </p>
   </div>
-  <div class="col-md-7">
+  <div class="col-md-8">
     <p><pre><code class="elixir"><%=~S/def increase_counter(socket, _dom_sender) do
   counter = get_session(socket, :counter) || 0
   put_store(socket, :counter, counter + 1)
@@ -304,7 +304,7 @@ def show_counter(socket, _dom_sender) do
 end/%></code></pre>
     </p>
   </div>
-  <div class="col-md-5">
+  <div class="col-md-4">
     <p>
       <button class="btn btn-primary" drab-click="increase_counter">Increase counter by 1</button><br><br>
       <button class="btn btn-primary" drab-click="show_counter">Show the counter value</button>
