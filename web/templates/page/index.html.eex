@@ -209,6 +209,9 @@ end/%></code></pre>
   file_change_loop(socket, file_path)
 end/%></code></pre>
     </p>
+    <p>
+      BTW this example is simple to understand, but <strong>bad</strong> from the performance point of view! This is because each <code>page_load</code> callback is launched after the browser connects. This means that every exsisting client has its own <code>Sentix</code> server, and <code>fswatch</code> process running on the server. Not very clever! In the real world, you'd want to run only one <code>Sentix</code> and send messages to <code>Drab</code> from there.
+    </p>
   </div>
   <div class="col-md-4">
     <p>
