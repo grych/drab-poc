@@ -66,12 +66,12 @@ defmodule DrabPoc.PageCommander do
   end
 
   def increase_counter(socket, _dom_sender) do
-    counter = get_session(socket, :counter) || 0
-    put_session(socket, :counter, counter + 1)
+    counter = get_store(socket, :counter) || 0
+    put_store(socket, :counter, counter + 1)
   end
 
   def show_counter(socket, _dom_sender) do
-    counter = get_session(socket, :counter)
+    counter = get_store(socket, :counter)
     socket |> alert("Counter", "Counter value: #{counter}")
     socket
   end
@@ -80,7 +80,7 @@ defmodule DrabPoc.PageCommander do
   def page_loaded(socket) do
     socket 
     |> console("Launched onload callback")
-    |> update(:val, set: get_session(socket, :drab_test),on: "#show_session_test")
+    |> update(:val, set: get_store(socket, :drab_test),on: "#show_session_test")
 
     spawn_link fn ->
       file = Application.get_env(:drab_poc, :watch_file)

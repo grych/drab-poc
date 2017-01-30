@@ -161,12 +161,12 @@ defmodule DrabPoc.DocsCommander do
   end
 
   def c_4_click(socket, _dom_sender) do
-    socket |> put_session(:counter, get_session(socket, :counter, 0) + 1)
+    socket |> put_store(:counter, get_store(socket, :counter, 0) + 1)
   end
 
   def c_5_click(socket, dom_sender) do
-    counter = get_session(socket, :counter)
-    socket |> update(:text, set: "get_session(:counter) returns: #{inspect(counter)}", on: this(dom_sender))
+    counter = get_store(socket, :counter)
+    socket |> update(:text, set: "get_store(:counter) returns: #{inspect(counter)}", on: this(dom_sender))
   end
 
 

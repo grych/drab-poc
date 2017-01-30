@@ -184,12 +184,12 @@
   <h4>put_sesion/3</h4>
   <div class="col-md-6">
     <p>
-      <%= funcdoc(Drab.Core, {:put_session, 3}) |> raw %>
+      <%= funcdoc(Drab.Core, {:put_store, 3}) |> raw %>
     </p>
   </div>
   <div class="col-md-6">
     <button drab-click="c_4_click" class="btn btn-primary">
-      socket |> put_session(:counter, get_session(socket, :counter, 0) + 1)
+      socket |> put_store(:counter, get_store(socket, :counter, 0) + 1)
     </button>
   </div>
 </div>
@@ -198,12 +198,12 @@
   <h4>get_sesion/2</h4>
   <div class="col-md-6">
     <p>
-      <%= funcdoc(Drab.Core, {:get_session, 2}) |> raw %>
+      <%= funcdoc(Drab.Core, {:get_store, 2}) |> raw %>
     </p>
   </div>
   <div class="col-md-6">
     <button drab-click="c_5_click" class="btn btn-primary">
-      socket |> get_session(:counter)
+      socket |> get_store(:counter)
     </button>
   </div>
 </div>
@@ -212,7 +212,7 @@
   <h4>get_sesion/3</h4>
   <div class="col-md-6">
     <p>
-      <%= funcdoc(Drab.Core, {:get_session, 3}) |> raw %>
+      <%= funcdoc(Drab.Core, {:get_store, 3}) |> raw %>
     </p>
   </div>
 </div>
