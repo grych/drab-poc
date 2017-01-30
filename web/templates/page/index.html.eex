@@ -51,6 +51,9 @@ end]%></code></pre>
     <br>
       Drab Handler should always return <code>socket</code>.
     </p>
+    <p>
+      All the Drab functions (callbacks, event handlers) are placed in the module called Commander. Think about  it as a Controller for the living page. Commander must have a corresponding controller (because the page to command must be rendered before), in the example PageCommander corresponds to PageController.
+    </p>
   </div>
 
   <div class="col-md-4">
@@ -308,7 +311,7 @@ end/%></code></pre>
     </p>
   </div>
 
-  <div class="col-md-7">
+  <div class="col-md-8">
     <p>
     Although Drab Session is a different entity than Plug Session (used in Controllers), it can inherit values from it by specify the keys to import in <code>use Drab.Commander inherit_session: []</code> clause. It is the way to manage user IDs, etc. <br>
     To show an example, we've put the key <code>:drab_test</code> to the Plug Session while rendering this page by the Controller:
@@ -335,7 +338,7 @@ end/%></code></pre>
     Notice that it works in the one-way only, you can't update the Plug Session from the Commander.
     </p>
   </div>
-  <div class="col-md-5">
+  <div class="col-md-4">
     <p>
       Result of <code>get_session(socket, :drab_test)</code> in the <code>onload</code> hander: <br>
       <input type="text" id="show_session_test" value="unknown..." class="form-control">
