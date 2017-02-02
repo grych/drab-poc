@@ -22,6 +22,7 @@
 <p><small>Tomek "Grych" Gryszkiewicz 2016</small></p>
 <hr>
 <div class="row">
+<a name="simple">
   <h4>Simple Input and Button Example</h4>
   <div class="col-md-8">
     <p>
@@ -68,6 +69,7 @@ end]%></code></pre>
 <hr>
 <div class="row">
   <h4>Long Running Process with Communication Back to Browser</h4>
+  <a name="long_running">
   <div class="col-md-8">
     <p>
       Let's move to some more complicated functionality. Assume having a process which is doing some stuff on the server side and we want to report back to the user after each completed step. We will use the progress bar controlled from the server. <br>
@@ -118,6 +120,7 @@ end]%></code></pre>
 <hr>
 <div class="row">
   <h4>Tens of Tasks Running in Parallel on the Server and Communicating Back to the Browser</h4>
+  <a name="tens_of_processes">
   <div class="col-md-8">
     <p>
       In the next example we will emulate long running server Process composed of a number of Tasks, which can be run asynchronously. We want to run it in parallel, change their status when they finish the job and - when all of them are done - change the status of the whole process.
@@ -178,6 +181,7 @@ end/%></code></pre>
 
 <div class="row">
   <h4>Server-Side Events: Display the Growing File (tail -F)</h4>
+  <a name="tail_dash_f">
   <div class="col-md-8">
     <p>
       Another great example of Drab usage is to display the files, which are changing over the time, like log files. In the normal, Ajax world, you need to send a request periodically to refresh the view, and you never know, if the file changed or not. What a waste of resouces!
@@ -226,6 +230,7 @@ end/%></code></pre>
 
 <div class="row">
   <h4>Access to the Sender DOM Object Properties</h4>
+  <a name="dom_sender">
   <div class="col-md-8">
     <p>
       The next example shows how we can retrieve the information from <code>data</code> attribute. We've simple set up few buttons, each with the same event function <code>clicked_sleep_button</code>:
@@ -259,6 +264,7 @@ end/%></code></pre>
 
 <div class="row">
   <h4>Is Drab Quick Enough? Plus Broadcast</h4>
+  <a name="broadcast">
   <div class="col-md-8">
     <p>
       You may concern about Drab performance - is it quick enough to handle events in the realtime? The best to find it out is to check - lets say the <code>keyup</code> event. <em>Notice that this Demo Page runs on 2007 Mac Mini - not a speed daemon - with the consumer internet access</em>
@@ -284,6 +290,7 @@ end/%></code></pre>
 
 <div class="row">
   <h4>Drab Store</h4>
+  <a name="store">
   <div class="col-md-12">
     <p>
       Analogically to Plug, Drab can store the values in its own session. To avoid confusion with the session, we will call Drab Store. You have two commands, <code>put_store/3</code> and <code>get_store/2</code> to archive it. They works exactly the same as a "normal", Phoenix session, except:
