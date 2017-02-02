@@ -4,6 +4,8 @@ defmodule DrabPoc.PageCommander do
 
   use Drab.Commander, 
     onload: :page_loaded, 
+    onconnect: :connected,
+    ondisconnect: :disconnected,
     modules: [Drab.Query, Drab.Modal],
     inherit_session: [:drab_test]
 
@@ -81,15 +83,27 @@ defmodule DrabPoc.PageCommander do
     socket 
     |> console("Launched onload callback")
     |> update(:val, set: get_store(socket, :drab_test),on: "#show_session_test")
+    Logger.debug("LOADED: Counter: #{get_store(socket, :counter)}")
+    put_store(socket, :counter, 100) 
+  end
 
-    spawn_link fn ->
+  def connected(socket) do
+    sentix_pid = spawn_link fn ->
       file = Application.get_env(:drab_poc, :watch_file)
       ### Sentix requires fswatch installed on the system
       Sentix.start_link(:watcher, [file], monitor: :kqueue_monitor, latency: 1)
       Sentix.subscribe(:watcher)
       file_change_loop(socket, file)
     end
-    socket 
+    Logger.debug("CONNECTED: Counter: #{get_store(socket, :counter)}")
+    put_store(socket, :sentix_pid, sentix_pid)
+  end
+
+  def disconnected(socket) do
+    Logger.debug("DISCONNECTED")
+    # sentix_pid = get_store(socket, :sentix_pid)
+    # Logger.debug(inspect(sentix_pid))
+    socket
   end
 
   defp file_change_loop(socket, file_path) do
