@@ -1,7 +1,7 @@
 <h3 class="centered">Drab - Access the User Interface in browser from the Server Side</h3>
 <h4 class="centered">
   The jQuery in Elixir
-</h3>
+</h4>
 <p>
   In the <i>"good old times"</i> the event handling was easy. The only thing you had to do was to create the event handler (remember <code>TForm1.Button1Click(Sender: TObject)</code>?) and you could do everything inside this handler: accessing data from models, manipulating user interface, sending raw Ethernet packets to the coffee machine...
 </p>
