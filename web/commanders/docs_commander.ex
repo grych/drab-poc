@@ -153,7 +153,8 @@ defmodule DrabPoc.DocsCommander do
   end
 
   def c_2_click(socket, _dom_sender) do
-    socket |> execjs("alert('Do you like alerts?')")
+    _ = socket |> execjs("alert('Do you like alerts?')")
+    socket
   end
 
   def c_3_click(socket, _dom_sender) do
