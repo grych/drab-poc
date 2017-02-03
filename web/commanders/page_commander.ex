@@ -100,11 +100,11 @@ defmodule DrabPoc.PageCommander do
     put_store(socket, :sentix_pid, sentix_pid)
   end
 
-  def disconnected(socket) do
-    Logger.debug("DISCONNECTED, socket: #{socket |> inspect}")
-    # sentix_pid = get_store(socket, :sentix_pid)
+  def disconnected(store) do
+    Logger.debug("DISCONNECTED, store: #{store |> inspect}")
+    # sentix_pid = get_store(store, :sentix_pid)
     # Logger.debug(inspect(sentix_pid))
-    socket
+    store
   end
 
   defp file_change_loop(socket, file_path) do
