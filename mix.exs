@@ -4,8 +4,8 @@ defmodule DrabPoc.Mixfile do
 
   def project do
     [app: :drab_poc,
-     version: "0.2.2",
-     elixir: "~> 1.3",
+     version: "0.3.0",
+     elixir: "~> 1.4",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix, :gettext] ++ Mix.compilers,
      build_embedded: Mix.env == :prod,

@@ -288,7 +288,7 @@ end/%></code></pre>
     <p>
       Analogically to Plug, Drab can store the values in its own session. To avoid confusion with the session, we will call Drab Store. You have two commands, <code>put_store/3</code> and <code>get_store/2</code> to archive it. They works exactly the same as a "normal", Phoenix session, except:
       <ul>
-        <li>Drab Store is not persist; it is there only on the Drab Page lifecycle - after leaving the page or reload it is gone forever</li>
+        <li>Drab Store does not persist; it is there only on the Drab Page lifecycle - after leaving the page or reload it is gone forever</li>
         <li>Drab Store is not the Plug Session! This is a different entity. Anyway you can easly inherity specific values from the grown boys Session - details below</li>
         <li>Drab Store is stored on the client side and it is signed, but - as the Plug Session cookie - not ciphered</li>
       </ul>
@@ -296,7 +296,7 @@ end/%></code></pre>
   </div>
   <div class="col-md-8">
     <p><pre><code class="elixir"><%=~S/def increase_counter(socket, _dom_sender) do
-  counter = get_session(socket, :counter) || 0
+  counter = get_store(socket, :counter) || 0
   put_store(socket, :counter, counter + 1)
 end
 
@@ -335,7 +335,7 @@ use Drab.Commander,
 
   def page_loaded(socket) do
     socket 
-    |> update(:val, set: get_session(socket, :drab_test),on: "#show_session_test")
+    |> update(:val, set: get_store(socket, :drab_test),on: "#show_session_test")
   end
 end/%></code></pre>
     Notice that it works in the one-way only, you can't update the Plug Session from the Commander.
@@ -343,7 +343,7 @@ end/%></code></pre>
   </div>
   <div class="col-md-4">
     <p>
-      Result of <code>get_session(socket, :drab_test)</code> in the <code>onload</code> hander: <br>
+      Result of <code>get_store(socket, :drab_test)</code> in the <code>onload</code> hander: <br>
       <input type="text" id="show_session_test" value="unknown..." class="form-control">
     </p>
   </div>
