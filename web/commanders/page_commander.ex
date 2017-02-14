@@ -4,7 +4,7 @@ defmodule DrabPoc.PageCommander do
 
   use Drab.Commander, 
     onload: :page_loaded, 
-    # onconnect: :connected,
+    onconnect: :connected,
     ondisconnect: :disconnected,
     modules: [Drab.Query, Drab.Modal],
     inherit_session: [:drab_test]
@@ -102,9 +102,7 @@ defmodule DrabPoc.PageCommander do
 
   def disconnected(store) do
     Logger.debug("DISCONNECTED, store: #{store |> inspect}")
-    # sentix_pid = get_store(store, :sentix_pid)
-    # Logger.debug(inspect(sentix_pid))
-    store
+    :ok
   end
 
   defp file_change_loop(socket, file_path) do
