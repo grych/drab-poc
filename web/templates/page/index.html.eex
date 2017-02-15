@@ -186,12 +186,12 @@ end/%></code></pre>
       With Drab, you can utilize the events on the Server Side: in this case to use <code>fsevent</code> to trace the changes in the file. So you upgrade the UI view only in case when something really happened.
     </p>
     <p>
-      To enable the Server-Side event watcher, we are going to introduce the Drab Callbacks. This are simply events launched automatically, when page is loaded or when browser reconnects to the Server. To enable it you need to specify them in the Commander:
-<pre><code class="elixir"><%=~s/use Drab.Commander, onload: :page_loaded/%></code></pre>
-      <code>onload</code> launches when client connects to the server, only once. If you want run you code every time the client connects (reconnects - like after network crash etc), use <code>onconnect</code> callback.
+      To enable the Server-Side event watcher, we are going to introduce the Drab Callbacks. Callbacks are events launched automatically, when page is loaded, when browser reconnects or disconnects from the Server. To enable it you need to specify them in the Commander:
+<pre><code class="elixir"><%=~s/use Drab.Commander, onconnect: :connected/%></code></pre>
+      <code>onconnect</code> launches every time client connects to the server, so after first load, network crashes, server crashes etc. There is also <code>onload</code> callback, which runs only once and ignores disconnects.
       <br>
       In the handler function we run <code>Sentix</code> file watcher (it is a wrapper around <code>fswatch</code> utility). 
-<pre><code class="elixir"><%=~s/ def page_loaded(socket) do
+<pre><code class="elixir"><%=~s/ def connected(socket) do
   spawn_link fn ->
     file = Application.get_env(:drab_poc, :watch_file)
     Sentix.start_link(:watcher, [file], monitor: :kqueue_monitor, latency: 1)
@@ -210,7 +210,10 @@ end/%></code></pre>
 end/%></code></pre>
     </p>
     <p>
-      BTW this example is simple to understand, but <strong>bad</strong> from the performance point of view! This is because each <code>page_load</code> callback is launched after the browser connects. This means that every exsisting client has its own <code>Sentix</code> server, and <code>fswatch</code> process running on the server. Not very clever! In the real world, you'd want to run only one <code>Sentix</code> and send messages to <code>Drab</code> from there.
+      BTW this example is simple to understand, but <strong>bad</strong> from the performance point of view! This is because each <code>connected</code> callback is launched after the browser connects. This means that every exsisting client has its own <code>Sentix</code> server, and <code>fswatch</code> process running on the server. Not very clever! In the real world, you'd want to run only one <code>Sentix</code> and send messages to <code>Drab</code> from there.
+    </p>
+    <p>
+      There is also the <code>disconnect</code> callback, which runs every time browser disconnects from the server - close the browser, navigate away from the page, network issue, etc. Obviously there is no way to show it on the Demo page, as it operates when the page is not visible anymore. 
     </p>
   </div>
   <div class="col-md-4">
