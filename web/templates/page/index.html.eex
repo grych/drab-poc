@@ -330,7 +330,7 @@ end/%></code></pre>
     render conn, "index.html"
   end
 end/%></code></pre>
-    To use it in the Commander, we need to explicitly import this tuple by inheriting it in the <code>PageCommander</code>:
+    To use it in the Commander, you need to explicitly inherit this value:
 <pre><code class="elixir"><%=~S/defmodule DrabPoc.PageCommander do
 use Drab.Commander, 
   onload: :page_loaded, 
