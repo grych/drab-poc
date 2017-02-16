@@ -84,7 +84,7 @@ defmodule DrabPoc.PageCommander do
     |> console("Launched onload callback")
     |> update(:val, set: get_store(socket, :drab_test),on: "#show_session_test")
     # Logger.debug("LOADED: Counter: #{get_store(socket, :counter)}")
-    put_store(socket, :counter, 0) 
+    # put_store(socket, :counter, 0) 
   end
 
   def connected(socket) do

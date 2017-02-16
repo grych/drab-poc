@@ -181,7 +181,7 @@
 </div>
 
 <div class="row">
-  <h4>put_sesion/3</h4>
+  <h4>put_store/3</h4>
   <div class="col-md-6">
     <p>
       <%= funcdoc(Drab.Core, {:put_store, 3}) |> raw %>
@@ -195,7 +195,7 @@
 </div>
 
 <div class="row">
-  <h4>get_sesion/2</h4>
+  <h4>get_store/2</h4>
   <div class="col-md-6">
     <p>
       <%= funcdoc(Drab.Core, {:get_store, 2}) |> raw %>
@@ -209,7 +209,7 @@
 </div>
 
 <div class="row">
-  <h4>get_sesion/3</h4>
+  <h4>get_store/3</h4>
   <div class="col-md-6">
     <p>
       <%= funcdoc(Drab.Core, {:get_store, 3}) |> raw %>
