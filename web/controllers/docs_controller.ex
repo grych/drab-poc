@@ -3,6 +3,7 @@ defmodule DrabPoc.DocsController do
   use Drab.Controller #, commander: DrabPoc.PageCommander
 
   def index(conn, _params) do
+    conn = put_session(conn, :test, "this was set in Controller")
     render conn, "index.html"
   end
 end

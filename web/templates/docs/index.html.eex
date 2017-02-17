@@ -209,6 +209,20 @@
 </div>
 
 <div class="row">
+  <h4>get_session/2</h4>
+  <div class="col-md-6">
+    <p>
+      <%= funcdoc(Drab.Core, {:get_session, 2}) |> raw %>
+    </p>
+  </div>
+  <div class="col-md-6">
+    <button drab-click="c_6_click" class="btn btn-primary">
+      socket |> get_session(:test)
+    </button>
+  </div>
+</div>
+
+<div class="row">
   <h4>get_store/3</h4>
   <div class="col-md-6">
     <p>

@@ -7,7 +7,7 @@ defmodule DrabPoc.PageCommander do
     onconnect: :connected,
     ondisconnect: :disconnected,
     modules: [Drab.Query, Drab.Modal],
-    inherit_session: [:drab_test]
+    access_session: [:drab_test]
 
   # Drab Events
   def uppercase(socket, dom_sender) do
@@ -82,7 +82,7 @@ defmodule DrabPoc.PageCommander do
   def page_loaded(socket) do
     socket 
     |> console("Launched onload callback")
-    |> update(:val, set: get_store(socket, :drab_test),on: "#show_session_test")
+    |> update(:val, set: get_session(socket, :drab_test),on: "#show_session_test")
     # Logger.debug("LOADED: Counter: #{get_store(socket, :counter)}")
     # put_store(socket, :counter, 0) 
   end

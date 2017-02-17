@@ -2,7 +2,7 @@ defmodule DrabPoc.DocsCommander do
   require IEx
   require Logger
 
-  use Drab.Commander, onload: :page_loaded
+  use Drab.Commander, onload: :page_loaded, access_session: [:test]
 
   def qs_1_click(socket, _dom_sender) do
     val = socket |> select(:val, from: "#qs_1_text") |> inspect
@@ -168,6 +168,11 @@ defmodule DrabPoc.DocsCommander do
   def c_5_click(socket, dom_sender) do
     counter = get_store(socket, :counter)
     socket |> update(:text, set: "get_store(:counter) returns: #{inspect(counter)}", on: this(dom_sender))
+  end
+
+  def c_6_click(socket, dom_sender) do
+    test = get_session(socket, :test)
+    socket |> update(:text, set: "get_session(:test) returns: #{inspect(test)}", on: this(dom_sender))
   end
 
 
