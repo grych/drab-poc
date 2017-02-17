@@ -24,4 +24,4 @@ config :logger, :console,
 import_config "#{Mix.env}.exs"
 
 config :drab, disable_controls_when_disconnected: true, 
-  drab_store_storage: :session_storage
+  drab_store_storage: :local_storage

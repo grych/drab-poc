@@ -99,8 +99,9 @@ defmodule DrabPoc.PageCommander do
     # put_store(socket, :sentix_pid, sentix_pid)
   end
 
-  def disconnected(store) do
+  def disconnected(store, session) do
     Logger.debug("DISCONNECTED, store: #{store |> inspect}")
+    Logger.debug("            session: #{session |> inspect}")
     :ok
   end
 
