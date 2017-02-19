@@ -26,6 +26,7 @@ config :drab_poc, DrabPoc.Endpoint,
     ]
   ]
 config :drab_poc, :watch_file, "/private/var/log/system.log"
+config :drab_poc, :watch_monitor, :kqueue_monitor
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
