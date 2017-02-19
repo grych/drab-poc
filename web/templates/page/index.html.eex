@@ -9,7 +9,7 @@
   Nowadays, when the most of the applications are web based, it is not so easy anymore. You need either to create a form and submit the data via POST or GET or use AJAX to send or retrieve data. Whole interface manipulation is on the client side. In practice, you need to write two applications: on the client and the server side.  
 </p>
 <p>
-  Additionally, because <code>http</code> is stateless and a one-way protocol, it is not easy to communicate back from the server to the browser. Like, for example, during execution of the long running process, when there is a need to update status (eg. progress bar) or ask the operator about something (like "would you like to continue?"). Of course there are workarounds for this, like polling the server every few seconds to have a status, or even auto-refreshing the page, but those are just a dirty workarounds. The solution would be to allow an access to the interface directly from the server side. And here comes the <code>Drab</code>.
+  Additionally, because <code>http</code> is stateless and a one-way protocol, it is not easy to communicate back from the server to the browser. Like, for example, during execution of the long running process, when there is a need to update status (eg. progress bar) or ask the operator about something (like "would you like to continue?"). Of course there are workarounds for this, like polling the server every few seconds to have a status, or even auto-refreshing the page, but those are just a dirty workarounds. The solution would be to allow an access to the interface directly from the server side. And here comes <code>Drab</code>.
 </p>
 <p>
   <code>Drab</code> is a concept of <b>providing an access to User Interface (DOM objects) on the server side</b>, just like in the 
@@ -25,7 +25,7 @@
   <h4 id="simple">Simple Input and Button Example</h4>
   <div class="col-md-8">
     <p>
-      In general, Drab treats the client browser as a database privider and gives the way to <code>select</code>, <code>update</code>, <code>insert</code> and <code>delete</code> objects or object attributes:
+      In general, Drab treats the client browser as a database provider and gives the way to <code>select</code>, <code>update</code>, <code>insert</code> and <code>delete</code> objects or object attributes:
     <pre><code class="elixir"><%=~s/select(something, from: selector)
     insert(something, into: selector)
     delete(selector) or delete(something, from: selector)
@@ -286,7 +286,7 @@ end/%></code></pre>
 <hr>
 
 <div class="row">
-  <h4 id="store">Drab Store and the access to Plug Session</h4>
+  <h4 id="store">Drab Store and access to Plug Session</h4>
   <div class="col-md-12">
     <p>
       Analogically to Plug, Drab can store the values in its own session. To avoid confusion with the session, we will call Drab Store. You can use two functions, <code>put_store/3</code> and <code>get_store/2</code> to archive it. They works exactly the same as a "normal", Phoenix session.
