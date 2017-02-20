@@ -194,7 +194,8 @@ end/%></code></pre>
 <pre><code class="elixir"><%=~s/ def connected(socket) do
   spawn_link fn ->
     file = Application.get_env(:drab_poc, :watch_file)
-    Sentix.start_link(:watcher, [file], monitor: :kqueue_monitor, latency: 1)
+    monitor = Application.get_env(:drab_poc, :watch_monitor)
+    Sentix.start_link(:watcher, [file], monitor: monitor, latency: 1, filter: [:updated])
     Sentix.subscribe(:watcher)
     file_change_loop(socket, file)
   end
@@ -264,7 +265,7 @@ end/%></code></pre>
   <h4 id="broadcast">Is Drab Quick Enough? Plus Broadcast</h4>
   <div class="col-md-8">
     <p>
-      You may concern about Drab performance - is it quick enough to handle events in the realtime? The best to find it out is to check - lets say the <code>keyup</code> event. <em>Notice that this Demo Page runs on 2007 Mac Mini - not a speed daemon - with the consumer internet access</em>
+      You may concern about Drab performance - is it quick enough to handle events in the realtime? The best to find it out is to check - lets say the <code>keyup</code> event.
       <pre><code class="html"><%=~s(<input drab-keyup="changed_input">
 <div id="display_placeholder">Some text here</div>)%></code></pre>
       <pre><code class="elixir"><%=~s/def changed_input(socket, dom_sender) do
