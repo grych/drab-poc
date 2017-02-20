@@ -93,7 +93,7 @@ defmodule DrabPoc.PageCommander do
       file = Application.get_env(:drab_poc, :watch_file)
       monitor = Application.get_env(:drab_poc, :watch_monitor)
       ### Sentix requires fswatch installed on the system
-      Sentix.start_link(:watcher, [file], monitor: monitor, latency: 1)
+      Sentix.start_link(:watcher, [file], monitor: monitor, latency: 1, filter: [:updated])
       Sentix.subscribe(:watcher)
       file_change_loop(socket, file)
     end
