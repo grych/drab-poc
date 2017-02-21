@@ -182,7 +182,7 @@ end/%></code></pre>
       <br>
       Notice that updates can be stacked, because all Drab setter functions return <code>socket</code>.
 <pre><code class="elixir"><%=~S"""
-  def perform_long_process(socket, _dom_sender) do
+  def perform_long_process(socket, dom_sender) do
     pid = spawn_link(fn -> 
       start_background_process(socket) 
     end)
