@@ -18,11 +18,12 @@ defmodule DrabPoc.PageCommander do
     socket |> console("Hey, this is PageCommander from the server side!")
   end
 
-  def perform_long_process(socket, _dom_sender) do
+  def perform_long_process(socket, dom_sender) do
     pid = spawn_link(fn -> 
       start_background_process(socket) 
     end)
-    socket |> insert(cancel_button(socket, pid), after: "[drab-handler=perform_long_process]")
+    socket |> execute(:hide, on: this(dom_sender))
+    socket |> insert(cancel_button(socket, pid), after: "[drab-click=perform_long_process]")
   end
 
   defp start_background_process(socket) do
@@ -54,6 +55,7 @@ defmodule DrabPoc.PageCommander do
   end
 
   defp clean_up(socket) do
+    socket |> execute(:show, on: "[drab-click=perform_long_process]")
     socket |> delete("[drab-click=cancel_long_process]")
   end
 

@@ -177,7 +177,7 @@ end/%></code></pre>
   <div class="progress-bar" role="progressbar" style="width:0%">
   </div>
 </div>
-<button drab-handler="perform_long_process" drab-event="click">Click me to start processing ...</button>]%></code></pre>
+<button drab-click="perform_long_process">Click me to start processing ...</button>]%></code></pre>
       On the server we simulate a long processing by sleeping some random time in each step. We will run <code>start_background_process</code> function in a background. Main loop runs random number of steps, and each step just sleeps for a random time. After the nap, <code>update/3</code> sets the <code>css("width")</code> of the <code>progress-bar</code> to <code>XX%</code> and then, the html of the progress bar node to <code>"XX%"</code>. We keep it doing it until it reaches 100%, then we <code>insert(class: "progress-bar-success", into: ".progress-bar")</code>. Lets repeat this code in English: <strong>insert</strong> the <strong>class</strong> <em>progress-bar-success</em> <strong>into</strong> the <em>.progress-bar</em> selector. This is why I prefer the pipe syntax - Drab functions are more readable with it.
       <br>
       Notice that updates can be stacked, because all Drab setter functions return <code>socket</code>.
@@ -186,7 +186,8 @@ end/%></code></pre>
     pid = spawn_link(fn -> 
       start_background_process(socket) 
     end)
-    socket |> insert(cancel_button(socket, pid), after: "[drab-handler=perform_long_process]")
+    socket |> execute(:hide, on: this(dom_sender))
+    socket |> insert(cancel_button(socket, pid), after: "[drab-click=perform_long_process]")
   end
 
   defp start_background_process(socket) do
@@ -234,9 +235,10 @@ With this data, killing the process is easy. You just need to get the tokenized 
 end
 
 defp clean_up(socket) do
+  socket |> execute(:show, on: "[drab-click=perform_long_process]")
   socket |> delete("[drab-click=cancel_long_process]")
 end/%></code></pre>
-The other function, <code>clean_up/1</code> just removes the cancel button from the tree.
+The other function, <code>clean_up/1</code> just reverts the changes to the DOM, showing the main button back and deleting the cancel one.
 </p>
     <p>
       Now take a look on <code>Drab.Modal.alert/4</code> - the function which shows the bootstrap modal window on the browser and waits for the user input. Please notice that nothing is updated until you close the alert box. And because you can put your own form in the alert box, this is the easiest way to get the user input. Alert boxes return not only the name of the clicked button, but as well the names and values of all inputs in the modal window.
@@ -249,7 +251,7 @@ The other function, <code>clean_up/1</code> just removes the cancel button from 
       <div class="progress-bar" role="progressbar" style="width:0%">
       </div>
     </div>
-    <button id="perform_long_process" class="btn btn-primary" drab-click="perform_long_process">Click me to start processing ...</button>
+    <button class="btn btn-primary" drab-click="perform_long_process">Click me to start processing ...</button>
   </div>
 </div>
 <hr>
