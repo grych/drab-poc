@@ -21,6 +21,9 @@
 </p>
 <p><small>Tomek "Grych" Gryszkiewicz 2016</small></p>
 <hr>
+
+
+
 <div class="row">
   <h4 id="simple">Simple Input and Button Example</h4>
   <div class="col-md-8">
@@ -66,56 +69,44 @@ end]%></code></pre>
   </div>
 </div>
 <hr>
+
+
+
 <div class="row">
-  <h4 id="long_running">Long Running Process with Communication Back to Browser</h4>
+  <h4 id="dom_sender">Access to the Sender DOM Object Properties</h4>
   <div class="col-md-8">
     <p>
-      Let's move to some more complicated functionality. Assume having a process which is doing some stuff on the server side and we want to report back to the user after each completed step. We will use the progress bar controlled from the server. <br>
-      Client side is very simple, again. Please notice the <code>drab-handler</code> attribute - this time it will run <code>perform_long_process</code> function on the server side.
-<pre><code class="html"><%=~s[<div class="progress">
-  <div class="progress-bar" role="progressbar" style="width:0%">
-  </div>
-</div>
-<button drab-handler="perform_long_process" drab-event="click">Click me to start processing ...</button>]%></code></pre>
-      On the server we simulate a long processing by sleeping some random time. After the nap, <code>update/3</code> sets the <code>css("width")</code> of the <code>progress-bar</code> to <code>XX%</code> and then, the html of the progress bar node to <code>"XX%"</code>. We keep it doing it until it reaches 100%, then we <code>insert(class: "progress-bar-success", into: ".progress-bar")</code>. Lets repeat this code in English: <strong>insert</strong> the <strong>class</strong> <em>progress-bar-success</em> <strong>into</strong> the <em>.progress-bar</em> selector. This is why I prefer the pipe syntax - Drab functions are more readable with it.
-      <br>
-      Notice that updates can be stacked, because all Drab setter functions return <code>socket</code>.
-<pre><code class="elixir"><%=~S[def perform_long_process(socket, dom_sender) do
-  socket |> delete(class: "progress-bar-success", from: ".progress-bar")
-
-  steps = :rand.uniform(100)
-  for i <- 1..steps do
-    :timer.sleep(:rand.uniform(500)) # simulate real work
-    socket  
-      |> update(css: "width", set: "#{i * 100 / steps}%", on: ".progress-bar")
-      |> update(:html, set: "#{Float.round(i * 100 / steps, 2)}%", on: ".progress-bar")
-  end
-  socket |> insert(class: "progress-bar-success", into: ".progress-bar")
-
-  case socket |> alert("Finished!", "Do you want to retry?", ok: "Yes", cancel: "No!") do
-    {:ok, _}     -> perform_long_process(socket, dom_sender)
-    {:cancel, _} -> :do_nothing
-  end
-
-  socket
-end]%></code></pre>
-      Easy, huh? And <b>no need to code javascript at all</b>.
+      The next example shows how we can retrieve the information from <code>data</code> attribute. We've simple set up few buttons, each with the same event function <code>clicked_sleep_button</code>:
+      <pre><code class="html"><%=~s(<button drab-click="clicked_sleep_button" data-sleep="1">Sleep 1 second</button>
+<button drab-click="clicked_sleep_button" data-sleep="2">Sleep 2 seconds</button>
+<button drab-click="clicked_sleep_button" data-sleep="3">Sleep 3 seconds</button>)%></code></pre>
+    Did you notice <code>drab-click</code> attribute? This is a shorthand for <code>drab-event</code> and <code>drab-handler</code> combination. There is a number of such shorthands for most popular events, see documentation for more.
     </p>
     <p>
-      Now take a look on <code>Drab.Modal.alert/4</code> - the function which shows the bootstrap modal window on the browser and waits for the user input. Please notice that nothing is updated until you close the alert box. And because you can put your own form in the alert box, this is the easiest way to get the user input. Alert boxes return not only the name of the clicked button, but as well the names and values of all inputs in the modal window.
+      On the server side the code is not very sophisticated as well. The whole functionality is to sleep for a few seconds. But the sleep interval is given with <code>data</code> property in <code>dom_sender</code> variable. Please notice that this variable contains more interesting values to be used, like <code>val</code>, <code>html</code> or <code>text</code>. 
+      <pre><code class="elixir"><%=~s/def clicked_sleep_button(socket, dom_sender) do
+  socket |> update(class: "btn-primary", set: "btn-danger", on: this(dom_sender))
+  :timer.sleep(dom_sender["data"]["sleep"] * 1000)
+  socket |> update(class: "btn-danger", set: "btn-primary", on: this(dom_sender))
+end/%></code></pre>
+      With this example we introduce <code>this/1</code> function, which allows you to operate on the DOM object in similar way as with <code>$(this)</code> in JS. This is a way to use one event handler for multiple objects.
     </p>
+    <p>
+      Observe that when one button is "processing", you can click another one. This is because <strong>Drab requests are asynchronous on the server side</strong>. And this is a reason why buttons are disabled by default while processing - it is blocking the user from running the same action for few times. You may override this behaviour in `config.exs` with:
+      <pre><code class="elixir"><%=~s/config :drab, disable_controls_while_processing: false/%></code></pre>
   </div>
-
   <div class="col-md-4">
-    Click a button to simulate long-running process on the server.
-    <div class="progress">
-      <div class="progress-bar" role="progressbar" style="width:0%">
-      </div>
-    </div>
-    <button class="btn btn-primary" drab-click="perform_long_process">Click me to start processing ...</button>
+    <p>
+      Click the button to launch sleep <br><br>
+      <button drab-click="clicked_sleep_button" class="btn btn-primary" data-sleep="1">Sleep 1 second</button><br><br>
+      <button drab-click="clicked_sleep_button" class="btn btn-primary" data-sleep="2">Sleep 2 seconds</button><br><br>
+      <button drab-click="clicked_sleep_button" class="btn btn-primary" data-sleep="3">Sleep 3 seconds</button><br><br>
+    </p>
   </div>
 </div>
 <hr>
+
+
 <div class="row">
   <h4 id="tens_of_processes">Tens of Tasks Running in Parallel on the Server and Communicating Back to the Browser</h4>
   <div class="col-md-8">
@@ -132,7 +123,6 @@ end]%></code></pre>
   ...
 <span class="task label label-danger" data-task_id="54">Task 54</span>
 <button drab-click="run_async_tasks">Start async task</button>)%></code></pre>
-    Did you notice <code>drab-click</code> attribute? This is a shorthand for <code>drab-event</code> and <code>drab-handler</code> combination. There is a number of such shorthands for most popular events, see documentation for more.
     </p>
     <p>
       The whole processing is on the server side. Clicking the button runs <code>run_async_tasks/2</code> function on the server side:
@@ -175,6 +165,96 @@ end/%></code></pre>
   </div>
 </div>
 <hr>
+
+
+<div class="row">
+  <h4 id="long_running">Long Running Process with Communication Back to Browser</h4>
+  <div class="col-md-8">
+    <p>
+      Let's move to some more complicated functionality. Assume having a process which is doing some stuff on the server side and we want to report back to the user after each completed step. We will use the progress bar controlled from the server. <br>
+      Client side is very simple, again. Please notice the <code>drab-handler</code> attribute - this time it will run <code>perform_long_process</code> function on the server side.
+<pre><code class="html"><%=~s[<div class="progress">
+  <div class="progress-bar" role="progressbar" style="width:0%">
+  </div>
+</div>
+<button drab-handler="perform_long_process" drab-event="click">Click me to start processing ...</button>]%></code></pre>
+      On the server we simulate a long processing by sleeping some random time in each step. We will run <code>start_background_process</code> function in a background. Main loop runs random number of steps, and each step just sleeps for a random time. After the nap, <code>update/3</code> sets the <code>css("width")</code> of the <code>progress-bar</code> to <code>XX%</code> and then, the html of the progress bar node to <code>"XX%"</code>. We keep it doing it until it reaches 100%, then we <code>insert(class: "progress-bar-success", into: ".progress-bar")</code>. Lets repeat this code in English: <strong>insert</strong> the <strong>class</strong> <em>progress-bar-success</em> <strong>into</strong> the <em>.progress-bar</em> selector. This is why I prefer the pipe syntax - Drab functions are more readable with it.
+      <br>
+      Notice that updates can be stacked, because all Drab setter functions return <code>socket</code>.
+<pre><code class="elixir"><%=~S"""
+  def perform_long_process(socket, _dom_sender) do
+    pid = spawn_link(fn -> 
+      start_background_process(socket) 
+    end)
+    socket |> insert(cancel_button(socket, pid), after: "[drab-handler=perform_long_process]")
+  end
+
+  defp start_background_process(socket) do
+    socket |> delete(class: "progress-bar-success", from: ".progress-bar")
+
+    steps = :rand.uniform(100)
+    for i <- 1..steps do
+      :timer.sleep(:rand.uniform(500)) # simulate real work
+      socket 
+        |> update(css: "width", set: "#{i * 100 / steps}%", on: ".progress-bar")
+        |> update(:html, set: "#{Float.round(i * 100 / steps, 2)}%", on: ".progress-bar")
+    end
+    socket |> insert(class: "progress-bar-success", into: ".progress-bar")
+
+    case socket |> alert("Finished!", "Do you want to retry?", buttons: [ok: "Yes", cancel: "No!"]) do
+      {:ok, _}     -> start_background_process(socket)
+      {:cancel, _} -> clean_up(socket)
+    end    
+  end
+  """%></code></pre>
+      After running the background process, the event handler (<code>perform_long_process/2</code> function) adds the Cancel button to the DOM tree with <code>insert("button html", after: "[drab-handler=perform_long_process])"</code>. Translating it to English again, it means <strong>insert</strong> <em>button html</em> <strong>after</strong> <em>all objects having <strong>drab-handler=perform_long_process</strong></em> properties. This shows the Cancel button, defined here:
+    </p>
+<p>
+<pre><code class="elixir"><%=~S[defp cancel_button(socket, pid) do
+  """
+  <button class="btn btn-danger" 
+          drab-click="cancel_long_process" 
+          data-pid="#{Drab.tokenize_pid(socket, pid)}">
+    Cancel
+  </button>
+  """    
+end]%></code></pre>
+  This function builds the simple button html to be inserted into the DOM tree. What is interesting here, is that button has its event handler (function <code>cancel_long_process/2</code>) and <code>data-pid</code> property, containing the PID of the background Elixir process. This is because we need to know which process to cancel! 
+  <br>
+  Tokenizing the PID prevents data tampering (and also translates Elixir PID to String, so it could be inserted into the DOM tree). Remember that Tokens are signed, but not encrypted, so do not store any sensitive data in this way.
+</p>
+<p>
+With this data, killing the process is easy. You just need to get the tokenized pid from <code>dom_sender["data"]["pid"]</code>, decrypt it with <code>Drab.detokenize_pid/2</code> function. Lock and load.
+<pre><code class="elixir"><%=~S/def cancel_long_process(socket, dom_sender) do
+  pid = Drab.detokenize_pid(socket, dom_sender["data"]["pid"])
+  if Process.alive?(pid) do
+    Process.exit(pid, :kill)
+  end
+  clean_up(socket)
+end
+
+defp clean_up(socket) do
+  socket |> delete("[drab-click=cancel_long_process]")
+end/%></code></pre>
+The other function, <code>clean_up/1</code> just removes the cancel button from the tree.
+</p>
+    <p>
+      Now take a look on <code>Drab.Modal.alert/4</code> - the function which shows the bootstrap modal window on the browser and waits for the user input. Please notice that nothing is updated until you close the alert box. And because you can put your own form in the alert box, this is the easiest way to get the user input. Alert boxes return not only the name of the clicked button, but as well the names and values of all inputs in the modal window.
+    </p>
+  </div>
+
+  <div class="col-md-4">
+    Click a button to simulate long-running process on the server.
+    <div class="progress">
+      <div class="progress-bar" role="progressbar" style="width:0%">
+      </div>
+    </div>
+    <button id="perform_long_process" class="btn btn-primary" drab-click="perform_long_process">Click me to start processing ...</button>
+  </div>
+</div>
+<hr>
+
+
 
 <div class="row">
   <h4 id="tail_dash_f">Server-Side Events: Display the Growing File (tail -F)</h4>
@@ -223,39 +303,6 @@ end/%></code></pre>
       <pre><code id="log_file" class="accesslog">
 ... this pane will update when access.log change ...
       </code></pre>
-    </p>
-  </div>
-</div>
-<hr>
-
-<div class="row">
-  <h4 id="dom_sender">Access to the Sender DOM Object Properties</h4>
-  <div class="col-md-8">
-    <p>
-      The next example shows how we can retrieve the information from <code>data</code> attribute. We've simple set up few buttons, each with the same event function <code>clicked_sleep_button</code>:
-      <pre><code class="html"><%=~s(<button drab-click="clicked_sleep_button" data-sleep="1">Sleep 1 second</button>
-<button drab-click="clicked_sleep_button" data-sleep="2">Sleep 2 seconds</button>
-<button drab-click="clicked_sleep_button" data-sleep="3">Sleep 3 seconds</button>)%></code></pre>
-    </p>
-    <p>
-      On the server side the code is not very sophisticated as well. The whole functionality is to sleep for a few seconds. But the sleep interval is given with <code>data</code> property in <code>dom_sender</code> variable. Please notice that this variable contains more interesting values to be used, like <code>val</code>, <code>html</code> or <code>text</code>. 
-      <pre><code class="elixir"><%=~s/def clicked_sleep_button(socket, dom_sender) do
-  socket |> update(class: "btn-primary", set: "btn-danger", on: this(dom_sender))
-  :timer.sleep(dom_sender["data"]["sleep"] * 1000)
-  socket |> update(class: "btn-danger", set: "btn-primary", on: this(dom_sender))
-end/%></code></pre>
-      With this example we introduce <code>this/1</code> function, which allows you to operate on the DOM object in similar way as with <code>$(this)</code> in JS. This is a way to use one event handler for multiple objects.
-    </p>
-    <p>
-      Observe that when one button is "processing", you can click another one. This is because <strong>Drab requests are asynchronous on the server side</strong>. And this is a reason why buttons are disabled by default while processing - it is blocking the user from running the same action for few times. You may override this behaviour in `config.exs` with:
-      <pre><code class="elixir"><%=~s/config :drab, disable_controls_while_processing: false/%></code></pre>
-  </div>
-  <div class="col-md-4">
-    <p>
-      Click the button to launch sleep <br><br>
-      <button drab-click="clicked_sleep_button" class="btn btn-primary" data-sleep="1">Sleep 1 second</button><br><br>
-      <button drab-click="clicked_sleep_button" class="btn btn-primary" data-sleep="2">Sleep 2 seconds</button><br><br>
-      <button drab-click="clicked_sleep_button" class="btn btn-primary" data-sleep="3">Sleep 3 seconds</button><br><br>
     </p>
   </div>
 </div>

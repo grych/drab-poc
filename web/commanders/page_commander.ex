@@ -18,7 +18,14 @@ defmodule DrabPoc.PageCommander do
     socket |> console("Hey, this is PageCommander from the server side!")
   end
 
-  def perform_long_process(socket, dom_sender) do
+  def perform_long_process(socket, _dom_sender) do
+    pid = spawn_link(fn -> 
+      start_background_process(socket) 
+    end)
+    socket |> insert(cancel_button(socket, pid), after: "[drab-handler=perform_long_process]")
+  end
+
+  defp start_background_process(socket) do
     socket |> delete(class: "progress-bar-success", from: ".progress-bar")
 
     steps = :rand.uniform(100)
@@ -31,11 +38,31 @@ defmodule DrabPoc.PageCommander do
     socket |> insert(class: "progress-bar-success", into: ".progress-bar")
 
     case socket |> alert("Finished!", "Do you want to retry?", buttons: [ok: "Yes", cancel: "No!"]) do
-      {:ok, _} -> perform_long_process(socket, dom_sender)
-      {:cancel, _} -> :do_nothing
-    end
+      {:ok, _} -> start_background_process(socket)
+      {:cancel, _} -> clean_up(socket)
+    end    
+  end
 
-    socket
+  defp cancel_button(socket, pid) do
+    """
+     <button class="btn btn-danger" 
+             drab-click="cancel_long_process" 
+             data-pid="#{Drab.tokenize_pid(socket, pid)}">
+    Cancel
+    </button>
+    """    
+  end
+
+  defp clean_up(socket) do
+    socket |> delete("[drab-click=cancel_long_process]")
+  end
+
+  def cancel_long_process(socket, dom_sender) do
+    pid = Drab.detokenize_pid(socket, dom_sender["data"]["pid"])
+    if Process.alive?(pid) do
+      Process.exit(pid, :kill)
+    end
+    clean_up(socket)
   end
 
   def run_async_tasks(socket, _dom_sender) do
