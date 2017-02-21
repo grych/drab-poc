@@ -55,8 +55,8 @@ defmodule DrabPoc.PageCommander do
   end
 
   defp clean_up(socket) do
-    socket |> execute(:show, on: "[drab-click=perform_long_process]")
     socket |> delete("[drab-click=cancel_long_process]")
+    socket |> execute(:show, on: "[drab-click=perform_long_process]")
   end
 
   def cancel_long_process(socket, dom_sender) do
