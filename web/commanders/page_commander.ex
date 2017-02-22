@@ -22,8 +22,9 @@ defmodule DrabPoc.PageCommander do
     pid = spawn_link(fn -> 
       start_background_process(socket) 
     end)
-    socket |> execute(:hide, on: this(dom_sender))
-    socket |> insert(cancel_button(socket, pid), after: "[drab-click=perform_long_process]")
+    socket 
+      |> execute(:hide, on: this(dom_sender))
+      |> insert(cancel_button(socket, pid), after: "[drab-click=perform_long_process]")
   end
 
   defp start_background_process(socket) do
@@ -93,7 +94,7 @@ defmodule DrabPoc.PageCommander do
   end
 
   def changed_input(socket, dom_sender) do
-    socket |> update!(:text, set: String.upcase(dom_sender["val"]),  on: "#display_placeholder")
+    socket |> update!(:text, set: String.upcase(dom_sender["val"]),  on: dom_sender["data"]["update"])
   end
 
   def increase_counter(socket, _dom_sender) do
@@ -118,6 +119,7 @@ defmodule DrabPoc.PageCommander do
 
   def connected(socket) do
     Logger.debug("CONNECTED: Counter: #{get_store(socket, :counter)}")
+    clean_up(socket)
     spawn_link fn ->
       file = Application.get_env(:drab_poc, :watch_file)
       monitor = Application.get_env(:drab_poc, :watch_monitor)

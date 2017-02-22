@@ -186,8 +186,9 @@ end/%></code></pre>
     pid = spawn_link(fn -> 
       start_background_process(socket) 
     end)
-    socket |> execute(:hide, on: this(dom_sender))
-    socket |> insert(cancel_button(socket, pid), after: "[drab-click=perform_long_process]")
+    socket 
+      |> execute(:hide, on: this(dom_sender))
+      |> insert(cancel_button(socket, pid), after: "[drab-click=perform_long_process]")
   end
 
   defp start_background_process(socket) do
@@ -312,13 +313,16 @@ end/%></code></pre>
 
 <div class="row">
   <h4 id="broadcast">Is Drab Quick Enough? Plus Broadcast</h4>
+
   <div class="col-md-8">
     <p>
       You may concern about Drab performance - is it quick enough to handle events in the realtime? The best to find it out is to check - lets say the <code>keyup</code> event.
-      <pre><code class="html"><%=~s(<input drab-keyup="changed_input">
-<div id="display_placeholder">Some text here</div>)%></code></pre>
+      <pre><code class="html"><%=~s(<input drab-keyup="changed_input" data-update="#display_placeholder">
+<div id="display_placeholder"></div>)%></code></pre>
       <pre><code class="elixir"><%=~s/def changed_input(socket, dom_sender) do
-  socket |> update!(:text, set: String.upcase(dom_sender["val"]),  on: "#display_placeholder")
+  socket |> update!(:text, 
+                 set: String.upcase(dom_sender["val"]),  
+                  on: dom_sender["data"]["update"])
 end/%></code></pre>
     </p>
     <p>
@@ -327,11 +331,30 @@ end/%></code></pre>
   </div>
   <div class="col-md-4">
     <p>
-      Start typing down here:
-      <input drab-keyup="changed_input" class="form-control">
+      Demonstration of <code>keyup</code> event:
+      <input drab-keyup="changed_input" class="form-control" data-update="#display_placeholder">
       <div id="display_placeholder"></div>
     </p>
   </div>
+
+  <div class="col-md-8">
+    <p>
+      In many situation you don't need to react on every single key press, and you want to launch the event when user stop typing. The good example is autocomplete - you don't want to search the database after each keypress. This is the are where <code>debounce()</code> option becomes handy:
+      <pre><code class="html"><%=~s[<input drab-keyup="changed_input" 
+       drab-options="debounce(500)" 
+       data-update="#display_placeholder2">
+<div id="display_placeholder">Some text here</div>]%></code></pre>
+      The code above is exactly the same as previous, except of <code>debounce(500)</code> option. The same event handler (<code>changed_input/2</code>) is launched, but not after every key up, but when you actually stop typing for 500 miliseconds. 
+    </p>
+  </div>
+  <div class="col-md-4">
+    <p>
+      The same event with <code>debounce(500)</code>:
+      <input drab-keyup="changed_input" drab-options="debounce(500)" data-update="#display_placeholder2" class="form-control">
+      <div id="display_placeholder2"></div>
+    </p>
+  </div>
+
 </div>
 <hr>
 
