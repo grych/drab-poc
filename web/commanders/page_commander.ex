@@ -2,15 +2,37 @@ defmodule DrabPoc.PageCommander do
   require IEx
   require Logger
 
-  use Drab.Commander, 
-    onload: :page_loaded, 
-    onconnect: :connected,
-    ondisconnect: :disconnected,
-    modules: [Drab.Query, Drab.Modal],
-    access_session: [:drab_test]
+  use Drab.Commander,
+    # onload: :page_loaded, 
+    # onconnect: :connected
+    # ondisconnect: :disconnected,
+    # access_session: [:drab_test],
+    modules: [Drab.Query, Drab.Modal]
+
+  onload :page_loaded
+  onconnect :connected
+  ondisconnect :disconnected
+
+  access_session :drab_test
+
+  before_handler :run_before_uppercase, only: [:uppercase]
+  before_handler :run_before_each
+  after_handler  :run_after_except_uppercase, except: [:uppercase, :perform_long_process, :run_async_tasks]
+
+  def run_before_uppercase(_socket, _dom_sender) do
+    Logger.debug("BEFORE uppercase")
+  end
+
+  def run_before_each(_socket, _dom_sender) do
+    Logger.debug("BEFORE EACH")
+  end
+
+  def run_after_except_uppercase(_socket, _dom_sender, handler_return) do
+    Logger.debug("AFTER EXCEPT uppercase. Handler returned: #{inspect handler_return}")
+  end
 
   # Drab Events
-  def uppercase(socket, dom_sender) do
+  def uppercase_button(socket, dom_sender) do
     t = socket |> select(:val, from: "#text_to_uppercase") |> List.first()
     socket |> update(:val, set: String.upcase(t), on: "#text_to_uppercase")
     Logger.debug("****** SOCKET:  #{inspect(socket)}")
@@ -91,6 +113,7 @@ defmodule DrabPoc.PageCommander do
     socket |> update(class: "btn-primary", set: "btn-danger", on: this(dom_sender))
     :timer.sleep(dom_sender["data"]["sleep"] * 1000)
     socket |> update(class: "btn-danger", set: "btn-primary", on: this(dom_sender))
+    dom_sender["data"]["sleep"]
   end
 
   def changed_input(socket, dom_sender) do

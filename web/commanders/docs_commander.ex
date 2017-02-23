@@ -2,7 +2,12 @@ defmodule DrabPoc.DocsCommander do
   require IEx
   require Logger
 
-  use Drab.Commander, onload: :page_loaded, access_session: [:test]
+  use Drab.Commander
+
+  access_session :test
+
+  onload :page_loaded
+  
 
   def qs_1_click(socket, _dom_sender) do
     val = socket |> select(:val, from: "#qs_1_text") |> inspect
@@ -154,7 +159,6 @@ defmodule DrabPoc.DocsCommander do
 
   def c_2_click(socket, _dom_sender) do
     _ = socket |> execjs("alert('Do you like alerts?')")
-    socket
   end
 
   def c_3_click(socket, _dom_sender) do
@@ -176,7 +180,7 @@ defmodule DrabPoc.DocsCommander do
   end
 
 
-  def page_loaded(socket) do
-    socket
+  def page_loaded(_socket) do
+    :nothing
   end
 end

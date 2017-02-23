@@ -1,6 +1,9 @@
 defmodule DrabPoc.JquerylessCommander do
   require Logger
-  use Drab.Commander, onload: :page_loaded, modules: [] # only default Drab.Core
+  use Drab.Commander,
+    modules: [] # only default Drab.Core
+
+  onload :page_loaded
 
   def page_loaded(socket) do
     socket |> execjs("console.log('Alert from the other side!');")

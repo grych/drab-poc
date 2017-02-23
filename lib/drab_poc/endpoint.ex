@@ -1,6 +1,8 @@
 defmodule DrabPoc.Endpoint do
   use Phoenix.Endpoint, otp_app: :drab_poc
-  use Drab.Endpoint, channels: ["mychannel:whatever", DrabPoc.Socket]
+  use Drab.Endpoint #, add_channels: [{"mychannel:whatever", DrabPoc.Socket}]
+
+  # Drab.Endpoint.drab "mychannel:whatever", DrabPoc.Socket
 
   # Serve at "/" the static files from "priv/static" directory.
   #

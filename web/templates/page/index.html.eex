@@ -270,7 +270,8 @@ The other function, <code>clean_up/1</code> just reverts the changes to the DOM,
     </p>
     <p>
       To enable the Server-Side event watcher, we are going to introduce the Drab Callbacks. Callbacks are events launched automatically, when page is loaded, when browser reconnects or disconnects from the Server. To enable it you need to specify them in the Commander:
-<pre><code class="elixir"><%=~s/use Drab.Commander, onconnect: :connected/%></code></pre>
+<pre><code class="elixir"><%=~s/use Drab.Commander
+onconnect :connected/%></code></pre>
       <code>onconnect</code> launches every time client connects to the server, so after first load, network crashes, server crashes etc. There is also <code>onload</code> callback, which runs only once and ignores disconnects.
       <br>
       In the handler function we run <code>Sentix</code> file watcher (it is a wrapper around <code>fswatch</code> utility). 
@@ -392,7 +393,7 @@ end/%></code></pre>
 
   <div class="col-md-8">
     <p>
-    Although Drab Store is a different entity than Plug Session (used in Controllers), there is a way to access the Session. First, you need to whitelist the keys you wan to access in <code>use Drab.Commander access_session: []</code> clause. Whitelisting is due to security: it is kept in Token, on the client side, so it is signed but not encrypted. <br>
+    Although Drab Store is a different entity than Plug Session (used in Controllers), there is a way to access the Session. First, you need to whitelist the keys you wan to access in <code>access_session/1</code> macro (you may give it a list of atoms or a single atom). Whitelisting is due to security: it is kept in Token, on the client side, so it is signed but not encrypted. <br>
 
     To show an example, we've put the key <code>:drab_test</code> to the Plug Session while rendering this page by the Controller:
     <pre><code class="elixir"><%=~S/defmodule DrabPoc.PageController do
@@ -406,9 +407,10 @@ end/%></code></pre>
 end/%></code></pre>
     To use it in the Commander, you need to explicitly inherit this value:
 <pre><code class="elixir"><%=~S/defmodule DrabPoc.PageCommander do
-use Drab.Commander, 
-  onload: :page_loaded, 
-  access_session: [:drab_test]
+  use Drab.Commander
+
+  onload :page_loaded, 
+  access_session :drab_test
 
   def page_loaded(socket) do
     socket 
