@@ -32,7 +32,7 @@ defmodule DrabPoc.PageCommander do
   end
 
   # Drab Events
-  def uppercase_button(socket, dom_sender) do
+  def uppercase(socket, dom_sender) do
     t = socket |> select(:val, from: "#text_to_uppercase") |> List.first()
     socket |> update(:val, set: String.upcase(t), on: "#text_to_uppercase")
     Logger.debug("****** SOCKET:  #{inspect(socket)}")
