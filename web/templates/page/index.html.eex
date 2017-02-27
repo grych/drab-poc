@@ -2,24 +2,41 @@
 <h4 class="centered">
   The jQuery in Elixir
 </h4>
-<p>
-  In the <i>"good old times"</i> the event handling was easy. The only thing you had to do was to create the event handler (remember <code>TForm1.Button1Click(Sender: TObject)</code>?) and you could do everything inside this handler: accessing data from models, manipulating user interface, sending raw Ethernet packets to the coffee machine...
-</p>
-<p>
-  Nowadays, when the most of the applications are web based, it is not so easy anymore. You need either to create a form and submit the data via POST or GET or use AJAX to send or retrieve data. Whole interface manipulation is on the client side. In practice, you need to write two applications: on the client and the server side.  
-</p>
-<p>
-  Additionally, because <code>http</code> is stateless and a one-way protocol, it is not easy to communicate back from the server to the browser. Like, for example, during execution of the long running process, when there is a need to update status (eg. progress bar) or ask the operator about something (like "would you like to continue?"). Of course there are workarounds for this, like polling the server every few seconds to have a status, or even auto-refreshing the page, but those are just a dirty workarounds. The solution would be to allow an access to the interface directly from the server side. And here comes <code>Drab</code>.
-</p>
-<p>
-  <code>Drab</code> is a concept of <b>providing an access to User Interface (DOM objects) on the server side</b>, just like in the 
-  good-old Delphi times. The examples below should give you an overview of how does it work. For more detailed instructions, please refer to the <a href="https://hexdocs.pm/drab">documentation</a>.
-</p>
-<p>
-  Drab is written using Phoenix on Elixir, so all the code in examples is HTML and Elixir (no Javascript!). <b>This page is a living demo - all examples are actually working on the Drab server</b>.
-  You can find a source code of this page <a href="https://github.com/grych/drab-poc">on Github</a>, and the <a href="https://github.com/grych/drab">source code of the Drab himself - here</a>.
-</p>
-<p><small>Tomek "Grych" Gryszkiewicz 2016</small></p>
+
+<div class="row">
+  <div class="col-md-10">
+    <p>
+      In the <i>"good old times"</i> the event handling was easy. The only thing you had to do was to create the event handler (remember <code>TForm1.Button1Click(Sender: TObject)</code>?) and you could do everything inside this handler: accessing data from models, manipulating user interface, sending raw Ethernet packets to the coffee machine...
+    </p>
+    <p>
+      Nowadays, when the most of the applications are web based, it is not so easy anymore. You need either to create a form and submit the data via POST or GET or use AJAX to send or retrieve data. Whole interface manipulation is on the client side. In practice, you need to write two applications: on the client and the server side.  
+    </p>
+    <p>
+      Additionally, because <code>http</code> is stateless and a one-way protocol, it is not easy to communicate back from the server to the browser. Like, for example, during execution of the long running process, when there is a need to update status (eg. progress bar) or ask the operator about something (like "would you like to continue?"). Of course there are workarounds for this, like polling the server every few seconds to have a status, or even auto-refreshing the page, but those are just a dirty workarounds. The solution would be to allow an access to the interface directly from the server side. And here comes <code>Drab</code>.
+    </p>
+    <p>
+      <code>Drab</code> is a concept of <b>providing an access to User Interface (DOM objects) on the server side</b>, just like in the 
+      good-old Delphi times. The examples below should give you an overview of how does it work. For more detailed instructions, please refer to the <a href="https://hexdocs.pm/drab">documentation</a>.
+    </p>
+    <p>
+      Drab is written using Phoenix on Elixir, so all the code in examples is HTML and Elixir (no Javascript!). <b>This page is a living demo - all examples are actually working on the Drab server</b>.
+      You can find a source code of this page <a href="https://github.com/grych/drab-poc">on Github</a>, and the <a href="https://github.com/grych/drab">source code of the Drab himself - here</a>.
+    </p>
+    <p><small>Tomek "Grych" Gryszkiewicz 2016</small></p>
+  </div>
+  <div class="col-md-2 left-bordered">
+    <p>
+      <h4>Links</h4>
+      <a href="/drab/docs">➜ Documentation with examples</a><br>
+      <a href="https://github.com/grych/drab">➜ Drab source on Github</a><br>
+      <a href="/drab/nojquery">➜ Drab without DOM, for react lovers</a><br>
+      <a href="https://github.com/grych/drab-poc">➜ This page source</a>
+    </p>
+    <iframe src="https://ghbtns.com/github-btn.html?user=grych&repo=drab&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>
+    <iframe src="https://ghbtns.com/github-btn.html?user=grych&repo=drab&type=watch&count=true&v=2" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>
+  </div>
+</div>
+
 <hr>
 
 
@@ -59,7 +76,7 @@ end]%></code></pre>
     </p>
   </div>
 
-  <div class="col-md-4">
+  <div class="col-md-4 left-bordered">
     <p>
       This is a live demo. Click the button to launch <code>Drab.Controller.uppercase/2</code> on the server.
       <br><br>
@@ -95,7 +112,7 @@ end/%></code></pre>
       Observe that when one button is "processing", you can click another one. This is because <strong>Drab requests are asynchronous on the server side</strong>. And this is a reason why buttons are disabled by default while processing - it is blocking the user from running the same action for few times. You may override this behaviour in `config.exs` with:
       <pre><code class="elixir"><%=~s/config :drab, disable_controls_while_processing: false/%></code></pre>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-4 left-bordered">
     <p>
       Click the button to launch sleep <br><br>
       <button drab-click="clicked_sleep_button" class="btn btn-primary" data-sleep="1">Sleep 1 second</button><br><br>
@@ -148,7 +165,7 @@ end/%></code></pre>
       You may think: <b>what is the difference between this approach and running 54 AJAX requests which launches action on the controller side?</b> Well, except of <code>Drab</code> natural beauty, you can't do it with AJAX. You browser <a href="http://www.stevesouders.com/blog/2008/03/20/roundup-on-parallel-connections/">limits the number of simultaneus connections</a>.
     </p>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-4 left-bordered">
     <p>
       Click the button below to simulate server-side long running process contains asynchronous tasks.
       <h4>Async task status: <span id="async_task_status" class="label label-primary">ready</span></h4>
@@ -246,7 +263,7 @@ The other function, <code>clean_up/1</code> just reverts the changes to the DOM,
     </p>
   </div>
 
-  <div class="col-md-4">
+  <div class="col-md-4 left-bordered">
     Click a button to simulate long-running process on the server.
     <div class="progress">
       <div class="progress-bar" role="progressbar" style="width:0%">
@@ -301,7 +318,7 @@ end/%></code></pre>
       There is also the <code>disconnect</code> callback, which runs every time browser disconnects from the server - close the browser, navigate away from the page, network issue, etc. Obviously there is no way to show it on the Demo page, as it operates when the page is not visible anymore. 
     </p>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-4 left-bordered">
     <p>
       This is a realtime view of few last lines of the access.log of this page
       <pre><code id="log_file" class="accesslog">
@@ -330,7 +347,7 @@ end/%></code></pre>
       Did you notice the <code>update!/2</code> (with bang!) function? This one works exactly like <code>update/2</code>, but it <strong>broadcasts to all the browsers</strong> on which the current page is opened. Open another browser window or even another browser and observe what is going on when you type in.
     </p>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-4 left-bordered">
     <p>
       Demonstration of <code>keyup</code> event:
       <input drab-keyup="changed_input" class="form-control" data-update="#display_placeholder">
@@ -348,7 +365,7 @@ end/%></code></pre>
       The code above is exactly the same as previous, except of <code>debounce(500)</code> option. The same event handler (<code>changed_input/2</code>) is launched, but not after every key up, but when you actually stop typing for 500 miliseconds. 
     </p>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-4 left-bordered">
     <p>
       The same event with <code>debounce(500)</code>:
       <input drab-keyup="changed_input" drab-options="debounce(500)" data-update="#display_placeholder2" class="form-control">
@@ -420,7 +437,7 @@ end/%></code></pre>
     Notice that there is not way to update session from Drab. Session is read-only.
     </p>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-4 left-bordered">
     <p>
       Result of <code>get_session(socket, :drab_test)</code> in the <code>onload</code> hander: <br>
       <input type="text" id="show_session_test" value="unknown..." class="form-control">
@@ -429,15 +446,6 @@ end/%></code></pre>
 
 </div>
 <hr>
-<h3>Links</h3>
-<p>
-  <h4><a href="/drab/docs">Documentation with more examples</a></h4>
-  <h4><a href="https://github.com/grych/drab">Drab source on Github</a></h4>
-  <h4><a href="/drab/nojquery">Drab without DOM, for react lovers</a></h4>
-  <h4><a href="https://github.com/grych/drab-poc">This page source</a></h4>
-</p>
-<hr>
-<p>
   <h4>
   &copy;2016 Tomek "Grych" Gryszkiewicz, <a href="mailto:grych@tg.pl">grych@tg.pl</a>
   </h4>
