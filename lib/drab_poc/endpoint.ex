@@ -1,6 +1,8 @@
 defmodule DrabPoc.Endpoint do
   use Phoenix.Endpoint, otp_app: :drab_poc
-  use Drab.Endpoint #, add_channels: [{"mychannel:whatever", DrabPoc.Socket}]
+  # use Drab.Endpoint #, add_channels: [{"mychannel:whatever", DrabPoc.Socket}]
+
+  socket "/drab/socket", DrabPoc.UserSocket
 
   # Drab.Endpoint.drab "mychannel:whatever", DrabPoc.Socket
 

@@ -55,7 +55,7 @@
     <p>
       On the <b>client side</b> we have a basic HTML with the input and the button:
 <pre><code class="html"><%=~s(<input id="text_to_uppercase" value="uppercase me">
-<button drab-event="click" drab-hander="uppercase">Do it</button>)%></code></pre>
+<button drab-event="click" drab-handler="uppercase">Do it</button>)%></code></pre>
     </p>
     <p>
       The only thing which might be considered new is the pair of <code>drab-event</code> and <code>drab-handler</code> attributes. What do this values mean? <code>drab-event</code> is obviously a name of the event, and <code>drab-handler</code> is a name of the <b>Elixir function on the server side</b>, in <code>DrabPoc.PageCommander</code> module (see the code below). Clicking on the <code>&lt;button&gt;</code> <b>in the browser</b> runs <code>DrabPoc.PageCommander.uppercase/2</code> <b>on the server.</b>
@@ -439,7 +439,7 @@ end/%></code></pre>
   </div>
   <div class="col-md-4 left-bordered">
     <p>
-      Result of <code>get_session(socket, :drab_test)</code> in the <code>onload</code> hander: <br>
+      Result of <code>get_session(socket, :drab_test)</code> in the <code>onload</code> handler: <br>
       <input type="text" id="show_session_test" value="unknown..." class="form-control">
     </p>
   </div>

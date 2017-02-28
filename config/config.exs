@@ -23,5 +23,8 @@ config :logger, :console,
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"
 
-config :drab, disable_controls_when_disconnected: true, 
-  drab_store_storage: :local_storage
+config :drab, 
+  disable_controls_when_disconnected: true,
+  drab_store_storage: :local_storage,
+  socket: "/drab/socket"
+
