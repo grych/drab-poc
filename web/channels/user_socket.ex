@@ -1,4 +1,5 @@
 defmodule DrabPoc.UserSocket do
+  require Logger
   use Phoenix.Socket
   use Drab.Socket
 

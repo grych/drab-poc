@@ -37,6 +37,7 @@ defmodule DrabPoc.PageCommander do
     socket |> update(:val, set: String.upcase(t), on: "#text_to_uppercase")
     Logger.debug("****** SOCKET:  #{inspect(socket)}")
     Logger.debug("****** DOM_SENDER: #{inspect(dom_sender)}")
+    # raise "Bad things happeded"
     socket |> console("Hey, this is PageCommander from the server side!")
   end
 
