@@ -246,10 +246,24 @@
 </p>
 <hr>
 
+<h3 class="centered">Drab.Socket</h3>
+<p>
+  <%= moduledoc(Drab.Socket) |> raw %>
+</p>
+<hr>
+
 <h3 class="centered">Drab.Client</h3>
 <p>
   <%= moduledoc(Drab.Client) |> raw %>
 </p>
+<div class="row">
+  <h4>get_store/3</h4>
+  <div class="col-md-12">
+    <p>
+      <%= funcdoc(Drab.Client, {:js, 2}) |> raw %>
+    </p>
+  </div>
+</div>
 <hr>
 
 <h3 class="centered">Mix.Tasks.Drab.Gen.Commander</h3>
