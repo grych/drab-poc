@@ -14,7 +14,17 @@
   <body>
     <div class="container-fluid">
       <header class="">
-        <nav role="navigation">
+        <nav class="navbar navbar-default">
+          <ul class="nav navbar-nav">
+            <li><a href="/drab">Drab</a></li>
+            <li><a href="/drab/docs">Documentation with examples</a></li>
+            <li><a href="/drab/nojquery">Drab without DOM</a></li>
+            <li><a href="https://github.com/grych/drab">Drab source</a></li>
+            <li><a href="https://github.com/grych/drab-poc">This page source</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="mailto:grych@tg.pl?Subject=Drab">Contact &nbsp;&nbsp;</a></li>
+          </ul>
         </nav>
       </header>
 

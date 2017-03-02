@@ -44,6 +44,12 @@ defmodule DrabPoc.DocsCommander do
     socket |> update(:text, set: c, on: "#qs_7_out")
   end
 
+  def qs_8_click(socket, _dom_sender) do
+    val = socket |> select(:all, from: ".qs_2") |> inspect
+    Logger.debug(val)
+    socket |> update(:text, set: val, on: "#qs_8_out")
+  end
+
   def qu_1_click(socket, _dom_sender) do
     socket |> update(:text, set: "new <u>text</u>", on: "#qu_1_span")
   end
@@ -135,7 +141,9 @@ defmodule DrabPoc.DocsCommander do
   def a_3_click(socket, dom_sender) do
     form = "<input name='first' class='form-control'><input id='second' class='form-control'>"
     response = case socket |> alert("What's your name?", form, buttons: [ok: "A juści", cancel: "Poniechaj"]) do
-      { :ok, params } -> "first is #{params["first"]}, and second: #{params["second"]}"
+      { :ok, params } -> 
+        Logger.debug(inspect params)
+        "first is #{params["first"]}, and second: #{params["second"]}"
       { :cancel, _ }  -> "you cancelled!"
     end
     socket |> update(:text, set: response, on: this(dom_sender))

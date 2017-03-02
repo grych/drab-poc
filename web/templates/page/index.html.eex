@@ -4,7 +4,7 @@
 </h4>
 
 <div class="row">
-  <div class="col-md-10">
+  <div class="col-md-8">
     <p>
       In the <i>"good old times"</i> the event handling was easy. The only thing you had to do was to create the event handler (remember <code>TForm1.Button1Click(Sender: TObject)</code>?) and you could do everything inside this handler: accessing data from models, manipulating user interface, sending raw Ethernet packets to the coffee machine...
     </p>
@@ -24,15 +24,22 @@
     </p>
     <p><small>Tomek "Grych" Gryszkiewicz 2016</small></p>
   </div>
-  <div class="col-md-2 left-bordered">
-    <p>
-      <h4>Links</h4>
-      <a href="/drab/docs">➜ Documentation with examples</a><br>
-      <a href="https://github.com/grych/drab">➜ Drab source on Github</a><br>
-      <a href="/drab/nojquery">➜ Drab without DOM, for react lovers</a><br>
-      <a href="https://github.com/grych/drab-poc">➜ This page source</a>
-    </p>
-    <iframe src="https://ghbtns.com/github-btn.html?user=grych&repo=drab&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>
+  <div class="col-md-4 left-bordered">
+    <div class="panel panel-default">
+      <div class="panel-heading">Drab v0.3.0 released! <span class="label label-default">2017-03-05</span></div>
+      <div class="panel-body">
+        <p>
+          New version of Drab just arrived, announcing <code>before_</code> and <code>after_handler</code> callbacks, new <code>Drab.Query.select(:all)</code>, better error handling and presenting errors to the user, brand new <code>waiter</code> functionality, and more.
+        </p>
+        <p>
+          There is a new demo <a href="#waiter">down here</a>, explaining the Drab Waiter.
+        </p>
+        <p>
+          Please read <a href="https://github.com/grych/drab/releases/tag/v0.3.0">Release Notes</a>.
+        </p>
+      </div>
+    </div>
+    <iframe src="https://ghbtns.com/github-btn.html?user=grych&repo=drab&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe><br>
     <iframe src="https://ghbtns.com/github-btn.html?user=grych&repo=drab&type=watch&count=true&v=2" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>
   </div>
 </div>
