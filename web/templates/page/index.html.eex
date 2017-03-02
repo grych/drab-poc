@@ -29,16 +29,23 @@
       <div class="panel-heading">Drab v0.3.0 released! <span class="label label-default">2017-03-05</span></div>
       <div class="panel-body">
         <p>
-          New version of Drab just arrived, announcing <code>before_</code> and <code>after_handler</code> callbacks, new <code>Drab.Query.select(:all)</code>, better error handling and presenting errors to the user, brand new <code>waiter</code> functionality, and more.
+          New version of Drab <a href="https://github.com/grych/drab/releases/tag/v0.3.0">just arrived</a>, announcing <code>before_</code> and <code>after_handler</code> callbacks, new <code>Drab.Query.select(:all)</code>, better error handling and presenting errors to the user, brand new <code>waiter</code> functionality, and more.
         </p>
         <p>
-          There is a new demo <a href="#waiter">down here</a>, explaining the Drab Waiter.
-        </p>
-        <p>
-          Please read <a href="https://github.com/grych/drab/releases/tag/v0.3.0">Release Notes</a>.
+          There is a new demo <a href="#waiter">down here</a>, explaining the Drab Waiter functionality.
         </p>
       </div>
     </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">Drab Logo? <span class="label label-default">2017-03-02</span></div>
+      <div class="panel-body">
+        <p>
+          Every open source project must have its own logo, agreed? If you can do graphics, and you are willing to help, please <a href="mailto:grych@tg.pl?Subject=Drab%20Logo">contact me</a>.
+        </p>
+      </div>
+    </div>
+
     <iframe src="https://ghbtns.com/github-btn.html?user=grych&repo=drab&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe><br>
     <iframe src="https://ghbtns.com/github-btn.html?user=grych&repo=drab&type=watch&count=true&v=2" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>
   </div>
