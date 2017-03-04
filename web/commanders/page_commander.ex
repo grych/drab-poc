@@ -132,13 +132,18 @@ defmodule DrabPoc.PageCommander do
     socket
   end
 
+  def run_query(_socket, _dom_sender) do
+    # this is an example of sqlplus
+    # register_waiters "button#commit", "click", fn x->1 end
+    # receive do
+  end
+
   # Drab Callbacks 
   def page_loaded(socket) do
     Logger.debug("LOADED: Counter: #{get_store(socket, :counter)}")
     socket 
     |> console("Launched onload callback")
     |> update(:val, set: get_session(socket, :drab_test),on: "#show_session_test")
-    # put_store(socket, :counter, 0) 
   end
 
   def connected(socket) do
@@ -152,7 +157,6 @@ defmodule DrabPoc.PageCommander do
       Sentix.subscribe(:watcher)
       file_change_loop(socket, file)
     end
-    # put_store(socket, :sentix_pid, sentix_pid)
   end
 
   def disconnected(store, session) do

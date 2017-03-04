@@ -30,6 +30,10 @@
       <div class="panel-body">
         <p>
           New version of Drab <a href="https://github.com/grych/drab/releases/tag/v0.3.0">just arrived</a>, announcing <code>before_</code> and <code>after_handler</code> callbacks, new <code>Drab.Query.select(:all)</code>, better error handling and presenting errors to the user, brand new <code>waiter</code> functionality, and more.
+          <p> 
+            <strong>Warning: <code>Drab.Query.select</code> API has been changed!</strong>
+            Now there are singular and plural versions of jQuery methods, for ex. <code>select(:val)</code> returns value of first found element or nil, and <code>select(:vals)</code> returns a Map of all found objects with their name or id as a keys.
+          </p>
         </p>
         <p>
           There is a new demo <a href="#waiter">down here</a>, explaining the Drab Waiter functionality.
@@ -37,7 +41,7 @@
       </div>
     </div>
 
-    <div class="panel panel-default">
+<%#     <div class="panel panel-default">
       <div class="panel-heading">Drab Logo? <span class="label label-default">2017-03-02</span></div>
       <div class="panel-body">
         <p>
@@ -45,7 +49,7 @@
         </p>
       </div>
     </div>
-
+ %>
     <iframe src="https://ghbtns.com/github-btn.html?user=grych&repo=drab&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe><br>
     <iframe src="https://ghbtns.com/github-btn.html?user=grych&repo=drab&type=watch&count=true&v=2" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>
   </div>
