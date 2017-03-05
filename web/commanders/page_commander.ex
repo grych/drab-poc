@@ -7,7 +7,7 @@ defmodule DrabPoc.PageCommander do
     # onconnect: :connected
     # ondisconnect: :disconnected,
     # access_session: [:drab_test],
-    modules: [Drab.Query, Drab.Modal]
+    modules: [Drab.Query, Drab.Modal, Drab.Waiter]
 
   onload :page_loaded
   onconnect :connected
@@ -136,6 +136,23 @@ defmodule DrabPoc.PageCommander do
     # this is an example of sqlplus
     # register_waiters "button#commit", "click", fn x->1 end
     # receive do
+  end
+
+  def waiter_example(socket, _dom_sender) do
+    socket |> insert("<button class=\"btn btn-primary\">Button</button>", append: "#waiter_example_div")
+    socket |> insert("<button id=\"button2\" class=\"btn btn-primary\">Button</button>", append: "#waiter_example_div")
+    # Drab.Waiter.waiter socket, [{"#waiter_example_div button", "click", fn -> Logger.debug("waiter clicked") end }]
+    waiter(socket) do
+      Logger.debug("waiter")
+      on "#waiter_example_div button:first", "click", fn ->
+        Logger.debug("Button1 clicked")
+      end
+      on "#button2", "click", fn ->
+        Logger.debug("Button2 clicked")
+      end
+    end
+    socket |> delete("#waiter_example_div button:first")
+    socket |> delete("#button2")
   end
 
   # Drab Callbacks 
