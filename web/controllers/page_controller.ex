@@ -9,6 +9,7 @@ defmodule DrabPoc.PageController do
 
   def index(conn, _params) do
     conn = put_session(conn, :drab_test, "test string from the Plug Session, set in the Controller")
+    # Logger.debug(inspect(Map.get(conn.private, :phoenix_view)))
     render conn, "index.html"
   end
 end
