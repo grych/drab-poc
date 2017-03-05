@@ -139,10 +139,8 @@ defmodule DrabPoc.PageCommander do
   end
 
   def waiter_example(socket, _dom_sender) do
-    {:safe, ["" | buttons]} = Phoenix.View.render(DrabPoc.PageView, "waiter_example_buttons.html", [])
+    buttons = Phoenix.View.render_to_string(DrabPoc.PageView, "waiter_example_buttons.html", [])
     socket |> insert(buttons, append: "#waiter_example_div")
-    # socket |> insert("<button id=\"button2\" class=\"btn btn-primary\">Button</button>", append: "#waiter_example_div")
-    # Drab.Waiter.waiter socket, [{"#waiter_example_div button", "click", fn -> Logger.debug("waiter clicked") end }]
     waiter(socket) do
       Logger.debug("waiter")
       on "#waiter_example_div button:first", "click", fn(sender) ->
@@ -152,9 +150,11 @@ defmodule DrabPoc.PageCommander do
       on "#button2", "click", fn(sender) ->
         Logger.debug("Button2 clicked")
       end
+      # on_timeout 2000, fn() ->
+      #   Logger.debug("Time out")
+      # end
     end
-    socket |> delete("#waiter_example_div button:first")
-    socket |> delete("#button2")
+    socket |> delete(from: "#waiter_example_div")
   end
 
   # Drab Callbacks 

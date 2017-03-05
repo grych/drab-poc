@@ -1,0 +1,2 @@
+<button class="btn btn-primary">Button</button>
+<button id="button2" class="btn btn-primary">Button</button>
