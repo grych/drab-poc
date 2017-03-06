@@ -465,21 +465,44 @@ end/%></code></pre>
 </div>
 <hr>
 
-
-
 <div class="row">
   <h4 id="waiter">Drab Waiter</h4>
   <div class="col-md-12">
     <p>
+      Sometimes it would be good to have a possibility to ask user about something, when you are in a middle of some process, and you don't want to finish your function. The good example is a <strong>database transaction, when you run some query and want to ask user wheter commit or rollback changes</strong>. We saw the use of <code>Drab.Modal</code> before, but sometimes modal window is not very elegant.
+    </p>
+    <p>
+      So the solution for this issue is called <strong>Drab Waiter</strong>. It is a tiny little DSL which stops processing the event handler function and waits for the event from the client side. You may register multiple events as well as a timeout (by default it is waiting forever). The example below is not very sophisticated, but shows the idea. 
     </p>
   </div>
   <div class="col-md-8">
-    <p><pre><code class="elixir"><%=%></code></pre>
+    <p><pre><code class="elixir"><%=~S/  def waiter_example(socket, _dom_sender) do
+    buttons = Phoenix.View.render_to_string(DrabPoc.PageView, "waiter_example.html", [])
+    socket 
+      |> delete(from: "#waiter_answer_div")
+      |> insert(buttons, append: "#waiter_example_div")
+
+    answer = waiter(socket) do
+      on "#waiter_example_div button", "click", fn(sender) ->
+        sender["text"]
+      end
+      on_timeout 5000, fn ->
+        "six times nine"
+      end
+    end
+
+    socket 
+      |> delete(from: "#waiter_example_div")
+      |> update(:text, set: "Do you realy think it is #{answer}?", on: "#waiter_answer_div")
+  end/%></code></pre>
+      Please notice that <em>Waiter Example</em> button is disabled until you give an answer (or until timeout). It is because Drab re-enables it when Event Handler Function finish processing.
     </p>
   </div>
   <div class="col-md-4">
     <p>
-      <button class="btn btn-primary" drab-click="waiter_example">Waiter Example</button><br><br>
+      <button class="btn btn-primary" drab-click="waiter_example">Waiter Example</button>
+      <br><br>
+      <div id="waiter_answer_div"></div>
       <div id="waiter_example_div"></div>
     </p>
   </div>

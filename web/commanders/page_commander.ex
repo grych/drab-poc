@@ -33,7 +33,7 @@ defmodule DrabPoc.PageCommander do
 
   # Drab Events
   def uppercase(socket, dom_sender) do
-    t = socket |> select(:val, from: "#text_to_uppercase") |> List.first()
+    t = socket |> select(:vals, from: "#text_to_uppercase") |> List.first()
     socket |> update(:val, set: String.upcase(t), on: "#text_to_uppercase")
     Logger.debug("****** SOCKET:  #{inspect(socket)}")
     Logger.debug("****** DOM_SENDER: #{inspect(dom_sender)}")
@@ -139,24 +139,23 @@ defmodule DrabPoc.PageCommander do
   end
 
   def waiter_example(socket, _dom_sender) do
-    buttons = Phoenix.View.render_to_string(DrabPoc.PageView, "waiter_example_buttons.html", [])
-    socket |> insert(buttons, append: "#waiter_example_div")
+    buttons = Phoenix.View.render_to_string(DrabPoc.PageView, "waiter_example.html", [])
+    socket 
+      |> delete(from: "#waiter_answer_div")
+      |> insert(buttons, append: "#waiter_example_div")
 
-    waiter(socket) do
-      Logger.debug("waiter")
-      on "#waiter_example_div button:first", "click", fn(sender) ->
-        Logger.debug("Button1 clicked")
-        Logger.debug(inspect sender)
-      end
-      on "#button2", "click", fn(sender) ->
-        Logger.debug("Button2 clicked")
+    answer = waiter(socket) do
+      on "#waiter_example_div button", "click", fn(sender) ->
+        sender["text"]
       end
       on_timeout 5000, fn ->
-        Logger.debug("Time out")
+        "six times nine"
       end
     end
-    
-    socket |> delete(from: "#waiter_example_div")
+
+    socket 
+      |> delete(from: "#waiter_example_div")
+      |> update(:text, set: "Do you realy think it is #{answer}?", on: "#waiter_answer_div")
   end
 
   # Drab Callbacks 
