@@ -180,13 +180,9 @@ defmodule DrabPoc.PageCommander do
       # )
       Sentix.start_link(:watcher, [file], monitor: monitor, latency: 1, filter: [:updated])
       Sentix.subscribe(:watcher)
-      # Logger.debug("SENTIX: #{inspect sentix_pid}")
-      # Logger.debug("MOI:    #{inspect self()}")
 
-      # Process.flag(:trap_exit, true)
       file_change_loop(socket, file)
     end
-    # Logger.debug("connected PID #{inspect self()}")
     put_store(socket, :file_change_loop_pid, pid)
   end
 
@@ -202,8 +198,6 @@ defmodule DrabPoc.PageCommander do
       {_pid, {:fswatch, :file_event}, {^file_path, _opts}} ->
         socket |> update(:text, set: last_n_lines(file_path, 8), on: "#log_file")
       {:disconnected, :please_exit} ->
-        # Logger.debug("Exiting file_change_loop")
-        # GenServer.stop(sentix_pid)
         Process.exit(self(), :normal)
       any_other ->
         Logger.debug(inspect(any_other))
