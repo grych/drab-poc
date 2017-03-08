@@ -15,7 +15,7 @@ defmodule DrabPoc.DocsCommander do
   end
 
   def qs_2_click(socket, _dom_sender) do
-    val = socket |> select(:text, from: ".qs_2") |> inspect
+    val = socket |> select(:htmls, from: ".qs_2") |> inspect
     socket |> update(:text, set: val, on: "#qs_2_out")
   end
 
@@ -30,7 +30,7 @@ defmodule DrabPoc.DocsCommander do
   end
 
   def qs_5_click(socket, _dom_sender) do
-    position = socket |> select(:position, from: ".qs_2") |> inspect
+    position = socket |> select(:positions, from: ".qs_2") |> inspect
     socket |> update(:text, set: position, on: "#qs_5_out")
   end
 
@@ -40,7 +40,7 @@ defmodule DrabPoc.DocsCommander do
   end
 
   def qs_7_click(socket, _dom_sender) do
-    c = socket |> select(:classes, from: ".qs_2") |> inspect
+    c = socket |> select(attrs: "class", from: ".qs_2") |> inspect
     socket |> update(:text, set: c, on: "#qs_7_out")
   end
 

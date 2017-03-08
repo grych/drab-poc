@@ -80,14 +80,12 @@
 <pre><code class="elixir"><%=~s[defmodule DrabPoc.PageCommander do
   use Drab.Commander
   def uppercase(socket, sender) do
-    t = socket |> select(:val, from: "#text_to_uppercase") |> List.first()
+    t = socket |> select(:val, from: "#text_to_uppercase")
     socket |> update(:val, set: String.upcase(t), on: "#text_to_uppercase")
   end
 end]%></code></pre>
     <p>
-      How does it work? <code>Drab.Query.select(socket, :val, from: "#text_to_uppercase")</code> launches jQuery <code>$("#text_to_uppercase").val()</code> on the client side and returns it to the server. <code>List.first()</code> is used because jQuery always returns an array. Then, the returned string is converted to uppercase using <code>String.upcase</code> and passed to <code>Drab.Query.update/3</code> function, which - analogically to jQuery <code>.val(value)</code> - sets the value of the input. 
-    <br>
-      Drab Handler should always return <code>socket</code>.
+      How does it work? <code>Drab.Query.select(socket, :val, from: "#text_to_uppercase")</code> launches jQuery <code>$("#text_to_uppercase").val()</code> on the client side and returns it to the server. Then, the returned string is converted to uppercase using <code>String.upcase</code> and passed to <code>Drab.Query.update/3</code> function, which - analogically to jQuery <code>.val(value)</code> - sets the value of the input. 
     </p>
     <p>
       All the Drab functions (callbacks, event handlers) are placed in the module called Commander. Think about  it as a Controller for the living page. Commander must have a corresponding controller (because the page to command must be rendered before), in the example PageCommander corresponds to PageController.

@@ -34,7 +34,7 @@ defmodule DrabPoc.PageCommander do
 
   # Drab Events
   def uppercase(socket, dom_sender) do
-    t = socket |> select(:val, from: "#text_to_uppercase") |> List.first()
+    t = socket |> select(:val, from: "#text_to_uppercase")
     socket |> update(:val, set: String.upcase(t), on: "#text_to_uppercase")
     Logger.debug("****** SOCKET:  #{inspect(socket)}")
     Logger.debug("****** DOM_SENDER: #{inspect(dom_sender)}")
