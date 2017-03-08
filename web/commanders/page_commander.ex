@@ -1,6 +1,7 @@
 defmodule DrabPoc.PageCommander do
   require IEx
   require Logger
+  # import Supervisor.Spec
 
   use Drab.Commander,
     # onload: :page_loaded, 
@@ -33,7 +34,7 @@ defmodule DrabPoc.PageCommander do
 
   # Drab Events
   def uppercase(socket, dom_sender) do
-    t = socket |> select(:vals, from: "#text_to_uppercase") |> List.first()
+    t = socket |> select(:val, from: "#text_to_uppercase") |> List.first()
     socket |> update(:val, set: String.upcase(t), on: "#text_to_uppercase")
     Logger.debug("****** SOCKET:  #{inspect(socket)}")
     Logger.debug("****** DOM_SENDER: #{inspect(dom_sender)}")
@@ -169,17 +170,28 @@ defmodule DrabPoc.PageCommander do
   def connected(socket) do
     Logger.debug("CONNECTED: Counter: #{get_store(socket, :counter)}")
     clean_up(socket)
-    spawn_link fn ->
+    pid = spawn_link fn ->
       file = Application.get_env(:drab_poc, :watch_file)
       monitor = Application.get_env(:drab_poc, :watch_monitor)
       ### Sentix requires fswatch installed on the system
+      # Supervisor.start_link(
+      #   [ worker(Sentix, [ :watcher, [file], [monitor: monitor, latency: 1, filter: [:updated] ] ]) ],
+      #   strategy: :one_for_one
+      # )
       Sentix.start_link(:watcher, [file], monitor: monitor, latency: 1, filter: [:updated])
       Sentix.subscribe(:watcher)
+      # Logger.debug("SENTIX: #{inspect sentix_pid}")
+      # Logger.debug("MOI:    #{inspect self()}")
+
+      # Process.flag(:trap_exit, true)
       file_change_loop(socket, file)
     end
+    # Logger.debug("connected PID #{inspect self()}")
+    put_store(socket, :file_change_loop_pid, pid)
   end
 
   def disconnected(store, session) do
+    send(store[:file_change_loop_pid], {:disconnected, :please_exit})
     Logger.debug("DISCONNECTED, store: #{store |> inspect}")
     Logger.debug("            session: #{session |> inspect}")
     :ok
@@ -189,8 +201,14 @@ defmodule DrabPoc.PageCommander do
     receive do
       {_pid, {:fswatch, :file_event}, {^file_path, _opts}} ->
         socket |> update(:text, set: last_n_lines(file_path, 8), on: "#log_file")
+      {:disconnected, :please_exit} ->
+        # Logger.debug("Exiting file_change_loop")
+        # GenServer.stop(sentix_pid)
+        Process.exit(self(), :normal)
       any_other ->
         Logger.debug(inspect(any_other))
+      # after 1000 ->
+      #   Logger.debug("ping")
     end
     file_change_loop(socket, file_path)
   end

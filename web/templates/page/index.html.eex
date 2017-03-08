@@ -330,10 +330,10 @@ end/%></code></pre>
 end/%></code></pre>
     </p>
     <p>
-      BTW this example is simple to understand, but <strong>bad</strong> from the performance point of view! This is because each <code>connected</code> callback is launched after the browser connects. This means that every exsisting client has its own <code>Sentix</code> server, and <code>fswatch</code> process running on the server. Not very clever! In the real world, you'd want to run only one <code>Sentix</code> and send messages to <code>Drab</code> from there.
+      BTW this example is simple to understand, but <strong>very bad</strong> from the performance point of view! Obviously, the <code>file_change_loop</code> function will never finish. It is your responsibility to clean up after yourself.
     </p>
     <p>
-      There is also the <code>disconnect</code> callback, which runs every time browser disconnects from the server - close the browser, navigate away from the page, network issue, etc. Obviously there is no way to show it on the Demo page, as it operates when the page is not visible anymore. 
+      There is also the <code>disconnect</code> callback, which runs every time browser disconnects from the server - close the browser, navigate away from the page, network issue, etc. Obviously there is no way to show it on the Demo page, as it operates when the page is not visible anymore. In the example above, you may use it to terminate the <code>file_change_loop</code>.
     </p>
   </div>
   <div class="col-md-4 left-bordered">
