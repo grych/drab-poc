@@ -10,9 +10,9 @@ defmodule DrabPoc.UserSocket do
   transport :websocket, Phoenix.Transports.WebSocket
   # transport :longpoll, Phoenix.Transports.LongPoll
 
-  # def connect(_params, socket) do
-  #   {:ok, socket}
-  # end
+  def connect(_params, socket) do
+    {:ok, socket}
+  end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:
   #
