@@ -156,7 +156,7 @@ defmodule DrabPoc.DocsCommander do
   end
 
   def a_5_click(socket, dom_sender) do
-    {button, _} = socket |> alert("Timeout", "I will disapear in a few seconds", timeout: 5)
+    {button, _} = socket |> alert("Timeout", "I will disapear in a few seconds", timeout: 5000)
     socket |> update(:text, set: "clicked #{button} button", on: this(dom_sender))
   end
 

@@ -141,7 +141,7 @@
     <button drab-click="a_2_click" class="btn btn-primary">alert("Message", "What is the answer?", ok: "42", cancel: "Don't know")</button><br><br>
     <button drab-click="a_3_click" class="btn btn-primary">alert("Your name?", "&lt;input name='name'&gt;", ok: "A juści", cancel: "Poniechaj")</button><br><br>
     <button drab-click="a_4_click" class="btn btn-primary">alert(..., ..., buttons: [ok: "Yes", cancel: "No", unspecified: "Not sure"])</button><br><br>
-    <button drab-click="a_5_click" class="btn btn-primary">alert("Timeout", "I will disapear in a few seconds", timeout: 5)</button><br><br>
+    <button drab-click="a_5_click" class="btn btn-primary">alert("Timeout", "I will disapear in a few seconds", timeout: 5000)</button><br><br>
 
   </div>
 </div>

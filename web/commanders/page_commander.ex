@@ -40,33 +40,49 @@ defmodule DrabPoc.PageCommander do
     Logger.debug("****** DOM_SENDER: #{inspect(dom_sender)}")
     # raise "Bad things happeded"
     socket |> console("Hey, this is PageCommander from the server side!")
+    # raise "uups, I did it again"
   end
 
   def perform_long_process(socket, dom_sender) do
-    pid = spawn_link(fn -> 
-      start_background_process(socket) 
-    end)
-    socket 
+    socket
       |> execute(:hide, on: this(dom_sender))
-      |> insert(cancel_button(socket, pid), after: "[drab-click=perform_long_process]")
+      |> insert(cancel_button(socket, self()), after: "[drab-click=perform_long_process]")
+    start_background_process(socket) 
   end
 
   defp start_background_process(socket) do
     socket |> delete(class: "progress-bar-success", from: ".progress-bar")
 
     steps = :rand.uniform(100)
-    for i <- 1..steps do
-      :timer.sleep(:rand.uniform(500)) # simulate real work
-      socket 
-        |> update(css: "width", set: "#{i * 100 / steps}%", on: ".progress-bar")
-        |> update(:html, set: "#{Float.round(i * 100 / steps, 2)}%", on: ".progress-bar")
-    end
+    step(socket, steps, 0)
+  end
+
+  defp step(socket, last_step, last_step) do
+    update_bar(socket, last_step, last_step)
     socket |> insert(class: "progress-bar-success", into: ".progress-bar")
 
     case socket |> alert("Finished!", "Do you want to retry?", buttons: [ok: "Yes", cancel: "No!"]) do
       {:ok, _} -> start_background_process(socket)
       {:cancel, _} -> clean_up(socket)
-    end    
+    end 
+  end
+
+  defp step(socket, steps, i) do
+    :timer.sleep(:rand.uniform(500)) # simulate real work
+    update_bar(socket, steps, i)
+
+    receive do
+      :cancel_processing -> 
+        clean_up(socket)
+    after 0 -> 
+      step(socket, steps, i + 1)
+    end
+  end
+
+  defp update_bar(socket, steps, i) do
+    socket 
+      |> update(css: "width", set: "#{i * 100 / steps}%", on: ".progress-bar")
+      |> update(:html, set: "#{Float.round(i * 100 / steps, 2)}%", on: ".progress-bar")
   end
 
   defp cancel_button(socket, pid) do
@@ -87,9 +103,8 @@ defmodule DrabPoc.PageCommander do
   def cancel_long_process(socket, dom_sender) do
     pid = Drab.detokenize_pid(socket, dom_sender["data"]["pid"])
     if Process.alive?(pid) do
-      Process.exit(pid, :kill)
+      send(pid, :cancel_processing)
     end
-    clean_up(socket)
   end
 
   def run_async_tasks(socket, _dom_sender) do
@@ -145,6 +160,9 @@ defmodule DrabPoc.PageCommander do
       |> delete(from: "#waiter_answer_div")
       |> insert(buttons, append: "#waiter_example_div")
 
+    # Logger.debug("WAITER PID: #{inspect self()}")
+    # Logger.debug("DRAB   PID: #{inspect socket.assigns.__drab_pid}")
+
     answer = waiter(socket) do
       on "#waiter_example_div button", "click", fn(sender) ->
         sender["text"]
@@ -170,24 +188,16 @@ defmodule DrabPoc.PageCommander do
   def connected(socket) do
     Logger.debug("CONNECTED: Counter: #{get_store(socket, :counter)}")
     clean_up(socket)
-    pid = spawn_link fn ->
-      file = Application.get_env(:drab_poc, :watch_file)
-      monitor = Application.get_env(:drab_poc, :watch_monitor)
-      ### Sentix requires fswatch installed on the system
-      # Supervisor.start_link(
-      #   [ worker(Sentix, [ :watcher, [file], [monitor: monitor, latency: 1, filter: [:updated] ] ]) ],
-      #   strategy: :one_for_one
-      # )
-      Sentix.start_link(:watcher, [file], monitor: monitor, latency: 1, filter: [:updated])
-      Sentix.subscribe(:watcher)
+    file = Application.get_env(:drab_poc, :watch_file)
+    monitor = Application.get_env(:drab_poc, :watch_monitor)
+    ### Sentix requires fswatch installed on the system
+    Sentix.start_link(:watcher, [file], monitor: monitor, latency: 1, filter: [:updated])
+    Sentix.subscribe(:watcher)
 
-      file_change_loop(socket, file)
-    end
-    put_store(socket, :file_change_loop_pid, pid)
+    file_change_loop(socket, file)
   end
 
   def disconnected(store, session) do
-    send(store[:file_change_loop_pid], {:disconnected, :please_exit})
     Logger.debug("DISCONNECTED, store: #{store |> inspect}")
     Logger.debug("            session: #{session |> inspect}")
     :ok
@@ -197,8 +207,6 @@ defmodule DrabPoc.PageCommander do
     receive do
       {_pid, {:fswatch, :file_event}, {^file_path, _opts}} ->
         socket |> update(:text, set: last_n_lines(file_path, 8), on: "#log_file")
-      {:disconnected, :please_exit} ->
-        Process.exit(self(), :normal)
       any_other ->
         Logger.debug(inspect(any_other))
       # after 1000 ->
