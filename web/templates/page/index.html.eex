@@ -527,6 +527,54 @@ end/%></code></pre>
 </div>
 <hr>
 
+<div class="row">
+  <h4 id="errors">Handling Errors and Exceptions  </h4>
+  <div class="col-md-12">
+    <p>
+      Drab intercepts all exceptions from event handler function and let it die, but before it presents the error message in the logs, and, for development environment, on the page. For production, it shows just an alert with the generic error. <br>
+      Please notice that an error in the specific handler function will not harm anything else: all the processing are going on normally. 
+    </p>
+  </div>
+  <div class="col-md-8">
+    <p>
+    <pre><code class="elixir"><%=~S|def raise_error(_socket, _dom_sender) do
+  map = %{x: 1, y: 2}
+  # the following line will cause KeyError
+  map.z
+end|%></code></pre>
+    By default it is just an <code>alert()</code>, but you can easly override it by creating the template in <code>priv/templates/drab/drab.handler_error.prod.js</code> with your own javascript presenting the error.
+    </p>
+    <p>
+    There is much descriptive message in the logs. The same message is shown within the alert on development environment.
+    <pre><code class="text"><%=~S|[error] Drab Handler failed with the following exception:
+** (KeyError) key :z not found in: %{x: 1, y: 2}
+    (drab_poc) web/commanders/page_commander.ex:183: DrabPoc.PageCommander.raise_error/2
+    lib/drab.ex:178: anonymous fn/5 in Drab.handle_event/6|%></code></pre>
+    </p>
+  </div>
+  <div class="col-md-4">
+    <p>
+      <button class="btn btn-primary" drab-click="raise_error">KABOOM!</button>
+    </p>
+  </div>
+
+  <div class="col-md-8">
+    <p>
+    But what when the Handler Process is killed for some other, than the exception, reason - like being brutally murdered? The story is quite similar - we can show the error banner, but in this case there is no way to clean up. In practice the button will stay disabled.
+    <pre><code class="elixir"><%=~S|def self_kill(_socket, _dom_sender) do
+  Process.exit(self(), :kill)
+end|%></code></pre>
+    </p>
+  </div>
+  <div class="col-md-4">
+    <p>
+      <button class="btn btn-primary" drab-click="self_kill">Commit Suicide</button>
+    </p>
+  </div>
+
+
+</div>
+<hr>
 
 <h4>
   &copy;2016 Tomek "Grych" Gryszkiewicz, <a href="mailto:grych@tg.pl">grych@tg.pl</a>

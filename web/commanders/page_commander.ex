@@ -177,6 +177,16 @@ defmodule DrabPoc.PageCommander do
       |> update(:text, set: "Do you realy think it is #{answer}?", on: "#waiter_answer_div")
   end
 
+  def raise_error(_socket, _dom_sender) do
+    map = %{x: 1, y: 2}
+    # the following line will cause KeyError
+    map.z
+  end
+
+  def self_kill(_socket, _dom_sender) do
+    Process.exit(self(), :kill)
+  end
+
   # Drab Callbacks 
   def page_loaded(socket) do
     Logger.debug("LOADED: Counter: #{get_store(socket, :counter)}")
