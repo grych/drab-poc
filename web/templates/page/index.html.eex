@@ -633,9 +633,9 @@ socket |> alert("Title", "Sure?", buttons: [ok: "Azaliż", cancel: "Poniechaj"])
       As suggested, copy those two lines into IEx and now you can remote control your browser from IEx. Very handy for learning Drab and debugging!
       <pre><code class="elixir"><%=~S'iex(1)> import Drab.Core; import Drab.Query; import Drab.Modal; import Drab.Waiter
 Drab.Waiter
-iex(2)> socket = GenServer.call(pid("0.1551.0"), :get_socket)
+iex(2)> socket = GenServer.call(pid("0.663.0"), :get_socket)
 %Phoenix.Socket{assigns: %{__action: :index,
-   __controller: DrabPoc.PageController, __drab_pid: #PID<0.1551.0>,
+   __controller: DrabPoc.PageController, __drab_pid: #PID<0.663.0>,
    ... 
    transport_pid: #PID<0.1548.0>}
 
