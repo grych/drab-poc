@@ -30,6 +30,10 @@ hr {
   padding-top: 60px; 
   margin-top: -60px;
 }
+.anchored:hover {
+  cursor: default;
+  text-decoration: none;
+}
 body {
   padding-top: 40px;
 }
