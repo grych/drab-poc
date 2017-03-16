@@ -26,3 +26,10 @@ button {
 hr {
   border-top: 1px solid grey;
 }
+.anchored {
+  padding-top: 60px; 
+  margin-top: -60px;
+}
+body {
+  padding-top: 40px;
+}

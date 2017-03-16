@@ -1,4 +1,4 @@
-%{"cachex": {:hex, :cachex, "2.0.2", "336504796fb80b49261c757aaec3424deb88914691deb4298164d00835861422", [:mix], [{:eternal, "~> 1.1", [hex: :eternal, optional: false]}]},
+%{"cachex": {:hex, :cachex, "2.1.0", "fad49b4e78d11c6c314e75bd8c9408f5b78cb065c047442798caed10803ee3be", [:mix], [{:eternal, "~> 1.1", [hex: :eternal, optional: false]}]},
   "cipher": {:hex, :cipher, "1.2.2", "427f510233ee08dcf19da717efb7f672b9db223f59301480667bb9d9aef0d952", [:mix], [{:plug, ">= 1.1.0", [hex: :plug, optional: false]}, {:poison, "~> 2.0", [hex: :poison, optional: false]}]},
   "cowboy": {:hex, :cowboy, "1.1.2", "61ac29ea970389a88eca5a65601460162d370a70018afe6f949a29dca91f3bb0", [:rebar3], [{:cowlib, "~> 1.0.2", [hex: :cowlib, optional: false]}, {:ranch, "~> 1.3.2", [hex: :ranch, optional: false]}]},
   "cowlib": {:hex, :cowlib, "1.0.2", "9d769a1d062c9c3ac753096f868ca121e2730b9a377de23dec0f7e08b1df84ee", [:make], []},

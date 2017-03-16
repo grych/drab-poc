@@ -1,10 +1,108 @@
-<h3 class="centered">Drab</h3>
+<a name="drab">
+  <h3 class="anchored">Drab</h4>
+</a>
 <p>
   <%= moduledoc(Drab) |> raw %>
 </p>
 <hr>
 
-<h3 class="centered">Drab.Query</h3>
+
+<a name="core">
+  <h3 class="anchored">Drab.Core</h4>
+</a>
+<p>
+  <%= moduledoc(Drab.Core) |> raw %>
+</p>
+
+<div class="row">
+  <h4>execjs/2</h4>
+  <div class="col-md-6">
+    <p>
+      <%= funcdoc(Drab.Core, {:execjs, 2}) |> raw %>
+    </p>
+  </div>
+  <div class="col-md-6">
+    <button drab-click="c_1_click" class="btn btn-primary">
+      socket |> execjs("2 + 2")
+    </button><br><br>
+    <button drab-click="c_2_click" class="btn btn-primary">
+      socket |> execjs("alert('Do you like alerts?')")
+    </button>
+  </div>
+</div>
+
+<div class="row">
+  <h4>broadcastjs/2</h4>
+  <div class="col-md-6">
+    <p>
+      <%= funcdoc(Drab.Core, {:broadcastjs, 2}) |> raw %>
+    </p>
+  </div>
+  <div class="col-md-6">
+    <button drab-click="c_3_click" class="btn btn-primary">
+      socket |> broadcastjs("console.log('message to all')")
+    </button>
+  </div>
+</div>
+
+<div class="row">
+  <h4>put_store/3</h4>
+  <div class="col-md-6">
+    <p>
+      <%= funcdoc(Drab.Core, {:put_store, 3}) |> raw %>
+    </p>
+  </div>
+  <div class="col-md-6">
+    <button drab-click="c_4_click" class="btn btn-primary">
+      socket |> put_store(:counter, get_store(socket, :counter, 0) + 1)
+    </button>
+  </div>
+</div>
+
+<div class="row">
+  <h4>get_store/2</h4>
+  <div class="col-md-6">
+    <p>
+      <%= funcdoc(Drab.Core, {:get_store, 2}) |> raw %>
+    </p>
+  </div>
+  <div class="col-md-6">
+    <button drab-click="c_5_click" class="btn btn-primary">
+      socket |> get_store(:counter)
+    </button>
+  </div>
+</div>
+
+<div class="row">
+  <h4>get_session/2</h4>
+  <div class="col-md-6">
+    <p>
+      <%= funcdoc(Drab.Core, {:get_session, 2}) |> raw %>
+    </p>
+  </div>
+  <div class="col-md-6">
+    <button drab-click="c_6_click" class="btn btn-primary">
+      socket |> get_session(:test)
+    </button>
+  </div>
+</div>
+
+<div class="row">
+  <h4>get_store/3</h4>
+  <div class="col-md-6">
+    <p>
+      <%= funcdoc(Drab.Core, {:get_store, 3}) |> raw %>
+    </p>
+  </div>
+</div>
+
+<hr>
+
+
+
+<a name="query">
+  <h3 class="anchored">Drab.Query</h4>
+</a>
 <p>
   <%= moduledoc(Drab.Query) |> raw %>
 </p>
@@ -123,7 +221,10 @@
 </div>
 <hr>
 
-<h3 class="centered">Drab.Modal</h3>
+
+<a name="modal">
+  <h3 class="anchored">Drab.Modal</h4>
+</a>
 <p>
   <%= moduledoc(Drab.Modal) |> raw %>
 </p>
@@ -147,115 +248,44 @@
 </div>
 <hr>
 
-<h3 class="centered">Drab.Core</h3>
+
+<a name="waiter">
+  <h3 class="anchored">Drab.Waiter</h4>
+</a>
 <p>
-  <%= moduledoc(Drab.Core) |> raw %>
+  <%= moduledoc(Drab.Waiter) |> raw %>
 </p>
-
-<div class="row">
-  <h4>execjs/2</h4>
-  <div class="col-md-6">
-    <p>
-      <%= funcdoc(Drab.Core, {:execjs, 2}) |> raw %>
-    </p>
-  </div>
-  <div class="col-md-6">
-    <button drab-click="c_1_click" class="btn btn-primary">
-      socket |> execjs("2 + 2")
-    </button><br><br>
-    <button drab-click="c_2_click" class="btn btn-primary">
-      socket |> execjs("alert('Do you like alerts?')")
-    </button>
-  </div>
-</div>
-
-<div class="row">
-  <h4>broadcastjs/2</h4>
-  <div class="col-md-6">
-    <p>
-      <%= funcdoc(Drab.Core, {:broadcastjs, 2}) |> raw %>
-    </p>
-  </div>
-  <div class="col-md-6">
-    <button drab-click="c_3_click" class="btn btn-primary">
-      socket |> broadcastjs("console.log('message to all')")
-    </button>
-  </div>
-</div>
-
-<div class="row">
-  <h4>put_store/3</h4>
-  <div class="col-md-6">
-    <p>
-      <%= funcdoc(Drab.Core, {:put_store, 3}) |> raw %>
-    </p>
-  </div>
-  <div class="col-md-6">
-    <button drab-click="c_4_click" class="btn btn-primary">
-      socket |> put_store(:counter, get_store(socket, :counter, 0) + 1)
-    </button>
-  </div>
-</div>
-
-<div class="row">
-  <h4>get_store/2</h4>
-  <div class="col-md-6">
-    <p>
-      <%= funcdoc(Drab.Core, {:get_store, 2}) |> raw %>
-    </p>
-  </div>
-  <div class="col-md-6">
-    <button drab-click="c_5_click" class="btn btn-primary">
-      socket |> get_store(:counter)
-    </button>
-  </div>
-</div>
-
-<div class="row">
-  <h4>get_session/2</h4>
-  <div class="col-md-6">
-    <p>
-      <%= funcdoc(Drab.Core, {:get_session, 2}) |> raw %>
-    </p>
-  </div>
-  <div class="col-md-6">
-    <button drab-click="c_6_click" class="btn btn-primary">
-      socket |> get_session(:test)
-    </button>
-  </div>
-</div>
-
-<div class="row">
-  <h4>get_store/3</h4>
-  <div class="col-md-6">
-    <p>
-      <%= funcdoc(Drab.Core, {:get_store, 3}) |> raw %>
-    </p>
-  </div>
-</div>
-
-
 <hr>
 
-<h3 class="centered">Drab.Controller</h3>
+<a name="controller">
+  <h3 class="anchored">Drab.Controller</h4>
+</a>
 <p>
   <%= moduledoc(Drab.Controller) |> raw %>
 </p>
 <hr>
 
-<h3 class="centered">Drab.Commander</h3>
+<a name="commander">
+  <h3 class="anchored">Drab.Commander</h4>
+</a>
 <p>
   <%= moduledoc(Drab.Commander) |> raw %>
 </p>
 <hr>
 
-<h3 class="centered">Drab.Socket</h3>
+
+<a name="socket">
+  <h3 class="anchored">Drab.Socket</h4>
+</a>
 <p>
   <%= moduledoc(Drab.Socket) |> raw %>
 </p>
 <hr>
 
-<h3 class="centered">Drab.Client</h3>
+
+<a name="client">
+  <h3 class="anchored">Drab.Client</h4>
+</a>
 <p>
   <%= moduledoc(Drab.Client) |> raw %>
 </p>
@@ -269,7 +299,10 @@
 </div>
 <hr>
 
-<h3 class="centered">Mix.Tasks.Drab.Gen.Commander</h3>
+
+<a name="gen_commander">
+  <h3 class="anchored">Mix.Tasks.Drab.Gen.Commander</h4>
+</a>
 <p>
   <%= moduledoc(Mix.Tasks.Drab.Gen.Commander) |> raw %>
 </p>

@@ -198,13 +198,11 @@ defmodule DrabPoc.PageCommander do
   def connected(socket) do
     Logger.debug("CONNECTED: Counter: #{get_store(socket, :counter)}")
     clean_up(socket)
-    file = Application.get_env(:drab_poc, :watch_file)
-    monitor = Application.get_env(:drab_poc, :watch_monitor)
-    ### Sentix requires fswatch installed on the system
-    Sentix.start_link(:watcher, [file], monitor: monitor, latency: 1, filter: [:updated])
-    Sentix.subscribe(:watcher)
 
-    file_change_loop(socket, file)
+    # Sentix is already started within application supervisor
+    Sentix.subscribe(:access_log)
+
+    file_change_loop(socket, Application.get_env(:drab_poc, :watch_file))
   end
 
   def disconnected(store, session) do

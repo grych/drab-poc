@@ -3,6 +3,7 @@
   The jQuery in Elixir
 </h4>
 
+
 <div class="row">
   <div class="col-md-8">
     <p>
@@ -22,9 +23,29 @@
       Drab is written using Phoenix on Elixir, so all the code in examples is HTML and Elixir (no Javascript!). <b>This page is a living demo - all examples are actually working on the Drab server</b>.
       You can find a source code of this page <a href="https://github.com/grych/drab-poc">on Github</a>, and the <a href="https://github.com/grych/drab">source code of the Drab himself - here</a>.
     </p>
+    <p>
+      In general, Drab treats the client browser as a database provider and gives the way to <code>select</code>, <code>update</code>, <code>insert</code> and <code>delete</code> objects or object attributes:
+    <pre><code class="elixir"><%=~s/select(something, from: selector)
+insert(something, into: selector)
+delete(selector) or delete(something, from: selector)
+update(something, set: new_value, on: selector)/%></code></pre>
+    </p>
     <p><small>Tomek "Grych" Gryszkiewicz 2016</small></p>
+    <iframe src="https://ghbtns.com/github-btn.html?user=grych&repo=drab&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe><br>
+    <iframe src="https://ghbtns.com/github-btn.html?user=grych&repo=drab&type=watch&count=true&v=2" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>
   </div>
+
   <div class="col-md-4 left-bordered">
+
+    <div class="panel panel-default">
+      <div class="panel-heading">Drab v0.3.1 released! <span class="label label-default">2017-03-16</span></div>
+      <div class="panel-body">
+        <p>
+          Introducing <a href="https://github.com/grych/drab/releases/tag/v0.3.1">Drab 0.3.1</a>, version focused on error handling and debugging. Now you can run Drab functions directly from the <code>IEx</code>. It is fun! Learn more <a href="#debugging">here</a>. <a href="#errors">And here</a> you can find out how Drab presents exceptions.
+        </p>
+      </div>
+    </div>
+
     <div class="panel panel-default">
       <div class="panel-heading">Drab v0.3.0 released! <span class="label label-default">2017-03-09</span></div>
       <div class="panel-body">
@@ -50,25 +71,16 @@
       </div>
     </div>
  %>
-    <iframe src="https://ghbtns.com/github-btn.html?user=grych&repo=drab&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe><br>
-    <iframe src="https://ghbtns.com/github-btn.html?user=grych&repo=drab&type=watch&count=true&v=2" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>
   </div>
 </div>
 
 <hr>
 
-
-
 <div class="row">
-  <h4 id="simple">Simple Input and Button Example</h4>
+  <a name="simple">
+    <h4 class="anchored">Simple Input and Button Example</h4>
+  </a>
   <div class="col-md-8">
-    <p>
-      In general, Drab treats the client browser as a database provider and gives the way to <code>select</code>, <code>update</code>, <code>insert</code> and <code>delete</code> objects or object attributes:
-    <pre><code class="elixir"><%=~s/select(something, from: selector)
-    insert(something, into: selector)
-    delete(selector) or delete(something, from: selector)
-    update(something, set: new_value, on: selector)/%></code></pre>
-    </p>
     <p>Here is the simplest example  - text input and the button. Clicking the button make input text uppercase. Awesome!</p>
     <p>
       On the <b>client side</b> we have a basic HTML with the input and the button:
@@ -109,12 +121,15 @@ name = socket |> select(:vals, from: "input")
     </p>
   </div>
 </div>
+
 <hr>
 
 
 
 <div class="row">
-  <h4 id="dom_sender">Access to the Sender DOM Object Properties</h4>
+  <a name="dom_sender">
+    <h4 class="anchored">Access to the Sender DOM Object Properties</h4>
+  </a>
   <div class="col-md-8">
     <p>
       The next example shows how we can retrieve the information from <code>data</code> attribute. We've simple set up few buttons, each with the same event function <code>clicked_sleep_button</code>:
@@ -149,7 +164,9 @@ end/%></code></pre>
 
 
 <div class="row">
-  <h4 id="tens_of_processes">Tens of Tasks Running in Parallel on the Server and Communicating Back to the Browser</h4>
+  <a name="tens_of_processes">
+    <h4 class="anchored">Tens of Tasks Running in Parallel on the Server and Communicating Back to the Browser</h4>
+  </a>
   <div class="col-md-8">
     <p>
       In the next example we will emulate long running server Process composed of a number of Tasks, which can be run asynchronously. We want to run it in parallel, change their status when they finish the job and - when all of them are done - change the status of the whole process.
@@ -209,7 +226,9 @@ end/%></code></pre>
 
 
 <div class="row">
-  <h4 id="long_running">Long Running Process with Communication Back to Browser</h4>
+  <a name="long_running">
+    <h4 class="anchored">Long Running Process with Communication Back to Browser</h4>
+  </a>
   <div class="col-md-8">
     <p>
       Let's move to some more complicated functionality. Assume having a process which is doing some stuff on the server side and we want to report back to the user after each completed step. We will use the progress bar controlled from the server. <br>
@@ -315,7 +334,9 @@ In the cancel button handler, you just need to get the tokenized pid from <code>
 
 
 <div class="row">
-  <h4 id="tail_dash_f">Server-Side Events: Display the Growing File (tail -F)</h4>
+  <a name="tail_dash_f">
+    <h4 class="anchored">Server-Side Events: Display the Growing File (tail -F)</h4>
+  </a>
   <div class="col-md-8">
     <p>
       Another great example of Drab usage is to display the files, which are changing over the time, like log files. In the normal, Ajax world, you need to send a request periodically to refresh the view, and you never know, if the file changed or not. What a waste of resouces!
@@ -328,14 +349,16 @@ In the cancel button handler, you just need to get the tokenized pid from <code>
 <pre><code class="elixir"><%=~s/use Drab.Commander
 onconnect :connected/%></code></pre>
       <code>onconnect</code> launches every time client connects to the server, so after first load, network crashes, server crashes etc. There is also <code>onload</code> callback, which runs only once and ignores disconnects.
-      <br>
-      In the handler function we run <code>Sentix</code> file watcher (it is a wrapper around <code>fswatch</code> utility). 
-<pre><code class="elixir"><%=~s/ def connected(socket) do
-  file = Application.get_env(:drab_poc, :watch_file)
-  monitor = Application.get_env(:drab_poc, :watch_monitor)
-  Sentix.start_link(:watcher, [file], monitor: monitor, latency: 1, filter: [:updated])
-  Sentix.subscribe(:watcher)
-  file_change_loop(socket, file)
+    </p>
+    <p>
+      In the handler function we subscribe to <code>Sentix</code> file watcher (it is a wrapper around <code>fswatch</code> utility): 
+<pre><code class="elixir"><%=~s/def connected(socket) do
+  clean_up(socket)
+
+  # Sentix is already started within application supervisor
+  Sentix.subscribe(:access_log)
+
+  file_change_loop(socket, Application.get_env(:drab_poc, :watch_file))
 end/%></code></pre>
       Watcher sends a message each time the file change. In this case we are going to update the <code>#log_file</code> div to present the last few lines of the file. 
 <pre><code class="elixir"><%=~s/defp file_change_loop(socket, file_path) do
@@ -345,9 +368,6 @@ end/%></code></pre>
   end
   file_change_loop(socket, file_path)
 end/%></code></pre>
-    </p>
-    <p>
-      Of course in real application, you would like to put Sentix under supervision tree (and do not attempt to run it on every connect). 
     </p>
     <p>
       There is also the <code>disconnect</code> callback, which runs every time browser disconnects from the server - close the browser, navigate away from the page, network issue, etc. Obviously there is no way to show it on the Demo page, as it operates when the page is not visible anymore. In the example above, you may use it to terminate the <code>file_change_loop</code>.
@@ -365,7 +385,9 @@ end/%></code></pre>
 <hr>
 
 <div class="row">
-  <h4 id="broadcast">Is Drab Quick Enough? Plus Broadcast</h4>
+  <a name="broadcast">
+    <h4 class="anchored">Is Drab Quick Enough? Plus Broadcast</h4>
+  </a>
 
   <div class="col-md-8">
     <p>
@@ -411,8 +433,12 @@ end/%></code></pre>
 </div>
 <hr>
 
+
+
 <div class="row">
-  <h4 id="store">Drab Store and access to Plug Session</h4>
+  <a name="store">
+    <h4 class="anchored">Drab Store and access to Plug Session</h4>
+  </a>
   <div class="col-md-12">
     <p>
       Analogically to Plug, Drab can store the values in its own session. To avoid confusion with the session, we will call Drab Store. You can use two functions, <code>put_store/3</code> and <code>get_store/2</code> to archive it. They works exactly the same as a "normal", Phoenix session.
@@ -482,8 +508,12 @@ end/%></code></pre>
 </div>
 <hr>
 
+
+
 <div class="row">
-  <h4 id="waiter">Drab Waiter</h4>
+  <a name="waiter">
+    <h4 class="anchored">Drab Waiter</h4>
+  </a>
   <div class="col-md-12">
     <p>
       Sometimes it would be good to have a possibility to ask user about something, when you are in a middle of some process, and you don't want to finish your function. The good example is a <strong>database transaction, when you run some query and want to ask user wheter commit or rollback changes</strong>. We saw the use of <code>Drab.Modal</code> before, but sometimes modal window is not very elegant.
@@ -527,8 +557,12 @@ end/%></code></pre>
 </div>
 <hr>
 
+
+
 <div class="row">
-  <h4 id="errors">Handling Errors and Exceptions  </h4>
+  <a name="errors">
+    <h4 class="anchored">Handling Errors and Exceptions</h4>
+  </a>
   <div class="col-md-12">
     <p>
       Drab intercepts all exceptions from event handler function and let it die, but before it presents the error message in the logs, and, for development environment, on the page. For production, it shows just an alert with the generic error. <br>
@@ -574,46 +608,53 @@ end|%></code></pre>
 </div>
 <hr>
 
+
+
 <div class="row">
-  <h4 id="debugging">Debugging</h4>
+  <a name="debugging">
+    <h4 class="anchored">Debugging</h4>
+  </a>
   <div class="col-md-12">
     <p>
-      There is an easy way to check and debug Drab functions directly in the <code>IEx</code>. The only you need to do is to run your Drab-enabled phoenix server with IEx: <code>iex -S mix phoenix.server</code>. Then, connect with the browser to <code>http://localhost:4000</code> and observe the IEx console. When started, Drab will show you some important debugging information:
-      
+      There is an easy way to check and debug Drab functions directly in the <code>IEx</code>. The only you need to do is to run your Drab-enabled phoenix server (you can get one with pre-installed Phoenix and Drab from <a href="https://github.com/grych/drab-example">https://github.com/grych/drab-example</a>) with IEx: <code>iex -S mix phoenix.server</code>. Then, connect with the browser to <code>http://localhost:4000</code> and observe the IEx console. When started, Drab will show you some important debugging information:
+      <pre><code class="text"><%=~S{[debug] 
+    Started Drab for /drab, handling events in DrabPoc.PageCommander
+    You may debug Drab functions in IEx by copy/paste the following:
+import Drab.Core; import Drab.Query; import Drab.Modal; import Drab.Waiter
+socket = GenServer.call(pid("0.663.0"), :get_socket)
+
+    Examples:
+socket |> select(:htmls, from: "h4")
+socket |> execjs("alert('hello from IEx!')")
+socket |> alert("Title", "Sure?", buttons: [ok: "Azaliż", cancel: "Poniechaj"])
+}%></code></pre>
     </p>
-  </div>
-  <div class="col-md-8">
     <p>
-    <pre><code class="elixir"><%=~S||%></code></pre>
-    By default it is just an <code>alert()</code>, but you can easly override it by creating the template in <code>priv/templates/drab/drab.handler_error.prod.js</code> with your own javascript presenting the error.
+      As suggested, copy those two lines into IEx and now you can remote control your browser from IEx. Very handy for learning Drab and debugging!
+      <pre><code class="elixir"><%=~S'iex(1)> import Drab.Core; import Drab.Query; import Drab.Modal; import Drab.Waiter
+Drab.Waiter
+iex(2)> socket = GenServer.call(pid("0.1551.0"), :get_socket)
+%Phoenix.Socket{assigns: %{__action: :index,
+   __controller: DrabPoc.PageController, __drab_pid: #PID<0.1551.0>,
+   ... 
+   transport_pid: #PID<0.1548.0>}
+
+iex(3)> socket |> select(:htmls, from: "h4")
+%{"__undefined_0" => "\n  The jQuery in Elixir\n",
+  "__undefined_1" => "Async task status: <span id=\"async_task_status\" class=\"label label-primary\">ready</span>",
+  "__undefined_2" => "\n  ©2016 Tomek \"Grych\" Gryszkiewicz, <a href=\"mailto:grych@tg.pl\">grych@tg.pl</a>\n",
+...
+  "tail_dash_f" => "Server-Side Events: Display the Growing File (tail -F)",
+  "tens_of_processes" => "Tens of Tasks Running in Parallel on the Server and Communicating Back to the Browser",
+  "waiter" => "Drab Waiter"}
+'%></code></pre>
     </p>
     <p>
-    There is much descriptive message in the logs. The same message is shown within the alert on development environment.
-    <pre><code class="text"><%=~S|[error] Drab Handler failed with the following exception:
-** (KeyError) key :z not found in: %{x: 1, y: 2}
-    (drab_poc) web/commanders/page_commander.ex:183: DrabPoc.PageCommander.raise_error/2
-    lib/drab.ex:178: anonymous fn/5 in Drab.handle_event/6|%></code></pre>
-    </p>
-  </div>
-  <div class="col-md-4">
-    <p>
-      <button class="btn btn-primary" drab-click="raise_error">KABOOM!</button>
+      Please be aware that Drab creates its own process for every single connection, so if you open a page in multiple tabs or browsers, you will have to handle with few different Drab PIDs. Also watch out for automatic page reload after code change - this will re-launch Drab as well, it will change its PID.
     </p>
   </div>
 
-  <div class="col-md-8">
-    <p>
-    But what when the Handler Process is killed for some other, than the exception, reason - like being brutally murdered? The story is quite similar - we can show the error banner, but in this case there is no way to clean up. In practice the button will stay disabled.
-    <pre><code class="elixir"><%=~S|def self_kill(_socket, _dom_sender) do
-  Process.exit(self(), :kill)
-end|%></code></pre>
-    </p>
-  </div>
-  <div class="col-md-4">
-    <p>
-      <button class="btn btn-primary" drab-click="self_kill">Commit Suicide</button>
-    </p>
-  </div>
+
 </div>
 <hr>
 

@@ -6,12 +6,17 @@ defmodule DrabPoc do
   def start(_type, _args) do
     import Supervisor.Spec
 
+    # file name and monitor type for sentix
+    file = Application.get_env(:drab_poc, :watch_file)
+    monitor = Application.get_env(:drab_poc, :watch_monitor)
+
     # Define workers and child supervisors to be supervised
     children = [
       # Start the endpoint when the application starts
       supervisor(DrabPoc.Endpoint, []),
       # Start your own worker by calling: DrabPoc.Worker.start_link(arg1, arg2, arg3)
       # worker(DrabPoc.Worker, [arg1, arg2, arg3]),
+      worker(Sentix, [ :access_log, [ file ], [monitor: monitor, latency: 1, filter: [:updated]] ])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
