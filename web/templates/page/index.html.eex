@@ -13,15 +13,11 @@
       Nowadays, when the most of the applications are web based, it is not so easy anymore. You need either to create a form and submit the data via POST or GET or use AJAX to send or retrieve data. Whole interface manipulation is on the client side. In practice, you need to write two applications: on the client and the server side.  
     </p>
     <p>
-      Additionally, because <code>http</code> is stateless and a one-way protocol, it is not easy to communicate back from the server to the browser. Like, for example, during execution of the long running process, when there is a need to update status (eg. progress bar) or ask the operator about something (like "would you like to continue?"). Of course there are workarounds for this, like polling the server every few seconds to have a status, or even auto-refreshing the page, but those are just a dirty workarounds. The solution would be to allow an access to the interface directly from the server side. And here comes <code>Drab</code>.
+      Additionally, because <code>http</code> is stateless and a one-way protocol, it is not easy to communicate back from the server to the browser. Like, for example, during execution of the long running process, when there is a need to update status (eg. progress bar), or to ask the operator about something (like "would you like to continue?"). Of course there are workarounds for this, like polling the server every few seconds to have a status, or even auto-refreshing the page, but those are just a dirty workarounds. The solution would be to allow an access to the interface directly from the server side. And here comes <code>Drab</code>.
     </p>
     <p>
       <code>Drab</code> is a concept of <b>providing an access to User Interface (DOM objects) on the server side</b>, just like in the 
       good-old Delphi times. The examples below should give you an overview of how does it work. For more detailed instructions, please refer to the <a href="https://hexdocs.pm/drab">documentation</a>.
-    </p>
-    <p>
-      Drab is written using Phoenix on Elixir, so all the code in examples is HTML and Elixir (no Javascript!). <b>This page is a living demo - all examples are actually working on the Drab server</b>.
-      You can find a source code of this page <a href="https://github.com/grych/drab-poc">on Github</a>, and the <a href="https://github.com/grych/drab">source code of the Drab himself - here</a>.
     </p>
     <p>
       In general, Drab treats the client browser as a database provider and gives the way to <code>select</code>, <code>update</code>, <code>insert</code> and <code>delete</code> objects or object attributes:
@@ -29,6 +25,10 @@
 insert(something, into: selector)
 delete(selector) or delete(something, from: selector)
 update(something, set: new_value, on: selector)/%></code></pre>
+    </p>
+    <p>
+      Drab is written using Phoenix on Elixir, so all the code in examples is HTML and Elixir (no Javascript!). <b>This page is a living demo - all examples are actually working on the Drab server</b>.
+      You can find a source code of this page <a href="https://github.com/grych/drab-poc">on Github</a>, and the <a href="https://github.com/grych/drab">source code of the Drab himself - here</a>.
     </p>
     <p><small>Tomek "Grych" Gryszkiewicz 2016</small></p>
     <iframe src="https://ghbtns.com/github-btn.html?user=grych&repo=drab&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe><br>
