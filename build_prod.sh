@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-cd ../drab
-git pull
-cd ../drab-poc
+# cd ../drab
+# git pull
+# cd ../drab-poc
 git pull
 mix deps.get
 npm install && node_modules/brunch/bin/brunch build --production
