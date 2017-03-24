@@ -441,7 +441,7 @@ end/%></code></pre>
   </a>
   <div class="col-md-12">
     <p>
-      Analogically to Plug, Drab can store the values in its own session. To avoid confusion with the session, we will call Drab Store. You can use two functions, <code>put_store/3</code> and <code>get_store/2</code> to archive it. They works exactly the same as a "normal", Phoenix session.
+      Analogically to Plug, Drab can store the values in its own session. To avoid confusion with the session, we will call it a Drab Store. You can use two functions, <code>put_store/3</code> and <code>get_store/2</code> to read and write the values in the Store. It works exactly the same as a "normal", Phoenix session.
       <ul>
         <li>By default, Drab Store is kept in browser Local Storage. This means it is gone when you close the browser or the tab. You may set up where to keep the data with <code>drab_store_storage</code> config entry.</li>
         <li>Drab Store is not the Plug Session! This is a different entity. Anyway, you have an access to the Plug Session (details below).</li>

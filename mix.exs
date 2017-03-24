@@ -36,8 +36,10 @@ defmodule DrabPoc.Mixfile do
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
      {:earmark, "~> 1.0.3"},
-     # {:drab, in_umbrella: true},
      {:drab, "~> 0.3.1"},
+     # {:drab, in_umbrella: true},
+     # {:drab, path: "/Users/grych/drab"},
+     # {:drab, path: "/Users/grych/tmp/x"},
      {:logger_file_backend, "~> 0.0.9"},
      {:sentix, "~> 1.0"}
     ]
