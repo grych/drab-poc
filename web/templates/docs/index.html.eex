@@ -290,7 +290,7 @@
   <%= moduledoc(Drab.Client) |> raw %>
 </p>
 <div class="row">
-  <h4>get_store/3</h4>
+  <h4>js/1</h4>
   <div class="col-md-12">
     <p>
       <%= funcdoc(Drab.Client, {:js, 2}) |> raw %>
