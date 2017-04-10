@@ -7,6 +7,7 @@
 <div class="row">
   <div class="col-md-8">
     <p>
+      <img src="<%= static_path(@conn, "/images/drab-logo-200.png")%>" class="drab-logo" alt="pipe-shaped slingshot" title="pipe-shaped slingshot">
       In the <i>"good old times"</i> the event handling was easy. The only thing you had to do was to create the event handler (remember <code>TForm1.Button1Click(Sender: TObject)</code>?) and you could do everything inside this handler: accessing data from models, manipulating user interface, sending raw Ethernet packets to the coffee machine...
     </p>
     <p>
@@ -665,5 +666,8 @@ iex(3)> socket |> select(:htmls, from: "h4")
 <p>
   Warning: <b>this is an early beta version</b>, a lot of things are still not implemented, some are hardcoded. Any comments, criticism, thoughts are welcome - <a href="mailto:grych@tg.pl?Subject=Drab">grych@tg.pl</a>. Your feedback is highly appreciated!
 </p>
-
+<hr>
+<p>
+  Illustrations by <a rel="nofollow" href="https://www.vecteezy.com">www.Vecteezy.com</a>
+</p>
 

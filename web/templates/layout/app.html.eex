@@ -100,9 +100,6 @@
 
     </script>
 
-    <script type="text/javascript">
-      // window.addEventListener("hashchange", function() { scrollBy(0, -70) })
-    </script>
 
   </body>
 </html>

@@ -38,3 +38,7 @@ hr {
 body {
   padding-top: 40px;
 }
+.drab-logo {
+  float: left; 
+  margin: 0px 20px 10px 0px;
+}
