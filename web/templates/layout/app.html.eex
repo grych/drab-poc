@@ -9,6 +9,7 @@
 
     <title>Drab: Server Side User Interface Access</title>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+    <link rel="icon" href="/drab/favicon.ico?v=3" />
   </head>
 
    <body>
