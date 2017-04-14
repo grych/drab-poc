@@ -39,6 +39,15 @@ update(something, set: new_value, on: selector)/%></code></pre>
   <div class="col-md-4 left-bordered">
 
     <div class="panel panel-default">
+      <div class="panel-heading">Drab v0.3.2 - tests, tests and tests <span class="label label-default">2017-04-14</span></div>
+      <div class="panel-body">
+        <p>
+          The <a href="https://github.com/grych/drab/releases/tag/v0.3.2">new release</a> introductes automated integration tests, finally. In addition, Drab package on github contains its own Phoenix Server, makes it easier to play with it.
+        </p>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
       <div class="panel-heading">Drab v0.3.1 released! <span class="label label-default">2017-03-16</span></div>
       <div class="panel-body">
         <p>
