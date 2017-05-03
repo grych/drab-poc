@@ -37,6 +37,14 @@ update(something, set: new_value, on: selector)/%></code></pre>
   </div>
 
   <div class="col-md-4 left-bordered">
+    <div class="panel panel-default">
+      <div class="panel-heading">Drab v0.3.3 - performance and more <span class="label label-default">2017-05-03</span></div>
+      <div class="panel-body">
+        <p>
+          <a href="https://github.com/grych/drab/releases/tag/v0.3.3">This release</a> improves performace but precompiling templates, allow change the broadcasting behaviour, and add timeout for <code>execjs/2</code>.
+        </p>
+      </div>
+    </div>
 
     <div class="panel panel-default">
       <div class="panel-heading">Drab v0.3.2 - tests, tests and tests <span class="label label-default">2017-04-14</span></div>
@@ -56,7 +64,7 @@ update(something, set: new_value, on: selector)/%></code></pre>
       </div>
     </div>
 
-    <div class="panel panel-default">
+<%#     <div class="panel panel-default">
       <div class="panel-heading">Drab v0.3.0 released! <span class="label label-default">2017-03-09</span></div>
       <div class="panel-body">
         <p>
@@ -71,16 +79,10 @@ update(something, set: new_value, on: selector)/%></code></pre>
         </p>
       </div>
     </div>
-
-<%#     <div class="panel panel-default">
-      <div class="panel-heading">Drab Logo? <span class="label label-default">2017-03-02</span></div>
-      <div class="panel-body">
-        <p>
-          Every open source project must have its own logo, agreed? If you can do graphics, and you are willing to help, please <a href="mailto:grych@tg.pl?Subject=Drab%20Logo">contact me</a>.
-        </p>
-      </div>
-    </div>
  %>
+
+ <h6>See all <a href="https://github.com/grych/drab/releases">Release Notes</a> to learn about the previous releases</h6>
+
   </div>
 </div>
 
