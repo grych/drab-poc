@@ -38,10 +38,10 @@ update(something, set: new_value, on: selector)/%></code></pre>
 
   <div class="col-md-4 left-bordered">
     <div class="panel panel-default">
-      <div class="panel-heading">Drab v0.3.3 - performance and more <span class="label label-default">2017-05-03</span></div>
+      <div class="panel-heading">New example - The Chat <span class="label label-default">2017-05-04</span></div>
       <div class="panel-body">
         <p>
-          <a href="https://github.com/grych/drab/releases/tag/v0.3.3">This release</a> improves performace but precompiling templates, allow change the broadcasting behaviour, and add timeout for <code>execjs/2</code>.
+          What is the websocket-based application without a chat? Now, you can learn how to create the simplest one with Drab, based on <a href="#chat_example">this example</a>.
         </p>
       </div>
     </div>
@@ -396,6 +396,8 @@ end/%></code></pre>
 </div>
 <hr>
 
+
+
 <div class="row">
   <a name="broadcast">
     <h4 class="anchored">Is Drab Quick Enough? Plus Broadcast</h4>
@@ -524,6 +526,59 @@ end/%></code></pre>
 
 
 <div class="row">
+  <a name="chat_example">
+    <h4 class="anchored">Chat Example</h4>
+  </a>
+  <div class="col-md-8">
+    Is there any websocket based library without the Chat Example? Here is the one based on Drab! Simplest Chat Ever (and, well, the most primitive one). <br>
+    The client-side contains chat <code>div</code> to display messages, and two <code>input</code> fields - one for your nick, and the second one for the chat message:
+    <p><pre><code class="html"><%=~S[<div id="chat"></div>
+<input drab-change="update_nick" class="form-control" placeholder="nickname">
+<input drab-change="update_chat" class="form-control">]%></code></pre>
+    </p>
+    <p>
+      On the Elixir side, <code>update_nick</code> event handler saves your nickname for the future use:
+      <pre><code class="elixir"><%=~S/def update_nick(socket, sender), do socket |> put_store(:nickname, sender["val"])/%></code></pre>
+    </p>
+    <p>
+      The following code is the whole chat application! We retrieve the nickname from the Drab Store (or set it to <i>Anonymous</i> if not found), compose the message to be displayed, and we are ready to go. First, we insert the message to the chat panel (used the <code>append</code> method, so it is added at the bottom of the chat div). Second, clean up the message input. Third, scroll down chat to the bottom. All the changes of are broadcasted to all browsers viewing this page, because we used bang versions of functions here.
+      <pre><code class="elixir"><%=~S/def update_chat(socket, sender) do
+  nick = get_store(socket, :nickname, "Anonymous")
+  html = "<strong>#{nick}:<\/strong> #{sender["val"]}<br>"
+  socket 
+    |> insert!(html, append: "#chat")
+    |> update!(:val, set: "", on: this(sender))
+    |> execute!("animate({scrollTop: $('#chat').prop('scrollHeight')}, 500)", on: "#chat")
+end/%></code></pre>
+      The only new thing is the <code>execute!</code> function. This is the simplest of all Drab.Query functions: it just runs given jQuery method on the selector.
+    </p>
+  </div>
+  <div class="col-md-4">
+    <p>
+      <div class="panel panel-default">
+        <div class="panel-heading">The Chat</div>
+        <div id="chat" class="panel-body chat-panel">
+        </div>
+        <div class="panel-footer">
+          <div class="row">
+            <div class="col-md-3 no-right-padding">
+              <input id="nickname" drab-change="update_nick" class="form-control no-right-radius" placeholder="nickname">
+            </div>
+            <div class="col-md-9 no-left-padding">
+              <input drab-change="update_chat" class="form-control no-left-radius">
+            </div>
+          </div>
+        </div>
+      </div>
+    </p>
+  </div>
+
+</div>
+<hr>
+
+
+
+<div class="row">
   <a name="waiter">
     <h4 class="anchored">Drab Waiter</h4>
   </a>
@@ -569,6 +624,8 @@ end/%></code></pre>
 
 </div>
 <hr>
+
+
 
 
 
@@ -666,8 +723,6 @@ iex(3)> socket |> select(:htmls, from: "h4")
       Please be aware that Drab creates its own process for every single connection, so if you open a page in multiple tabs or browsers, you will have to handle with few different Drab PIDs. Also watch out for automatic page reload after code change - this will re-launch Drab as well, it will change its PID.
     </p>
   </div>
-
-
 </div>
 <hr>
 

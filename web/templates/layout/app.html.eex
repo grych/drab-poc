@@ -37,6 +37,7 @@
               <li><a href="/drab#tail_dash_f">Callbacks and Live File Change View ("tail -F")</a></li>
               <li><a href="/drab#broadcast">Is This Quick Enough? Plus Broadcast</a></li>
               <li><a href="/drab#store">Persistent Storage and Access to Plug Session</a></li>
+              <li><a href="/drab#chat_example">Chat Example</a></li>
               <li><a href="/drab#waiter">Waiter: Another Way to Wait for User's Input</a></li>
               <li><a href="/drab#errors">Showing Errors and Exceptions</a></li>
               <li><a href="/drab#debugging">Debugging Drab in IEx</a></li>

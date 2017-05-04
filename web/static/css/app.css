@@ -42,3 +42,35 @@ body {
   float: left; 
   margin: 0px 20px 10px 0px;
 }
+.chat-panel {
+  height: 380px;
+  overflow-y: auto;
+  font-family: Menlo, Consolas, "Lucida Console", monospace;
+  font-size: 0.95em;
+}
+.no-right-padding {
+  padding-right: 0px;
+}
+.no-right-radius {
+  -webkit-border-top-right-radius: 0;
+   -moz-border-top-right-radius: 0;
+        border-top-right-radius: 0;
+  -webkit-border-bottom-right-radius: 0;
+   -moz-border-bottom-right-radius: 0;
+        border-bottom-right-radius: 0;
+}
+.no-left-radius {
+  -webkit-border-top-left-radius: 0;
+   -moz-border-top-left-radius: 0;
+        border-top-left-radius: 0;
+  -webkit-border-bottom-left-radius: 0;
+   -moz-border-bottom-left-radius: 0;
+        border-bottom-left-radius: 0;
+  border-left: none;
+}
+.no-left-padding {
+  padding-left: 0px;
+}
+.chat-system-message {
+  color: grey;
+}

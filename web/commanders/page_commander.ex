@@ -148,10 +148,30 @@ defmodule DrabPoc.PageCommander do
     socket
   end
 
-  def run_query(_socket, _dom_sender) do
-    # this is an example of sqlplus
-    # register_waiters "button#commit", "click", fn x->1 end
-    # receive do
+  def update_chat(socket, sender) do
+    nick = get_store(socket, :nickname, "Anonymous")
+    html = "<strong>#{nick}:</strong> #{sender["val"]}<br>"
+    socket 
+      |> update!(:val, set: "", on: this(sender))
+      |> add_chat_message(html)
+  end
+
+  def update_nick(socket, sender) do
+    message = """
+    <span class='chat-system-message'>
+      *** <b>#{get_store(socket, :nickname, "Anonymous")}</b> is now known as 
+      <b>#{sender["val"]}</b>
+    </span><br>
+    """
+    socket 
+      |> put_store(:nickname, sender["val"])
+      |> add_chat_message(message)
+  end
+
+  defp add_chat_message(socket, message) do
+    socket
+      |> insert!(message, append: "#chat")
+      |> execute!("animate({scrollTop: $('#chat').prop('scrollHeight')}, 500)", on: "#chat")
   end
 
   def waiter_example(socket, _dom_sender) do
@@ -192,10 +212,19 @@ defmodule DrabPoc.PageCommander do
     Logger.debug("LOADED: Counter: #{get_store(socket, :counter)}")
     socket 
     |> console("Launched onload callback")
-    |> update(:val, set: get_session(socket, :drab_test),on: "#show_session_test")
+    |> update(:val, set: get_session(socket, :drab_test), on: "#show_session_test")
+    |> update(:val, set: get_store(socket, :nickname, ""), on: "#nickname" )
   end
 
   def connected(socket) do
+    # display chat join message
+    nickname = get_store(socket, :nickname, "Anonymous")
+    joined = """
+    <span class='chat-system-message'>*** <b>#{nickname}</b> has joined the chat.</span><br>
+    """
+    socket
+      |> add_chat_message(joined)
+
     Logger.debug("CONNECTED: Counter: #{get_store(socket, :counter)}")
     clean_up(socket)
 
