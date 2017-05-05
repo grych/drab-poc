@@ -538,7 +538,7 @@ end/%></code></pre>
     </p>
     <p>
       On the Elixir side, <code>update_nick</code> event handler saves your nickname for the future use:
-      <pre><code class="elixir"><%=~S/def update_nick(socket, sender), do socket |> put_store(:nickname, sender["val"])/%></code></pre>
+      <pre><code class="elixir"><%=~S/def update_nick(socket, sender), do: socket |> put_store(:nickname, sender["val"])/%></code></pre>
     </p>
     <p>
       The following code is the whole chat application! We retrieve the nickname from the Drab Store (or set it to <i>Anonymous</i> if not found), compose the message to be displayed, and we are ready to go. First, we insert the message to the chat panel (used the <code>append</code> method, so it is added at the bottom of the chat div). Second, clean up the message input. Third, scroll down chat to the bottom. All the changes of are broadcasted to all browsers viewing this page, because we used bang versions of functions here.
@@ -561,10 +561,10 @@ end/%></code></pre>
         </div>
         <div class="panel-footer">
           <div class="row">
-            <div class="col-md-3 no-right-padding">
+            <div class="col-xs-3 no-right-padding">
               <input id="nickname" drab-change="update_nick" class="form-control no-right-radius" placeholder="nickname">
             </div>
-            <div class="col-md-9 no-left-padding">
+            <div class="col-xs-9 no-left-padding">
               <input drab-change="update_chat" class="form-control no-left-radius">
             </div>
           </div>
