@@ -39,7 +39,7 @@ defmodule DrabPoc.PageCommander do
     Logger.debug("****** SOCKET:  #{inspect(socket)}")
     Logger.debug("****** DOM_SENDER: #{inspect(dom_sender)}")
     # raise "Bad things happeded"
-    socket |> console("Hey, this is PageCommander from the server side!")
+    socket |> Drab.Browser.console("Hey, this is PageCommander from the server side!")
     # raise "uups, I did it again"
   end
 
@@ -169,8 +169,15 @@ defmodule DrabPoc.PageCommander do
   end
 
   defp add_chat_message(socket, message) do
+    js = """
+      var time = "<span class='chat-time'>[" + (new Date()).toTimeString().substring(0, 5) + "]</span> "
+      $('#chat').append(time + #{message |> Drab.Core.encode_js})
+      """
+
+    Logger.debug js
     socket
-      |> insert!(message, append: "#chat")
+      # |> insert!(message, append: "#chat")
+      |> broadcastjs(js)
       |> execute!("animate({scrollTop: $('#chat').prop('scrollHeight')}, 500)", on: "#chat")
   end
 
@@ -211,7 +218,7 @@ defmodule DrabPoc.PageCommander do
   def page_loaded(socket) do
     Logger.debug("LOADED: Counter: #{get_store(socket, :counter)}")
     socket 
-    |> console("Launched onload callback")
+    |> Drab.Browser.console("Launched onload callback")
     |> update(:val, set: get_session(socket, :drab_test), on: "#show_session_test")
     |> update(:val, set: get_store(socket, :nickname, ""), on: "#nickname" )
   end
@@ -220,7 +227,7 @@ defmodule DrabPoc.PageCommander do
     # display chat join message
     nickname = get_store(socket, :nickname, "Anonymous")
     joined = """
-    <span class='chat-system-message'>*** <b>#{nickname}</b> has joined the chat.</span><br>
+    *** <b>#{nickname}</b> has joined the chat.</span><br>
     """
     socket
       |> add_chat_message(joined)
