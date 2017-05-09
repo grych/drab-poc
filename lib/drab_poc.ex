@@ -16,7 +16,8 @@ defmodule DrabPoc do
       supervisor(DrabPoc.Endpoint, []),
       # Start your own worker by calling: DrabPoc.Worker.start_link(arg1, arg2, arg3)
       # worker(DrabPoc.Worker, [arg1, arg2, arg3]),
-      worker(Sentix, [ :access_log, [ file ], [monitor: monitor, latency: 1, filter: [:updated]] ])
+      worker(Sentix, [ :access_log, [ file ], [monitor: monitor, latency: 1, filter: [:updated]] ]),
+      worker(DrabPoc.Presence, [])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

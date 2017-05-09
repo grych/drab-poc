@@ -547,7 +547,7 @@ end/%></code></pre>
   html = "<strong>#{nick}:<\/strong> #{sender["val"]}<br>"
   socket 
     |> insert!(html, append: "#chat")
-    |> update!(:val, set: "", on: this(sender))
+    |> update(:val, set: "", on: this(sender))
     |> execute!("animate({scrollTop: $('#chat').prop('scrollHeight')}, 500)", on: "#chat")
 end/%></code></pre>
       The only new thing is the <code>execute!</code> function. This is the simplest of all Drab.Query functions: it just runs given jQuery method on the selector.
