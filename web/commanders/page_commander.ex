@@ -157,7 +157,7 @@ defmodule DrabPoc.PageCommander do
     users = DrabPoc.Presence.get_users() |> Map.values() |> Enum.sort |> Enum.join(", ") 
     socket 
       |> update(:val, set: "", on: this(sender))
-      |> add_chat_message("<span class='chat-system-message'>*** Connected users: #{users}</span>")
+      |> add_chat_message("<span class='chat-system-message'>*** Connected users: #{users}</span><br>")
   end
 
   defp do_update_chat(socket, sender, message) do
