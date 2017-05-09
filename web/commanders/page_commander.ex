@@ -157,7 +157,7 @@ defmodule DrabPoc.PageCommander do
     users = DrabPoc.Presence.get_users() |> Map.values() |> Enum.sort |> Enum.join(", ") 
     socket 
       |> update(:val, set: "", on: this(sender))
-      |> add_chat_message("<span class='chat-system-message'>*** Connected users: #{users}</span><br>")
+      |> add_chat_message("<span class='chat-system-message'>*** Connected users: #{users}.</span><br>")
   end
 
   defp do_update_chat(socket, sender, message) do
@@ -180,32 +180,38 @@ defmodule DrabPoc.PageCommander do
       |> put_store(:nickname, new_nick)
       |> add_chat_message!(message)
     DrabPoc.Presence.update_user(Node.self(), Drab.pid(socket), new_nick)
+    update_presence_list!(socket)
   end
 
-  def chat_message(message) do
+  defp chat_message_js(message) do
     """
     var time = "<span class='chat-time'>[" + (new Date()).toTimeString().substring(0, 5) + "]</span> "
     $('#chat').append(time + #{message |> Drab.Core.encode_js})
     """
   end
 
-  def scroll_down!(socket) do
+  defp scroll_down!(socket) do
     socket |> execute!("animate({scrollTop: $('#chat').prop('scrollHeight')}, 500)", on: "#chat")
   end
 
-  def scroll_down(socket) do
+  defp scroll_down(socket) do
     socket |> execute("animate({scrollTop: $('#chat').prop('scrollHeight')}, 500)", on: "#chat")
   end
 
-  def add_chat_message!(socket, message) do
+  defp add_chat_message!(socket, message) do
     socket
-      |> broadcastjs(chat_message(message))
+      |> broadcastjs(chat_message_js(message))
       |> scroll_down!()
   end
 
-  def add_chat_message(socket, message) do
-    execjs(socket, chat_message(message))
+  defp add_chat_message(socket, message) do
+    execjs(socket, chat_message_js(message))
     scroll_down(socket)
+  end
+
+  defp update_presence_list!(socket) do
+    users = DrabPoc.Presence.get_users() |> Map.values() |> Enum.sort |> Enum.join("<br>")
+    socket |> update!(:html, set: users, on: "#presence-list")
   end
 
   def waiter_example(socket, _dom_sender) do
@@ -260,6 +266,8 @@ defmodule DrabPoc.PageCommander do
     DrabPoc.Presence.add_user(Node.self(), Drab.pid(socket), nickname)
     put_store(socket, :my_drab_pid, Drab.pid(socket))
 
+    update_presence_list!(socket)
+
     Logger.debug("CONNECTED: Counter: #{get_store(socket, :counter)}")
     clean_up(socket)
 
@@ -272,14 +280,16 @@ defmodule DrabPoc.PageCommander do
   def disconnected(store, session) do
     # this is a guy who just left
     # Drab is already dead, so I must take a PID from the Store (set on connect)
-    removed_user = DrabPoc.Presence.get_user(Node.self(), store[:my_drab_pid])
+    # removed_user = DrabPoc.Presence.get_user(Node.self(), store[:my_drab_pid])
     DrabPoc.Presence.remove_user(Node.self(), store[:my_drab_pid])
     # one Drab to broadcast, one Drab to rule them all
     if random_guy = Enum.at(DrabPoc.Presence.get_users(), 0) do
       {{_, random_guys_pid}, _} = random_guy
       socket = GenServer.call(random_guys_pid, :get_socket)
+      removed_user = store[:nickname] || "Anonymous"
       html = "<span class='chat-system-message'>*** <b>#{removed_user}</b> has left.</span><br>"
-      DrabPoc.PageCommander.add_chat_message!(socket, html)
+      add_chat_message!(socket, html)
+      update_presence_list!(socket)
     end
 
     # Enum.map(remaining_users, 

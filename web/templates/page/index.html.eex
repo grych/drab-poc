@@ -552,6 +552,35 @@ end/%></code></pre>
 end/%></code></pre>
       The only new thing is the <code>execute!</code> function. This is the simplest of all Drab.Query functions: it just runs given jQuery method on the selector.
     </p>
+    <p>So far, chat just displays the message when someone type it in. It would also nice to have some additional information, like the time when the message appeared. This is quite complicated feature - we can't just display the server time, as users may go from the different timezones. Drab has a build-in function <code>Drab.Browser.now/1</code> function, which gives the <strong>client local time</strong>:
+      <pre><code class="elixir"><%=~S/iex> Drab.Browser.now(socket)
+~N[2017-04-02 20:06:07.600000]
+/%></code></pre>
+    but we can't use it here, as we are broadcasting messages to all connected browsers.
+    </p>
+    <p>
+      The solution is to use a bit of Javascript (sic!). Instead of adding the message to chat window with <code>socket |> insert!(html, append: "#chat")</code>, we directly will run the JS on all connected browsers!
+      <pre><code class="elixir"><%=~S/defp chat_message_js(message) do
+  """
+  var time = "[" + (new Date()).toTimeString().substring(0, 5) + "] "
+  $('#chat').append(time + #{message |> Drab.Core.encode_js})
+  """
+end
+
+defp add_chat_message!(socket, message) do
+  socket
+    |> broadcastjs(chat_message_js(message))
+    |> scroll_down!()
+end
+
+def update_chat(socket, sender) do
+  nick = get_store(socket, :nickname, "Anonymous")
+  html = "<strong>#{nick}:<\/strong> #{sender["val"]}<br>"
+  socket 
+    |> update(:val, set: "", on: this(sender))
+    |> add_chat_message!(html)
+end/%></code></pre>
+    </p>
   </div>
   <div class="col-md-4">
     <p>
@@ -568,6 +597,71 @@ end/%></code></pre>
               <input drab-change="update_chat" class="form-control no-left-radius">
             </div>
           </div>
+        </div>
+      </div>
+    </p>
+  </div>
+
+</div>
+<hr>
+
+
+<div class="row">
+  <a name="presence">
+    <h4 class="anchored">Tracking connected users with Drab callbacks</h4>
+  </a>
+  <div class="col-md-8">
+    <p>
+      You probably realized that actual chat is a little bit more complicated then it was explained in the previous example. It shows users connects and disconnects, as well as the list of connected users (type in <code>/who</code> in the chat to see the list). To archive it, we are goint to use Drab callbacks, defined with <code>onconnect/1</code> and <code>ondisconnect/1</code> macros. Again, please treat it only as an example of Drab features - there are better ways to tracking the presence in Phoenix.
+      <pre><code class="elixie"><%=~S[def connected(socket) do
+  nickname = get_store(socket, :nickname, "Anonymous")
+  joined = "*** <b>#{nickname}</b> has joined the chat.<br>"
+  socket |> add_chat_message!(joined)
+
+  DrabPoc.Presence.add_user(Node.self(), Drab.pid(socket), nickname)
+  put_store(socket, :my_drab_pid, Drab.pid(socket))
+end]%></code></pre>
+    The code above is executed every time your browser connects to the server. First, we broadcasts the information about user connected to the chat. Second, we store the information about connected user in the special store, <code>DrabPoc.Presence</code>. It is just a simple <code>Agent</code>, which stores key/value pairs. It is out of the scope of this tutorial, but if you are interested how it works, read <a href="https://github.com/grych/drab-poc/blob/master/lib/drab_poc/presence.ex">the helpful source</a>.
+    </p>
+    <p>
+    We are going to use tuple <code>{node, drab_pid}</code> as a key, and the nickname as a value. When you connect to the page which uses Drab, it creates its own <code>GenServer</code> - <code>drab_pid</code> is the PID of this process. Node name is used in the key, as this webpage runs on multiple Phoenix servers.
+    </p>
+    <p>
+      Last, we save <code>drab_pid</code> to the Drab Store. We are going to need it while handling disconnects.
+    </p>
+    <p>
+      Let's move to the disconnect handler. As you probably guess, it is executed when the browser disconnects from the server. It may be because of navigate away from the page, close the tab or because of the network issues. Disconnect handler is different than the others - it does not receive the <code>socket</code> as an argument. It is beacuse the <code>socket</code> does not exist anymore! But we still have an access to Drab Store and Drab Session:
+      <pre><code class="elixir"><%=~S/def disconnected(store, session) do
+  DrabPoc.Presence.remove_user(Node.self(), store[:my_drab_pid])
+
+  # one Drab to broadcast, one Drab to rule them all
+  if random_guy = Enum.at(DrabPoc.Presence.get_users(), 0) do
+    {{_, random_guys_pid}, _} = random_guy
+    socket = GenServer.call(random_guys_pid, :get_socket)
+    removed_user = store[:nickname] || "Anonymous"
+    html = "*** #{removed_user} has left.<br>"
+    add_chat_message!(socket, html)
+  end
+end/%></code></pre>
+      We are going to use the Drab Store to retrieve the user's nickname, and the Drab process PID (remember, it was set previously in <code>onconnect</code> handler). First, we need to remove the connection information from the presence list. We could finish here, but it would be good to inform all other users that this guy is gone. But how to broadcast the message, when the <code>socket</code> does not exist anymore? 
+    </p>
+    <p>
+      Don't do it at home, but we are going to choose one random guy (like the first one in the presence list) and use his <code>socket</code> to broadcast the message. We can retrieve the <code>socket</code> from the Drab Server calling <code>:get_socket</code>, all we need is to have the PID (<code>random_guys_pid</code>). Then we can just broadcast the statement as usual.
+    </p>
+    <p>
+      As a bonus, we've got the list of connected users. Let's use it and do a live list of all the people currently connected to this page. First, create a function to update the panel on the right:
+      <pre><code class="elixir"><%=~S/defp update_presence_list!(socket) do
+  users = DrabPoc.Presence.get_users() |> Map.values() |> Enum.sort |> Enum.join("<br>")
+  socket |> update!(:html, set: users, on: "#presence-list")
+end/%></code></pre>
+      Second, run this function on connect, disconnect or nickname change. Voila!
+    </p>
+  </div>
+  <div class="col-md-4">
+    <p>
+      <div class="panel panel-default">
+        <div class="panel-heading">Connected users</div>
+        <div id="presence-list" class="panel-body chat-panel">
         </div>
       </div>
     </p>
