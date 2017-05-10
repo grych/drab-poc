@@ -612,7 +612,7 @@ end/%></code></pre>
   </a>
   <div class="col-md-8">
     <p>
-      You probably realized that actual chat is a little bit more complicated then it was explained in the previous example. It shows users connects and disconnects, as well as the list of connected users (type in <code>/who</code> in the chat to see the list). To archive it, we are goint to use Drab callbacks, defined with <code>onconnect/1</code> and <code>ondisconnect/1</code> macros. Again, please treat it only as an example of Drab features - there are better ways to tracking the presence in Phoenix.
+      You probably realized that actual chat is a little bit more complicated then it was explained in the previous example. It shows users connects and disconnects, as well as the list of connected users (type in <code>/who</code> in the chat to see the list). To archive it, we are going to use Drab callbacks, defined with <code>onconnect/1</code> and <code>ondisconnect/1</code> macros. Again, please treat it only as an example of Drab features - there are better ways to tracking the presence in Phoenix.
       <pre><code class="elixie"><%=~S[def connected(socket) do
   nickname = get_store(socket, :nickname, "Anonymous")
   joined = "*** <b>#{nickname}</b> has joined the chat.<br>"
