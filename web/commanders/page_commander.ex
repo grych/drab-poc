@@ -186,7 +186,7 @@ defmodule DrabPoc.PageCommander do
   defp anon_nickname(socket) do
     country = get_session(socket, :country_code)
     if country && country != "" && country != :ZZ do
-      "Someone from #{country}"
+      "Anonymous (#{country})"
     else
       "Anonymous"
     end

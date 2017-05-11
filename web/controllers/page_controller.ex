@@ -24,9 +24,9 @@ defmodule DrabPoc.PageController do
 
   defp country_code(conn) do
     try do
-      {a, b, c, d} = get_req_header(conn, "x-forwarded-for")
-      ip = "#{a}.#{b}.#{c}.#{d}"
-      IP2Country.whereis(ip)
+      # {a, b, c, d} = get_req_header(conn, "x-forwarded-for")
+      # ip = "#{a}.#{b}.#{c}.#{d}"
+      IP2Country.whereis(get_req_header(conn, "x-forwarded-for"))
     rescue
       _ -> ""
     end    
