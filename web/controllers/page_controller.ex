@@ -12,11 +12,9 @@ defmodule DrabPoc.PageController do
     # Logger.debug(inspect(conn))
     Logger.info """
     **********************************
-    conn.remote_ip = #{get_req_header(conn, "x-forwarded-for") |> inspect}
-    country_code = #{country_code(conn)}
-
-    conn:
-    #{conn |> inspect}
+    x-forwarded-for = #{get_req_header(conn, "x-forwarded-for") |> inspect}
+    country_code    = #{country_code(conn)}
+    **********************************
     """
     conn = put_session(conn, :country_code, country_code(conn))
     render conn, "index.html"
@@ -24,12 +22,10 @@ defmodule DrabPoc.PageController do
 
   defp country_code(conn) do
     try do
-      # {a, b, c, d} = get_req_header(conn, "x-forwarded-for")
-      # ip = "#{a}.#{b}.#{c}.#{d}"
       [ip] = get_req_header(conn, "x-forwarded-for")
       IP2Country.whereis(ip)
     rescue
-      _ -> ""
-    end    
+      _ -> nil
+    end
   end
 end

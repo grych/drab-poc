@@ -185,7 +185,11 @@ defmodule DrabPoc.PageCommander do
 
   defp anon_nickname(socket) do
     country = get_session(socket, :country_code)
-    if country && country != "" && country != :ZZ do
+    anon_with_country_code(country)
+  end
+
+  defp anon_with_country_code(country) do
+    if country && country != :ZZ do
       "Anonymous (#{country})"
     else
       "Anonymous"
@@ -295,7 +299,7 @@ defmodule DrabPoc.PageCommander do
     if random_guy = Enum.at(DrabPoc.Presence.get_users(), 0) do
       {{_, random_guys_pid}, _} = random_guy
       socket = GenServer.call(random_guys_pid, :get_socket)
-      removed_user = store[:nickname] || anon_nickname(socket)
+      removed_user = store[:nickname] || anon_with_country_code(session[:country_code])
       html = "<span class='chat-system-message'>*** <b>#{removed_user}</b> has left.</span><br>"
       add_chat_message!(socket, html)
       update_presence_list!(socket)
