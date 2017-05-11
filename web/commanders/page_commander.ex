@@ -14,7 +14,7 @@ defmodule DrabPoc.PageCommander do
   onconnect :connected
   ondisconnect :disconnected
 
-  access_session :drab_test
+  access_session [:drab_test, :country_code]
 
   before_handler :run_before_uppercase, only: [:uppercase]
   before_handler :run_before_each
@@ -161,7 +161,7 @@ defmodule DrabPoc.PageCommander do
   end
 
   defp do_update_chat(socket, sender, message) do
-    nick = get_store(socket, :nickname, "Anonymous")
+    nick = get_store(socket, :nickname, anon_nickname(socket))
     html = "<strong>#{nick}:</strong> #{message}<br>"
     socket 
       |> update(:val, set: "", on: this(sender))
@@ -172,7 +172,7 @@ defmodule DrabPoc.PageCommander do
     new_nick = sender["val"]
     message = """
     <span class='chat-system-message'>
-      *** <b>#{get_store(socket, :nickname, "Anonymous")}</b> is now known as 
+      *** <b>#{get_store(socket, :nickname, anon_nickname(socket))}</b> is now known as 
       <b>#{new_nick}</b>
     </span><br>
     """
@@ -181,6 +181,15 @@ defmodule DrabPoc.PageCommander do
       |> add_chat_message!(message)
     DrabPoc.Presence.update_user(Node.self(), Drab.pid(socket), new_nick)
     update_presence_list!(socket)
+  end
+
+  defp anon_nickname(socket) do
+    country = get_session(socket, :country_code)
+    if country && country != :ZZ do
+      "Someone from #{country}"
+    else
+      "Anonymous"
+    end
   end
 
   defp chat_message_js(message) do
@@ -255,7 +264,7 @@ defmodule DrabPoc.PageCommander do
 
   def connected(socket) do
     # display chat join message
-    nickname = get_store(socket, :nickname, "Anonymous")
+    nickname = get_store(socket, :nickname, anon_nickname(socket))
     joined = """
     <span class='chat-system-message'>*** <b>#{nickname}</b> has joined the chat.</span><br>
     """
@@ -286,7 +295,7 @@ defmodule DrabPoc.PageCommander do
     if random_guy = Enum.at(DrabPoc.Presence.get_users(), 0) do
       {{_, random_guys_pid}, _} = random_guy
       socket = GenServer.call(random_guys_pid, :get_socket)
-      removed_user = store[:nickname] || "Anonymous"
+      removed_user = store[:nickname] || anon_nickname(socket)
       html = "<span class='chat-system-message'>*** <b>#{removed_user}</b> has left.</span><br>"
       add_chat_message!(socket, html)
       update_presence_list!(socket)
