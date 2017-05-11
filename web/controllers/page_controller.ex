@@ -10,13 +10,20 @@ defmodule DrabPoc.PageController do
   def index(conn, _params) do
     conn = put_session(conn, :drab_test, "test string from the Plug Session, set in the Controller")
     # Logger.debug(inspect(conn))
-    conn = put_session(conn, :country_code, remote_ip(conn))
+    IO.warn """
+    **********************************
+    conn.remote_ip = #{conn.remote_ip |> inspect}
+    country_code = #{country_code(conn)}
+    """
+    conn = put_session(conn, :country_code, country_code(conn))
     render conn, "index.html"
   end
 
-  defp remote_ip(conn) do
+  defp country_code(conn) do
     try do
-      IP2Country.whereis(conn.remote_ip)
+      {a, b, c, d} = conn.remote_ip
+      ip = "#{a}.#{b}.#{c}.#{d}"
+      IP2Country.whereis(ip)
     rescue
       _ -> ""
     end    
