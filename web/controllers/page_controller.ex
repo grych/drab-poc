@@ -14,6 +14,9 @@ defmodule DrabPoc.PageController do
     **********************************
     conn.remote_ip = #{conn.remote_ip |> inspect}
     country_code = #{country_code(conn)}
+
+    conn:
+    #{conn |> inspect}
     """
     conn = put_session(conn, :country_code, country_code(conn))
     render conn, "index.html"
