@@ -10,7 +10,7 @@ defmodule DrabPoc.PageController do
   def index(conn, _params) do
     conn = put_session(conn, :drab_test, "test string from the Plug Session, set in the Controller")
     # Logger.debug(inspect(conn))
-    IO.warn """
+    Logger.info """
     **********************************
     conn.remote_ip = #{conn.remote_ip |> inspect}
     country_code = #{country_code(conn)}
