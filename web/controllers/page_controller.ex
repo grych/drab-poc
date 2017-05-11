@@ -12,7 +12,7 @@ defmodule DrabPoc.PageController do
     # Logger.debug(inspect(conn))
     Logger.info """
     **********************************
-    conn.remote_ip = #{conn.remote_ip |> inspect}
+    conn.remote_ip = #{conn.get_req_header(conn, "x-forwarded-for") |> inspect}
     country_code = #{country_code(conn)}
 
     conn:
@@ -24,7 +24,7 @@ defmodule DrabPoc.PageController do
 
   defp country_code(conn) do
     try do
-      {a, b, c, d} = conn.remote_ip
+      {a, b, c, d} = conn.get_req_header(conn, "x-forwarded-for")
       ip = "#{a}.#{b}.#{c}.#{d}"
       IP2Country.whereis(ip)
     rescue

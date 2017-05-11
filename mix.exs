@@ -42,8 +42,7 @@ defmodule DrabPoc.Mixfile do
      {:drab, path: "../drab"},
      {:logger_file_backend, "~> 0.0.9"},
      {:sentix, "~> 1.0"},
-     {:ip2country, "~> 1.0"},
-     {:plug_x_forwarded_for, "~> 0.1.0"}
+     {:ip2country, "~> 1.0"}
     ]
   end
 end
