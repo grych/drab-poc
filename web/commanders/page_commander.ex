@@ -217,7 +217,7 @@ defmodule DrabPoc.PageCommander do
   end
 
   defp add_chat_message(socket, message) do
-    execjs(socket, chat_message_js(message))
+    exec_js(socket, chat_message_js(message))
     scroll_down(socket)
   end
 

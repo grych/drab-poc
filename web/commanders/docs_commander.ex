@@ -161,16 +161,16 @@ defmodule DrabPoc.DocsCommander do
   end
 
   def c_1_click(socket, dom_sender) do
-    ret = socket |> execjs!("2 + 2")
+    ret = socket |> exec_js!("2 + 2")
     socket |> update(:text, set: "Return value: #{ret}.", on: this(dom_sender))
   end
 
   def c_2_click(socket, _dom_sender) do
-    _ = socket |> execjs!("alert('Do you like alerts?')")
+    _ = socket |> exec_js!("alert('Do you like alerts?')")
   end
 
   def c_3_click(socket, _dom_sender) do
-    socket |> broadcastjs("console.log('message to all')")
+    socket |> broadcast_js("console.log('message to all')")
   end
 
   def c_4_click(socket, _dom_sender) do

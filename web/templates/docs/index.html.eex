@@ -15,32 +15,32 @@
 </p>
 
 <div class="row">
-  <h4>execjs/2</h4>
+  <h4>exec_js/2</h4>
   <div class="col-md-6">
     <p>
-      <%= funcdoc(Drab.Core, {:execjs, 2}) |> raw %>
+      <%= funcdoc(Drab.Core, {:exec_js, 2}) |> raw %>
     </p>
   </div>
   <div class="col-md-6">
     <button drab-click="c_1_click" class="btn btn-primary">
-      socket |> execjs("2 + 2")
+      socket |> exec_js("2 + 2")
     </button><br><br>
     <button drab-click="c_2_click" class="btn btn-primary">
-      socket |> execjs("alert('Do you like alerts?')")
+      socket |> exec_js("alert('Do you like alerts?')")
     </button>
   </div>
 </div>
 
 <div class="row">
-  <h4>broadcastjs/2</h4>
+  <h4>broadcast_js/2</h4>
   <div class="col-md-6">
     <p>
-      <%= funcdoc(Drab.Core, {:broadcastjs, 2}) |> raw %>
+      <%= funcdoc(Drab.Core, {:broadcast_js, 2}) |> raw %>
     </p>
   </div>
   <div class="col-md-6">
     <button drab-click="c_3_click" class="btn btn-primary">
-      socket |> broadcastjs("console.log('message to all')")
+      socket |> broadcast_js("console.log('message to all')")
     </button>
   </div>
 </div>

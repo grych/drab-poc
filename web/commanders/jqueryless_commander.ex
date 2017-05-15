@@ -6,7 +6,7 @@ defmodule DrabPoc.JquerylessCommander do
   onload :page_loaded
 
   def page_loaded(socket) do
-    socket |> execjs!("console.log('Alert from the other side!');")
+    socket |> exec_js!("console.log('Alert from the other side!');")
   end
 
   def clicked(socket, payload) do

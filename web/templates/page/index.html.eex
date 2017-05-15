@@ -568,9 +568,8 @@ end/%></code></pre>
 end
 
 defp add_chat_message!(socket, message) do
-  socket
-    |> broadcastjs(chat_message_js(message))
-    |> scroll_down!()
+  socket |> broadcast_js(chat_message_js(message))
+  socket |> scroll_down!()
 end
 
 def update_chat(socket, sender) do
@@ -789,7 +788,7 @@ socket = GenServer.call(pid("0.663.0"), :get_socket)
 
     Examples:
 socket |> select(:htmls, from: "h4")
-socket |> execjs("alert('hello from IEx!')")
+socket |> exec_js("alert('hello from IEx!')")
 socket |> alert("Title", "Sure?", buttons: [ok: "Azaliż", cancel: "Poniechaj"])
 }%></code></pre>
     </p>
