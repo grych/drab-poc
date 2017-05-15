@@ -236,7 +236,7 @@ defmodule DrabPoc.PageCommander do
       on "#waiter_example_div button", "click", fn(sender) ->
         sender["text"]
       end
-      on_timeout 5000, fn ->
+      on_timeout 5500, fn ->
         "six times nine"
       end
     end

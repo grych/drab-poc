@@ -15,10 +15,10 @@
 </p>
 
 <div class="row">
-  <h4>exec_js/2</h4>
+  <h4>exec_js/3</h4>
   <div class="col-md-6">
     <p>
-      <%= funcdoc(Drab.Core, {:exec_js, 2}) |> raw %>
+      <%= funcdoc(Drab.Core, {:exec_js, 3}) |> raw %>
     </p>
   </div>
   <div class="col-md-6">
@@ -32,10 +32,10 @@
 </div>
 
 <div class="row">
-  <h4>broadcast_js/2</h4>
+  <h4>broadcast_js/3</h4>
   <div class="col-md-6">
     <p>
-      <%= funcdoc(Drab.Core, {:broadcast_js, 2}) |> raw %>
+      <%= funcdoc(Drab.Core, {:broadcast_js, 3}) |> raw %>
     </p>
   </div>
   <div class="col-md-6">
