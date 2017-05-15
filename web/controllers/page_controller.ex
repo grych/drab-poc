@@ -11,10 +11,8 @@ defmodule DrabPoc.PageController do
     conn = put_session(conn, :drab_test, "test string from the Plug Session, set in the Controller")
     # Logger.debug(inspect(conn))
     Logger.info """
-    **********************************
     x-forwarded-for = #{get_req_header(conn, "x-forwarded-for") |> inspect}
     country_code    = #{country_code(conn)}
-    **********************************
     """
     conn = put_session(conn, :country_code, country_code(conn))
     render conn, "index.html"

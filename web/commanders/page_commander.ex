@@ -89,7 +89,7 @@ defmodule DrabPoc.PageCommander do
     """
      <button class="btn btn-danger" 
              drab-click="cancel_long_process" 
-             data-pid="#{Drab.tokenize_pid(socket, pid)}">
+             data-pid="#{Drab.tokenize(socket, pid)}">
     Cancel
     </button>
     """    
@@ -101,7 +101,7 @@ defmodule DrabPoc.PageCommander do
   end
 
   def cancel_long_process(socket, dom_sender) do
-    pid = Drab.detokenize_pid(socket, dom_sender["data"]["pid"])
+    pid = Drab.detokenize(socket, dom_sender["data"]["pid"])
     if Process.alive?(pid) do
       send(pid, :cancel_processing)
     end
@@ -212,9 +212,8 @@ defmodule DrabPoc.PageCommander do
   end
 
   defp add_chat_message!(socket, message) do
-    socket
-      |> broadcastjs(chat_message_js(message))
-      |> scroll_down!()
+    socket |> broadcastjs(chat_message_js(message))
+    socket |> scroll_down!()
   end
 
   defp add_chat_message(socket, message) do
