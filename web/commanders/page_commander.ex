@@ -204,15 +204,15 @@ defmodule DrabPoc.PageCommander do
   end
 
   defp scroll_down!(socket) do
-    socket |> execute!("animate({scrollTop: $('#chat').prop('scrollHeight')}, 500)", on: "#chat")
+    socket |> execute!(animate: ["{scrollTop: $('#chat').prop('scrollHeight')}", 500], on: "#chat") 
   end
 
   defp scroll_down(socket) do
-    socket |> execute("animate({scrollTop: $('#chat').prop('scrollHeight')}, 500)", on: "#chat")
+    socket |> execute(animate: ["{scrollTop: $('#chat').prop('scrollHeight')}", 500], on: "#chat") 
   end
 
   defp add_chat_message!(socket, message) do
-    socket |> broadcastjs(chat_message_js(message))
+    socket |> broadcast_js(chat_message_js(message))
     socket |> scroll_down!()
   end
 
@@ -228,6 +228,8 @@ defmodule DrabPoc.PageCommander do
 
   def waiter_example(socket, _dom_sender) do
     buttons = Phoenix.View.render_to_string(DrabPoc.PageView, "waiter_example.html", [])
+    # TODO: change it in a new version
+    # buttons = render_to_string("waiter_example.html", [])
     socket 
       |> delete(from: "#waiter_answer_div")
       |> insert(buttons, append: "#waiter_example_div")
