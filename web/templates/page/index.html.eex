@@ -38,6 +38,15 @@ update(something, set: new_value, on: selector)/%></code></pre>
 
   <div class="col-md-4 left-bordered">
     <div class="panel panel-default">
+      <div class="panel-heading">v0.4.0 improves reliability <span class="label label-default">2017-05-16</span></div>
+      <div class="panel-body">
+        <p>
+          <a href="https://github.com/grych/drab/releases/tag/v0.4.0">This version</a> introduces redesigned API for the most essential part of Drab API: <code>Drab.Core</code>. <code>execjs</code> and <code>broadcastjs</code> has been depreciated in favor of <code>exec_js</code> and <code>broadcast_js</code>. Exciting!
+        </p>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
       <div class="panel-heading">New example - The Chat <span class="label label-default">2017-05-04</span></div>
       <div class="panel-body">
         <p>
@@ -55,14 +64,14 @@ update(something, set: new_value, on: selector)/%></code></pre>
       </div>
     </div>
 
-    <div class="panel panel-default">
+<%#     <div class="panel panel-default">
       <div class="panel-heading">Drab v0.3.1 released! <span class="label label-default">2017-03-16</span></div>
       <div class="panel-body">
         <p>
           Introducing <a href="https://github.com/grych/drab/releases/tag/v0.3.1">Drab 0.3.1</a>, version focused on error handling and debugging. Now you can run Drab functions directly from the <code>IEx</code>. It is fun! Learn more <a href="#debugging">here</a>. <a href="#errors">And here</a> you can find out how Drab presents exceptions.
         </p>
       </div>
-    </div>
+    </div> %>
 
 <%#     <div class="panel panel-default">
       <div class="panel-heading">Drab v0.3.0 released! <span class="label label-default">2017-03-09</span></div>
