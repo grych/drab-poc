@@ -212,11 +212,13 @@ defmodule DrabPoc.PageCommander do
   end
 
   defp scroll_down!(socket) do
-    socket |> execute!(animate: ["{scrollTop: $('#chat').prop('scrollHeight')}", 500], on: "#chat") 
+    # socket |> execute!(animate: ["{scrollTop: $('#chat').prop('scrollHeight')}", 500], on: "#chat") 
+    socket |> execute("animate({scrollTop: $('#chat').prop('scrollHeight')},500)", on: "#chat")
   end
 
   defp scroll_down(socket) do
-    socket |> execute(animate: ["{scrollTop: $('#chat').prop('scrollHeight')}", 500], on: "#chat") 
+    # socket |> execute(animate: ["{scrollTop: $('#chat').prop('scrollHeight')}", 500], on: "#chat") 
+    socket |> execute("animate({scrollTop: $('#chat').prop('scrollHeight')},500)", on: "#chat")
   end
 
   defp add_chat_message!(socket, message) do
