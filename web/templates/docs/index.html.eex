@@ -162,6 +162,11 @@
     <button drab-click="qu_8_click" class="btn btn-primary">update(css: "font-size", set: ["8px", "10px", "12px, "14px"], on: this(dom_sender))</button><br><br>
     <button drab-click="qu_9_click" class="btn">update(:class, set: ["btn-warning", "btn-primary", "btn-danger"], on: this(dom_sender))</button><br><br>
     <button drab-click="qu_10_click" class="btn">update(:class, toggle: "btn-primary", on: this(dom_sender))</button><br><br>
+    <select id="qu_11_select">
+      <option value="One">One</option>
+      <option value="Two">Two</option>
+    </select>
+    <button drab-click="qu_11_click" class="btn btn-primary">update(:val, set:  ["One", "Two"], on: "#qu_11_select")</button><br><br>
 
 
   </div>

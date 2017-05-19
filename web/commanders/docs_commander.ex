@@ -90,9 +90,14 @@ defmodule DrabPoc.DocsCommander do
     socket |> update(:class, toggle: "btn-primary", on: this(dom_sender))
   end
 
+  def qu_11_click(socket, dom_sender) do
+    socket |> update(:val, set: ["One", "Two"], on: "#qu_11_select")
+  end
+
+
+
   def qi_1_click(socket, _dom_sender) do
     socket |> insert(" <b>inserted</b> ", before: "#qi_1_span")
-
   end
 
   def qi_2_click(socket, _dom_sender) do

@@ -41,7 +41,15 @@ defmodule DrabPoc.PageCommander do
     # raise "Bad things happeded"
     socket |> Drab.Browser.console("Hey, this is PageCommander from the server side!")
     # raise "uups, I did it again"
+    # spawn_link fn -> looop(socket) end
+    # :timer.sleep(10000000)
   end
+
+  # defp looop(socket) do
+  #   :timer.sleep(5000)
+  #   IO.puts "looop #{self() |> inspect}"
+  #   looop(socket)
+  # end
 
   def perform_long_process(socket, dom_sender) do
     socket
@@ -299,11 +307,14 @@ defmodule DrabPoc.PageCommander do
     # one Drab to broadcast, one Drab to rule them all
     if random_guy = Enum.at(DrabPoc.Presence.get_users(), 0) do
       {{_, random_guys_pid}, _} = random_guy
-      socket = GenServer.call(random_guys_pid, :get_socket)
-      removed_user = store[:nickname] || anon_with_country_code(session[:country_code])
-      html = "<span class='chat-system-message'>*** <b>#{removed_user}</b> has left.</span><br>"
-      add_chat_message!(socket, html)
-      update_presence_list!(socket)
+      if Process.alive?(random_guy) do
+        # just to be sure that the process was not killed in a meantime
+        socket = GenServer.call(random_guys_pid, :get_socket)
+        removed_user = store[:nickname] || anon_with_country_code(session[:country_code])
+        html = "<span class='chat-system-message'>*** <b>#{removed_user}</b> has left.</span><br>"
+        add_chat_message!(socket, html)
+        update_presence_list!(socket)
+      end
     end
 
     # Enum.map(remaining_users, 
