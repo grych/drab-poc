@@ -60,7 +60,7 @@ end/%></code></pre>
       Last, but not least, is a possibility to get the current value of assigns. For this, there is a function called <code>Drab.Live.peek</code>. It returns the current value of the assign. In the example, the third button adds something to the existing list of users:
 <pre><code class="elixir"><%=~s/def add_to_list(socket, _payload) do
   users = Drab.Live.peek(socket, :users)
-  Drab.Live.poke socket, users: users ++ ["Mścisław", "Bożydar", "Mściwój", "Bogumił", "Mirmił"]
+  Drab.Live.poke socket, users: users ++ ["Hegemon"]
 end/%></code></pre>
     </p>    
   </div>

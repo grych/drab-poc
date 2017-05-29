@@ -14,7 +14,7 @@ defmodule DrabPoc.LiveCommander do
 
   def add_to_list(socket, _payload) do
     users = Drab.Live.peek(socket, :users)
-    Drab.Live.poke socket, users: users ++ ["Mścisław", "Bożydar", "Mściwój", "Bogumił", "Mirmił"]
+    Drab.Live.poke socket, users: users ++ ["Hegemon"]
   end
 
 end
