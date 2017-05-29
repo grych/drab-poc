@@ -23,6 +23,7 @@ defmodule DrabPoc.Router do
     get "/", PageController, :index
     get "/docs", DocsController, :index
     get "/nojquery", JquerylessController, :index
+    get "/live", LiveController, :index
   end
 
   # Other scopes may use custom stacks.

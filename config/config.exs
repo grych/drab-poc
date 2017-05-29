@@ -28,3 +28,5 @@ config :drab,
   drab_store_storage: :local_storage,
   socket: "/drab/socket"
 
+config :phoenix, :template_engines,
+  drab: Drab.Live.Engine

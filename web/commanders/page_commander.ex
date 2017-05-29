@@ -4,10 +4,6 @@ defmodule DrabPoc.PageCommander do
   # import Supervisor.Spec
 
   use Drab.Commander,
-    # onload: :page_loaded, 
-    # onconnect: :connected
-    # ondisconnect: :disconnected,
-    # access_session: [:drab_test],
     modules: [Drab.Query, Drab.Modal, Drab.Waiter]
 
   onload :page_loaded

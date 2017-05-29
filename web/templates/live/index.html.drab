@@ -1,0 +1,85 @@
+<h3 class="centered">Drab - Access the User Interface in browser from the Server Side</h3>
+<h4 class="centered">
+  Living EEx Pages
+</h4>
+<p>
+  <code>Drab.Live</code> (codename <em>Ampere</em>) is a new module for Drab. It is going to be a default one, replacing <code>Drab.Query</code>
+</p>
+<p>
+  The idea is to reuse your Phoenix templates and let them live, to make a possibility to update assigns on the living page, without reloading the whole stuff.
+</p>
+<strong>This is a proof of concept, please use it only for tests/sandboxing (2017-05-29)</strong>
+<hr>
+
+<div class="row">
+  <a name="simple">
+    <h4 class="anchored">POKE and PEEK strike again</h4>
+  </a>
+  <div class="col-md-8">
+    <p>
+      This example is to explain how to use <code>Drab.Live</code>. Let's assume you have your <code>index.html.eex</code> already prepared, displaying some user list. There are two assigns there, <code>@title</code> and <code>@users</code>:
+<pre><code class="html">&lt;strong&gt;&lt;%= @title %&gt;:&lt;/strong&gt;&lt;br&gt;
+&lt;%= for user <- @users do %&gt;
+  Username: &lt;%= user %&gt;&lt;br&gt;
+&lt;% end %&gt;
+</code></pre>
+The code is rendered as usual, in the simple Controller:
+<pre><code class="elixir">defmodule DrabPoc.LiveController do
+  use DrabPoc.Web, :controller
+  use Drab.Controller
+
+  def index(conn, _params), do: render conn, "index.html", users: ["Dżesika", "Brajanek", "Zdzichu"], title: "Users List"
+end
+</code></pre>
+    </p>
+    <p>
+      Nothing special yet. But, the goal of <code>Drab.Live</code> is to update <code>assigns</code> live, without re-rendering the whole page. For this, <code>Drab</code> introduces its own <code>EEx Engine</code>. To use it, you need to rename <code>index.html.eex</code> to <code>index.html.drab</code>
+    </p>
+    <p>
+    Then, create some button to launch the Drab Event in the Commander, on the server-side:
+<pre><code class="html"><%=~s(<button drab-click="uppercase">Uppercase</button>)%></code></pre>
+    </p>
+    <p>Where the Event Handler function replaces the users list with the new one:
+<pre><code class="elixir"><%=~s/defmodule DrabPoc.LiveCommander do
+  use Drab.Commander
+
+  def replace_list(socket, _payload) do
+    Drab.Live.poke socket, users: ["Mścisław", "Bożydar", "Mściwój", "Bogumił", "Mirmił"]
+  end
+end/%></code></pre>
+    What is going on here? We've just modified the assign <code>@users</code> with the new value. <code>Drab.Live.poke</code> pushes the new value and re-evaluate the corresponding <code>EEx</code>. Notice that you don't have to <code>poke</code> all assigns, <strong>Drab</strong> remembers what was there previously, and replaces only the assigns you've poked (in this case, <code>@users</code>). 
+    </p>
+    <p>
+      The second button runs <code>replace_title</code> Event Handler, which changes the value of the <code>@title</code> assign:
+<pre><code class="elixir"><%=~s/def replace_title(socket, _payload) do
+  Drab.Live.poke socket, title: "New, better Title"
+end/%></code></pre>
+    Of course you can change the values of many assigns in one <code>poke</code>, Drab will find and update the correspoding parts of the page.
+    </p>
+    <p>
+      Last, but not least, is a possibility to get the current value of assigns. For this, there is a function called <code>Drab.Live.peek</code>. It returns the current value of the assign. In the example, the third button adds something to the existing list of users:
+<pre><code class="elixir"><%=~s/def add_to_list(socket, _payload) do
+  users = Drab.Live.peek(socket, :users)
+  Drab.Live.poke socket, users: users ++ ["Mścisław", "Bożydar", "Mściwój", "Bogumił", "Mirmił"]
+end/%></code></pre>
+    </p>    
+  </div>
+
+  <div class="col-md-4 left-bordered">
+    <p>
+      <strong><%= @title %>:</strong><br>
+      <%= for user <- @users do %>
+        Username: <%= user %> <br>
+      <% end %>
+    </p>
+    <p>
+      <br><br>
+      <button class="btn btn-primary" id="uppercase_button" drab-event="click" drab-handler="replace_list">Replace List</button>
+      <br><br>
+      <button class="btn btn-primary" id="uppercase_button" drab-event="click" drab-handler="replace_title">Replace Title</button>
+      <br><br>
+      <button class="btn btn-primary" id="uppercase_button" drab-event="click" drab-handler="add_to_list">Add to Existing List</button>
+    </p>
+  </div>
+
+</div>
