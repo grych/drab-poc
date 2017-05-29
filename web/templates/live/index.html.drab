@@ -37,7 +37,7 @@ end
     </p>
     <p>
     Then, create some button to launch the Drab Event in the Commander, on the server-side:
-<pre><code class="html"><%=~s(<button drab-click="uppercase">Uppercase</button>)%></code></pre>
+<pre><code class="html"><%=~s(<button drab-click="replace_list">Replace List</button>)%></code></pre>
     </p>
     <p>Where the Event Handler function replaces the users list with the new one:
 <pre><code class="elixir"><%=~s/defmodule DrabPoc.LiveCommander do
