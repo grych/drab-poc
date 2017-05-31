@@ -41,7 +41,7 @@ end
     </p>
     <p>Where the Event Handler function replaces the users list with the new one:
 <pre><code class="elixir"><%=~s/defmodule DrabPoc.LiveCommander do
-  use Drab.Commander
+  use Drab.Commander, modules: [Drab.Live]
 
   def replace_list(socket, _payload) do
     Drab.Live.poke socket, users: ["Mścisław", "Bożydar", "Mściwój", "Bogumił", "Mirmił"]
