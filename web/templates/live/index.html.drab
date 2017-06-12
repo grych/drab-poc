@@ -12,14 +12,14 @@
 <hr>
 
 <div class="row">
-  <a name="simple">
+  <a name="poke">
     <h4 class="anchored">POKE and PEEK strike again</h4>
   </a>
   <div class="col-md-8">
     <p>
       This example is to explain how to use <code>Drab.Live</code>. Let's assume you have your <code>index.html.eex</code> already prepared, displaying some user list. There are two assigns there, <code>@title</code> and <code>@users</code>:
 <pre><code class="html">&lt;strong&gt;&lt;%= @title %&gt;:&lt;/strong&gt;&lt;br&gt;
-&lt;%= for user <- @users do %&gt;
+&lt;%= for user &lt;- @users do %&gt;
   Username: &lt;%= user %&gt;&lt;br&gt;
 &lt;% end %&gt;
 </code></pre>
@@ -43,7 +43,7 @@ end
 <pre><code class="elixir"><%=~s/defmodule DrabPoc.LiveCommander do
   use Drab.Commander, modules: [Drab.Live]
 
-  def replace_list(socket, _payload) do
+  def replace_list(socket, _sender) do
     Drab.Live.poke socket, users: ["Mścisław", "Bożydar", "Mściwój", "Bogumił", "Mirmił"]
   end
 end/%></code></pre>
@@ -51,14 +51,14 @@ end/%></code></pre>
     </p>
     <p>
       The second button runs <code>replace_title</code> Event Handler, which changes the value of the <code>@title</code> assign:
-<pre><code class="elixir"><%=~s/def replace_title(socket, _payload) do
+<pre><code class="elixir"><%=~s/def replace_title(socket, _sender) do
   Drab.Live.poke socket, title: "New, better Title"
 end/%></code></pre>
     Of course you can change the values of many assigns in one <code>poke</code>, Drab will find and update the correspoding parts of the page.
     </p>
     <p>
       Last, but not least, is a possibility to get the current value of assigns. For this, there is a function called <code>Drab.Live.peek</code>. It returns the current value of the assign. In the example, the third button adds something to the existing list of users:
-<pre><code class="elixir"><%=~s/def add_to_list(socket, _payload) do
+<pre><code class="elixir"><%=~s/def add_to_list(socket, _sender) do
   users = Drab.Live.peek(socket, :users)
   Drab.Live.poke socket, users: users ++ ["Hegemon"]
 end/%></code></pre>
@@ -79,6 +79,48 @@ end/%></code></pre>
       <button class="btn btn-primary" id="uppercase_button" drab-event="click" drab-handler="replace_title">Replace Title</button>
       <br><br>
       <button class="btn btn-primary" id="uppercase_button" drab-event="click" drab-handler="add_to_list">Add to Existing List</button>
+    </p>
+  </div>
+
+</div>
+<hr>
+
+
+
+<div class="row">
+  <a name="attributes">
+    <h4 class="anchored">Living Attributes</h4>
+  </a>
+  <div class="col-md-8">
+    <p>
+      With Drab.Live, you may also remote control tag attributes, like <code>class</code> or <code>style</code>. Imagine you generated the page with <code>@label</code> assign.
+<pre><code class="elixir"><%=~s/def index(conn, _params) do
+  render conn, "index.html", label: "default"
+end/%></code></pre>
+      with such template:
+      <pre><code class="html">&lt;span class='label label-&lt;%= @label %&gt;'&gt;Label: &lt;%= @label %&gt;&lt;/span&gt;
+&lt;input drab-change="changed_label" value="&lt;%= @label%&gt;"&gt;</code></pre>
+    </p>
+    <p>
+      With <code>Drab.Live</code>, you don't have to reload the whole page to update the <code>class</code> of the <code>&lt;span&gt;</code>. You may just poke it from the <code>Commander</code>:
+<pre><code class="elixir"><%=~s/def changed_label(socket, sender) do
+  poke socket, label: sender["value"]
+end/%></code></pre>
+    </p>
+    <p>
+      <strong>Limitation Warning:</strong> you may only update named attibutes in that way. This means that the following is prohibited:
+      <pre><code class="html">&lt;tag &lt;%= &quot;attribute=&#039;value&#039;&quot;%&gt; &gt;</code></pre>
+      and will not compile as a Drab Template.
+    </p>
+  </div>
+
+  <div class="col-md-4 left-bordered">
+    <p>
+      <h2><span class="label label-<%= @label %>">Label: <%= @label %></span></h2>
+    </p>
+    <p>
+      Try to change it to <em>success</em>, <em>primary</em>, <em>info</em>
+      <input drab-change="changed_label" class="form-control" placeholder="primary, success, info, danger, etc" value="<%= @label%>">
     </p>
   </div>
 
