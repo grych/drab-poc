@@ -67,3 +67,5 @@ config :drab_poc, :watch_monitor, :inotify_monitor
 # Finally import the config/prod.secret.exs
 # which should be versioned separately.
 import_config "prod.secret.exs"
+
+config :appsignal, :config, active: true

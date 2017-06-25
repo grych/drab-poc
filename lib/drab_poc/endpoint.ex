@@ -40,6 +40,7 @@ defmodule DrabPoc.Endpoint do
     store: :cookie,
     key: "_drab_poc_key",
     signing_salt: "hqf5NWmU"
-
+    
+  use Appsignal.Phoenix
   plug DrabPoc.Router
 end
