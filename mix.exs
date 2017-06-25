@@ -18,7 +18,7 @@ defmodule DrabPoc.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {DrabPoc, []},
-     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext, :sentix]]
+     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext, :sentix, :drab, :appsignal]]
   end
 
   # Specifies which paths to compile per environment.
@@ -41,7 +41,8 @@ defmodule DrabPoc.Mixfile do
      {:drab, path: "../drab"},
      {:logger_file_backend, "~> 0.0.9"},
      {:sentix, "~> 1.0"},
-     {:ip2country, "~> 1.0"}
+     {:ip2country, "~> 1.0"},
+     {:appsignal, "~> 1.0"}
     ]
   end
 end

@@ -20,4 +20,8 @@ defmodule DrabPoc.LiveCommander do
   def changed_label(socket, sender) do
     poke socket, label: sender["value"]
   end
+
+  def enlage_your_button_now(socket, _sender) do
+    poke socket, button_height: peek(socket, :button_height) + 2
+  end
 end

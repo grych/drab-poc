@@ -110,7 +110,7 @@ end/%></code></pre>
     <p>
       <strong>Limitation Warning:</strong> you may only update named attibutes in that way. This means that the following is prohibited:
       <pre><code class="html">&lt;tag &lt;%= &quot;attribute=&#039;value&#039;&quot;%&gt; &gt;</code></pre>
-      and will not compile as a Drab Template.
+      and will not work.
     </p>
   </div>
 
@@ -125,3 +125,39 @@ end/%></code></pre>
   </div>
 
 </div>
+
+
+<div class="row">
+  <a name="scripts">
+    <h4 class="anchored">Living Scripts</h4>
+  </a>
+  <div class="col-md-8">
+    <p>
+      Drab can also serve the expression, which are inside the <code>&lt;script&gt;</code> tag. In the following example we rendered the template with <code>@button_height</code> set to <code>30</code> (integer): 
+<pre><code class="elixir"><%=~s/render conn, "index.html", button_height: 30/%></code></pre>
+      with such template:
+      <pre><code class="html">&lt;button drab-click=&quot;enlage_your_button_now&quot; class=&quot;btn btn-success&quot;&gt;Enlage You Button Now&lt;/button&gt;&lt;br&gt;&lt;br&gt;
+&lt;button id=&quot;growing_button&quot; class=&quot;btn btn-info&quot;&gt;My Growing Button&lt;/button&gt;
+&lt;script&gt;
+  document.querySelector(&quot;#growing_button&quot;).style.height = &quot;&lt;%= @button_height %&gt;px&quot;
+&lt;/script&gt;</code></pre>
+    </p>
+    <p>
+    Your browser will immediate run the script, setting <code>.style</code> property to the expected value. But what is going to happen when you <code>poke</code> the <code>@button_height</code> assign with a new value? In this case, Drab will re-evaluate the whole script, making the property <code>.style.heigth</code> bound to the <code>@button_heigth</code> assign.
+<pre><code class="elixir"><%=~s/def enlage_your_button_now(socket, _sender) do
+  poke socket, button_height: peek(socket, :button_height) + 2
+end/%></code></pre>
+    </p>
+  </div>
+
+  <div class="col-md-4 left-bordered">
+    <p>
+      <button drab-click="enlage_your_button_now" class="btn btn-success">Enlage You Button Now</button><br><br>
+      <button id="growing_button" class="btn btn-info">My Growing Button</button>
+      <script>
+        document.querySelector("#growing_button").style.height = "<%= @button_height %>px"
+      </script>
+    </p>
+  </div>
+</div>
+

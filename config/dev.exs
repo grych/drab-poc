@@ -23,7 +23,7 @@ config :drab_poc, DrabPoc.Endpoint,
       ~r{priv/gettext/.*(po)$},
       ~r{web/views/.*(ex)$},
       ~r{web/templates/.*(eex)$},
-      ~r{web/templates/.*(drab)$},
+      ~r{web/templates/.*(eex|drab)$}
     ]
   ]
 config :drab_poc, :watch_file, "/private/var/log/system.log"
