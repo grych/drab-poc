@@ -173,7 +173,7 @@ end/%></code></pre>
 &lt;button @style.height=&lt;%= &quot;#{@button_height}px&quot; %&gt; class=&quot;btn btn-info&quot;&gt;My Growing Button&lt;/button&gt;</code></pre>
     </p>
     <p>
-      When we <code>poke/2</code> updated assign, Drab will update the corresponding Node with the new value of <code>.style.height</code> property. Notice that, as in the example, you may use the full path to the property. Also, despite that attributes are not case-sensitive, <b>Drab handles the case</b>, allowing you to use <code>@style.backgroundColor</code> et consortes.
+      When we <code>poke/2</code> the updated assign, Drab will update the corresponding Node with the new value of <code>.style.height</code> property. Notice that, as in the example, you may use the full path to the property. Also, despite that attributes are not case-sensitive, <b>Drab handles the case</b>, allowing you to use <code>@style.backgroundColor</code> et consortes.
     </p>
     <p>
       The expression binded with the property <b>must be encodable to JS</b>, so, for example, tuples are not allowed here. But, unlike the attributes, you are not limited to Strings. You may bind any JS encodable value. With this comes limitation: you can only bind one expression to one property; you may not use string patterns, like you did with attributes. In the other words, <code>@style.height=&quot;&lt;%= @height %&gt;px&quot;</code> is prohibited. You have to use <code>@style.height=&lt;%= &quot;#{height}px&quot; %&gt;</code> instead.

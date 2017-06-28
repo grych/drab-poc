@@ -305,23 +305,15 @@ defmodule DrabPoc.PageCommander do
     # one Drab to broadcast, one Drab to rule them all
     if random_guy = Enum.at(DrabPoc.Presence.get_users(), 0) do
       {{_, random_guys_pid}, _} = random_guy
-      if Process.alive?(random_guys_pid) do
+      # if Process.alive?(random_guys_pid) do
         # just to be sure that the process was not killed in a meantime
         socket = GenServer.call(random_guys_pid, :get_socket)
         removed_user = store[:nickname] || anon_with_country_code(session[:country_code])
         html = "<span class='chat-system-message'>*** <b>#{removed_user}</b> has left.</span><br>"
         add_chat_message!(socket, html)
         update_presence_list!(socket)
-      end
+      # end
     end
-
-    # Enum.map(remaining_users, 
-    #   fn {{_n, p}, _u} -> 
-    #     socket = GenServer.call(p, :get_socket)
-
-    #     html = "*** <span class='chat-system-message'><b>#{removed_user}</b> has left.</span><br>"
-    #     DrabPoc.PageCommander.add_chat_message(socket, html)
-    # end)
 
     Logger.debug("DISCONNECTED, store: #{store |> inspect}")
     Logger.debug("            session: #{session |> inspect}")
