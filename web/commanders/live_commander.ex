@@ -4,6 +4,11 @@ defmodule DrabPoc.LiveCommander do
 
   use Drab.Commander, modules: [Drab.Live]
 
+  def uppercase(socket, _sender) do
+    text = peek(socket, :text)
+    poke socket, text: String.upcase(text)
+  end
+
   def replace_list(socket, _sender) do
     Drab.Live.poke socket, users: ["Mścisław", "Bożydar", "Mściwój", "Bogumił", "Mirmił"]
   end

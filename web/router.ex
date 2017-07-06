@@ -14,13 +14,13 @@ defmodule DrabPoc.Router do
   end
 
   scope "/" do
-    get "/", DrabPoc.PageController, :redirect_to_drab
+    get "/", DrabPoc.QueryController, :redirect_to_drab
   end
 
   scope "/drab", DrabPoc do
     pipe_through :browser # Use the default browser stack
 
-    get "/", PageController, :index
+    get "/", QueryController, :index
     get "/docs", DocsController, :index
     get "/nojquery", JquerylessController, :index
     get "/live", LiveController, :index

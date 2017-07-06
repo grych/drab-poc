@@ -1,15 +1,144 @@
 <h3 class="centered">Drab - Access the User Interface in browser from the Server Side</h3>
 <h4 class="centered">
-  Living EEx Pages
+  Living EEx Pages in Phoenix
 </h4>
-<p>
-  <code>Drab.Live</code> (codename <em>Ampere</em>) is a new module for Drab. It is going to be a default one, replacing <code>Drab.Query</code>
-</p>
-<p>
-  The idea is to reuse your Phoenix templates and let them live, to make a possibility to update assigns on the living page, without reloading the whole stuff.
-</p>
-<strong>This is a proof of concept, please use it only for tests/sandboxing (2017-05-29)</strong>
+
+<div class="row">
+
+  <div class="col-md-8">
+    <p>
+      <img src="<%= static_path(@conn, "/images/drab-logo-200.png")%>" class="drab-logo" alt="pipe-shaped slingshot" title="pipe-shaped slingshot">
+      In the <i>"good old times"</i> the event handling was easy. The only thing you had to do was to create the event handler (remember <code>TForm1.Button1Click(Sender: TObject)</code>?) and you could do everything inside this handler: accessing data from models, manipulating user interface, sending raw Ethernet packets to the coffee machine...
+    </p>
+    <p>
+      Nowadays, when the most of the applications are web based, it is not so easy anymore. You need either to create a form and submit the data via POST or GET or use AJAX to send or retrieve data. Whole interface manipulation is on the client side. In practice, you need to write two applications: on the client and the server side.  
+    </p>
+    <p>
+      Additionally, because <code>http</code> is stateless and a one-way protocol, it is not easy to communicate back from the server to the browser. Like, for example, during execution of the long running process, when there is a need to update status (eg. progress bar), or to ask the operator about something (like "would you like to continue?"). Of course there are workarounds for this, like polling the server every few seconds to have a status, or even auto-refreshing the page, but those are just a dirty workarounds. The solution would be to allow an access to the interface directly from the server side. And here comes <code>Drab</code>.
+    </p>
+    <p>
+      <code>Drab</code> is a concept of <b>providing an access to User Interface (DOM objects) on the server side</b>, just like in the 
+      good-old Delphi times. The examples below should give you an overview of how does it work. For more detailed instructions, please refer to the <a href="https://hexdocs.pm/drab">documentation</a>.
+    </p>
+    <p>
+      Drab is written using <strong>Phoenix on Elixir</strong>, so all the code in examples is HTML and Elixir. <b>This page is a living demo - all examples are actually working on the Drab server</b>.
+      You can find a source code of this page <a href="https://github.com/grych/drab-poc">on Github</a>, and the <a href="https://github.com/grych/drab">source code of the Drab himself - here</a>.
+    </p>
+    <p><small>&copy; <a href="mailto:grych@tg.pl">Tomek "Grych" Gryszkiewicz</a> 2016 - 2017</small></p>
+    <iframe src="https://ghbtns.com/github-btn.html?user=grych&repo=drab&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe><br>
+    <iframe src="https://ghbtns.com/github-btn.html?user=grych&repo=drab&type=watch&count=true&v=2" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>
+  </div>
+
+
+
+  <div class="col-md-4 left-bordered">
+    <div class="panel panel-default">
+      <div class="panel-heading">v0.4.0 improves reliability <span class="label label-default">2017-05-16</span></div>
+      <div class="panel-body">
+        <p>
+          <a href="https://github.com/grych/drab/releases/tag/v0.4.0">This version</a> introduces redesigned API for the most essential part of Drab API: <code>Drab.Core</code>. <code>execjs</code> and <code>broadcastjs</code> has been depreciated in favor of <code>exec_js</code> and <code>broadcast_js</code>. Exciting!
+        </p>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">New example - The Chat <span class="label label-default">2017-05-04</span></div>
+      <div class="panel-body">
+        <p>
+          What is the websocket-based application without a chat? Now, you can learn how to create the simplest one with Drab, based on <a href="#chat_example">this example</a>.
+        </p>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">Drab v0.3.2 - tests, tests and tests <span class="label label-default">2017-04-14</span></div>
+      <div class="panel-body">
+        <p>
+          The <a href="https://github.com/grych/drab/releases/tag/v0.3.2">new release</a> introductes automated integration tests, finally. In addition, Drab package on github contains its own Phoenix Server, makes it easier to play with it.
+        </p>
+      </div>
+    </div>
+
+ <h6>See all <a href="https://github.com/grych/drab/releases">Release Notes</a> to learn about the previous releases</h6>
+
+  </div>
+</div>
 <hr>
+
+
+
+<div class="row">
+  <a name="simple">
+    <h4 class="anchored">Simple Input and Button Example</h4>
+  </a>
+  <div class="col-md-8">
+    <p>
+      Here is the simplest example  - text input and the button. Clicking the button make input text uppercase. Awesome!
+    </p>
+    <p>
+      <pre><code class="html"></code></pre>
+    </p>
+    <p>
+      <pre><code class="html"></code></pre>
+    </p>
+  </div>
+
+  <div class="col-md-4 left-bordered">
+    <p>
+      This is a live demo. Click the button to launch <code>DrabPoc.LiveCommander.uppercase/2</code> on the server.
+      <br><br>
+      <input class="form-control" id="text_to_uppercase" value="<%= @text %>">
+      <button class="btn btn-primary" id="uppercase_button" drab-event="click" drab-handler="uppercase">Do it</button>
+    </p>
+    </p>
+  </div>
+</div>
+<hr>
+
+
+<div class="row">
+  <a name="properties">
+    <h4 class="anchored">Special Form for Properties</h4>
+  </a>
+  <div class="col-md-8">
+    <p>
+      <pre><code class="html"></code></pre>
+    </p>
+    <p>
+      <pre><code class="html"></code></pre>
+    </p>
+  </div>
+
+  <div class="col-md-4 left-bordered">
+    <p>
+    </p>
+  </div>
+</div>
+<hr>
+
+
+<div class="row">
+  <a name="properties">
+    <h4 class="anchored">Special Form for Properties</h4>
+  </a>
+  <div class="col-md-8">
+    <p>
+      <pre><code class="html"></code></pre>
+    </p>
+    <p>
+      <pre><code class="html"></code></pre>
+    </p>
+  </div>
+
+  <div class="col-md-4 left-bordered">
+    <p>
+    </p>
+  </div>
+</div>
+<hr>
+
+
+
 
 <div class="row">
   <a name="poke">
@@ -84,6 +213,8 @@ end/%></code></pre>
 
 </div>
 <hr>
+
+
 
 
 

@@ -1,9 +1,9 @@
-defmodule DrabPoc.PageCommander do
+defmodule DrabPoc.QueryCommander do
   require IEx
   require Logger
   # import Supervisor.Spec
 
-  use Drab.Commander,
+  use Drab.Commander, 
     modules: [Drab.Query, Drab.Modal, Drab.Waiter]
 
   onload :page_loaded
@@ -15,6 +15,8 @@ defmodule DrabPoc.PageCommander do
   before_handler :run_before_uppercase, only: [:uppercase]
   before_handler :run_before_each
   after_handler  :run_after_except_uppercase, except: [:uppercase, :perform_long_process, :run_async_tasks]
+
+  broadcasting :same_controller
 
   def run_before_uppercase(_socket, _dom_sender) do
     Logger.debug("BEFORE uppercase")
@@ -35,7 +37,7 @@ defmodule DrabPoc.PageCommander do
     Logger.debug("****** SOCKET:  #{inspect(socket)}")
     Logger.debug("****** DOM_SENDER: #{inspect(dom_sender)}")
     # raise "Bad things happeded"
-    socket |> Drab.Browser.console("Hey, this is PageCommander from the server side!")
+    socket |> Drab.Browser.console("Hey, this is QueryCommander from the server side!")
     # raise "uups, I did it again"
     # spawn_link fn -> looop(socket) end
     # :timer.sleep(10000000)
@@ -207,19 +209,19 @@ defmodule DrabPoc.PageCommander do
     """
   end
 
-  defp scroll_down!(socket) do
+  defp scroll_down!(socket_or_topic) do
     # socket |> execute!(animate: ["{scrollTop: $('#chat').prop('scrollHeight')}", 500], on: "#chat") 
-    socket |> execute!("animate({scrollTop: $('#chat').prop('scrollHeight')},500)", on: "#chat")
+    socket_or_topic |> execute!("animate({scrollTop: $('#chat').prop('scrollHeight')},500)", on: "#chat")
   end
 
-  defp scroll_down(socket) do
+  defp scroll_down(socket_or_topic) do
     # socket |> execute(animate: ["{scrollTop: $('#chat').prop('scrollHeight')}", 500], on: "#chat") 
-    socket |> execute("animate({scrollTop: $('#chat').prop('scrollHeight')},500)", on: "#chat")
+    socket_or_topic |> execute("animate({scrollTop: $('#chat').prop('scrollHeight')},500)", on: "#chat")
   end
 
-  defp add_chat_message!(socket, message) do
-    socket |> broadcast_js(chat_message_js(message))
-    socket |> scroll_down!()
+  defp add_chat_message!(socket_or_topic, message) do
+    socket_or_topic |> broadcast_js(chat_message_js(message))
+    socket_or_topic |> scroll_down!()
   end
 
   defp add_chat_message(socket, message) do
@@ -233,7 +235,7 @@ defmodule DrabPoc.PageCommander do
   end
 
   def waiter_example(socket, _dom_sender) do
-    buttons = Phoenix.View.render_to_string(DrabPoc.PageView, "waiter_example.html", [])
+    buttons = Phoenix.View.render_to_string(DrabPoc.QueryView, "waiter_example.html", [])
     # TODO: change it in a new version
     # buttons = render_to_string("waiter_example.html", [])
     socket 
@@ -298,22 +300,13 @@ defmodule DrabPoc.PageCommander do
   end
 
   def disconnected(store, session) do
-    # this is a guy who just left
-    # Drab is already dead, so I must take a PID from the Store (set on connect)
-    # removed_user = DrabPoc.Presence.get_user(Node.self(), store[:my_drab_pid])
+    # Drab is already dead, so we are broadcating using same_controller()
     DrabPoc.Presence.remove_user(Node.self(), store[:my_drab_pid])
-    # one Drab to broadcast, one Drab to rule them all
-    if random_guy = Enum.at(DrabPoc.Presence.get_users(), 0) do
-      {{_, random_guys_pid}, _} = random_guy
-      # if Process.alive?(random_guys_pid) do
-        # just to be sure that the process was not killed in a meantime
-        socket = GenServer.call(random_guys_pid, :get_socket)
-        removed_user = store[:nickname] || anon_with_country_code(session[:country_code])
-        html = "<span class='chat-system-message'>*** <b>#{removed_user}</b> has left.</span><br>"
-        add_chat_message!(socket, html)
-        update_presence_list!(socket)
-      # end
-    end
+
+    removed_user = store[:nickname] || anon_with_country_code(session[:country_code])
+    html = "<span class='chat-system-message'>*** <b>#{removed_user}</b> has left.</span><br>"
+    add_chat_message!(same_controller(DrabPoc.QueryController), html)
+    update_presence_list!(same_controller(DrabPoc.QuertController))
 
     Logger.debug("DISCONNECTED, store: #{store |> inspect}")
     Logger.debug("            session: #{session |> inspect}")

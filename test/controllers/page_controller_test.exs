@@ -1,4 +1,4 @@
-defmodule DrabPoc.PageControllerTest do
+defmodule DrabPoc.QueryControllerTest do
   use DrabPoc.ConnCase
 
   test "GET /", %{conn: conn} do

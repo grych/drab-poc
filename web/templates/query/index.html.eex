@@ -135,7 +135,7 @@ name = socket |> select(:vals, from: "input")
 
   <div class="col-md-4 left-bordered">
     <p>
-      This is a live demo. Click the button to launch <code>Drab.Controller.uppercase/2</code> on the server.
+      This is a live demo. Click the button to launch <code>DrabPoc.QueryCommander.uppercase/2</code> on the server.
       <br><br>
       <input class="form-control" id="text_to_uppercase" value="uppercase me">
       <button class="btn btn-primary" id="uppercase_button" drab-event="click" drab-handler="uppercase">Do it</button>
@@ -641,26 +641,21 @@ end]%></code></pre>
       Let's move to the disconnect handler. As you probably guess, it is executed when the browser disconnects from the server. It may be because of navigate away from the page, close the tab or because of the network issues. Disconnect handler is different than the others - it does not receive the <code>socket</code> as an argument. It is beacuse the <code>socket</code> does not exist anymore! But we still have an access to Drab Store and Drab Session:
       <pre><code class="elixir"><%=~S/def disconnected(store, session) do
   DrabPoc.Presence.remove_user(Node.self(), store[:my_drab_pid])
-
-  # one Drab to broadcast, one Drab to rule them all
-  if random_guy = Enum.at(DrabPoc.Presence.get_users(), 0) do
-    {{_, random_guys_pid}, _} = random_guy
-    socket = GenServer.call(random_guys_pid, :get_socket)
-    removed_user = store[:nickname] || "Anonymous"
-    html = "*** #{removed_user} has left.<br>"
-    add_chat_message!(socket, html)
-  end
+  removed_user = store[:nickname] || anon_with_country_code(session[:country_code])
+  html = "*** #{removed_user} has left."
+  add_chat_message!(same_controller(DrabPoc.PageController), html)
+  update_presence_list!(same_controller(DrabPoc.PageController))
 end/%></code></pre>
       We are going to use the Drab Store to retrieve the user's nickname, and the Drab process PID (remember, it was set previously in <code>onconnect</code> handler). First, we need to remove the connection information from the presence list. We could finish here, but it would be good to inform all other users that this guy is gone. But how to broadcast the message, when the <code>socket</code> does not exist anymore? 
     </p>
     <p>
-      Don't do it at home, but we are going to choose one random guy (like the first one in the presence list) and use his <code>socket</code> to broadcast the message. We can retrieve the <code>socket</code> from the Drab Server calling <code>:get_socket</code>, all we need is to have the PID (<code>random_guys_pid</code>). Then we can just broadcast the statement as usual.
+      Drab's broadcasting functions can live without socket. Socket is needed only to find out to which browser send a message (so event handlers in Commander know which browser pressed a button). Broadcasts are just pushed into a void and being received by all the browsers, which currently listen to the given topic. Because we set up the commander with <code>broadcasting :same_controller</code>, we can send the broadcast to <code>same_controller(Controller.Name)</code> instead of the socket.
     </p>
     <p>
       As a bonus, we've got the list of connected users. Let's use it and do a live list of all the people currently connected to this page. First, create a function to update the panel on the right:
-      <pre><code class="elixir"><%=~S/defp update_presence_list!(socket) do
+      <pre><code class="elixir"><%=~S/defp update_presence_list!(topic) do
   users = DrabPoc.Presence.get_users() |> Map.values() |> Enum.sort |> Enum.join("<br>")
-  socket |> update!(:html, set: users, on: "#presence-list")
+  topic |> update!(:html, set: users, on: "#presence-list")
 end/%></code></pre>
       Second, run this function on connect, disconnect or nickname change. Voila!
     </p>

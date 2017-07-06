@@ -1,6 +1,6 @@
-defmodule DrabPoc.PageController do
+defmodule DrabPoc.QueryController do
   use DrabPoc.Web, :controller
-  use Drab.Controller, commander: DrabPoc.PageCommander
+  use Drab.Controller, commander: DrabPoc.QueryCommander
   require Logger
 
   def redirect_to_drab(conn, _params) do
