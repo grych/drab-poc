@@ -39,6 +39,39 @@ defmodule DrabPoc.LiveCommander do
     poke socket, sleep_button_classes: %{cl | button_no => "btn-primary"}    
   end
 
+  def run_async_tasks(socket, _sender) do
+    {:ok, async_task_classes} = Agent.start_link(fn -> for i <- 1..54, into: %{}, do: {i, "danger"} end)
+    poke socket, async_task_label: "danger", async_task_status: "running", 
+      async_task_classes: Agent.get(async_task_classes, &(&1))
+
+    tasks = Enum.map(1..54, fn(i) -> Task.async(fn -> 
+        Process.sleep(:rand.uniform(4000)) # simulate real work
+        Agent.update(async_task_classes, fn state -> %{state | i => "success"} end)
+        poke socket, async_task_classes: Agent.get(async_task_classes, &(&1))
+      end)
+    end)
+
+    begin_at = :os.system_time(:millisecond)
+    Enum.each(tasks, fn(task) -> Task.await(task) end)
+    end_at = :os.system_time(:millisecond)
+    Agent.stop(async_task_classes)
+    
+    poke socket, async_task_label: "success", async_task_status: 
+      "finished in #{(end_at - begin_at)/1000} seconds"
+  end
+
+  def perform_long_process(socket, _sender) do
+    poke socket, progress_bar_class: "progress-bar-danger", long_process_button_text: "Processing..."
+
+    steps = :rand.uniform(100)
+    for i <- 1..steps do
+      Process.sleep(:rand.uniform(500)) #simulate real work
+      poke socket, bar_width: Float.round(i * 100 / steps, 2)
+    end
+
+    poke socket, progress_bar_class: "progress-bar-success", long_process_button_text: "Click me to restart"
+  end
+
   def changed_label(socket, sender) do
     poke socket, label: sender["value"]
   end

@@ -92,13 +92,17 @@
     </p>
     <p>
       In this example, <code>click</code> event <b>in the browser</b> remotely runs <code>DrabPoc.LiveCommander.uppercase/2</code> <b>on the server.</b>
-      <pre><code class="elixir">def uppercase(socket, sender) do
-  text = sender.params[&quot;text_to_uppercase&quot;]
-  poke socket, text: String.upcase(text)
+      <pre><code class="elixir">defmodule DrabPoc.LiveCommander do
+  use Drab.Commander
+
+  def uppercase(socket, sender) do
+    text = sender.params[&quot;text_to_uppercase&quot;]
+    poke socket, text: String.upcase(text)
+  end
 end</code></pre>
     </p>
     <p>
-      Every <em>handler</em> function takes two parameters: first is a <code>%Phoenix.Socket{}</code>, and the second is a map with information about sender DOM object, as well as parameters from the surrounding form. <code>sender.params</code> contains values of all the <em>input</em> elements inside the form, where the keys are element <code>name</code> or <code>id</code>.
+      Every <em>handler</em> function takes two parameters: first is a <code>%Phoenix.Socket{}</code>, and the second is a map with information about sender DOM object, as well as parameters from the surrounding form. <code>sender.params</code> contains values of all the <em>input</em> elements inside the form, where the keys are element's <code>name</code> or <code>id</code>.
     </p>
     <p>
       After processing the inputs, we need to present it to back in the browser. This is where we use <code>poke/2</code> function - <b>it pushes the assign</b> (in this case: <code>&lt;%= @text %&gt;</code>) <b>back to the browser</b>. Input value is updated, without reloading the whole page.
@@ -141,7 +145,9 @@ The code is rendered as usual, in the simple Controller:
   use DrabPoc.Web, :controller
   use Drab.Controller
 
-  def index(conn, _params), do: render conn, "index.html", users: ["Dżesika", "Brajanek", "Zdzichu"], title: "Users List"
+  def index(conn, _params) do 
+    render conn, "index.html", users: ["Dżesika", "Brajanek", "Zdzichu"], title: "Users List"
+  end
 end
 </code></pre>
     </p>
@@ -153,7 +159,7 @@ end
 <pre><code class="html"><%=~s(<button drab-click="replace_list">Replace List</button>)%></code></pre>
     Did you notice <code>drab-click</code> attribute? This is a shorthand for <code>drab-event</code> and <code>drab-handler</code> combination. There is a number of such shorthands for most popular events, see documentation for more.
     </p>
-    <p>Where the event handler function replaces the users list with the new one:
+    <p>The event handler function simply replaces the users list with the new one:
 <pre><code class="elixir"><%=~s/defmodule DrabPoc.LiveCommander do
   use Drab.Commander
 
@@ -205,6 +211,106 @@ end/%></code></pre>
 
 
 <div class="row">
+  <a name="long_running">
+    <h4 class="anchored">Long Running Process with Live Attributes and Properties</h4>
+  </a>
+  <div class="col-md-8">
+    <p>
+      Let's move on to show how to live update DOM node attributes and properties. At the same time, the example is going to demonstrate what Drab is good in: controlling user interface from long-running server process. <br>
+      Assume we have a process which is doing some stuff on the server side, and we want to report back to the user after each completed step. We will use the progress bar controlled from the server.
+      <pre><code class="html">&lt;div class=&quot;progress&quot;&gt;
+  &lt;div class=&quot;progress-bar &lt;%= @progress_bar_class %&gt;&quot; @style.width=&lt;%= &quot;#{@bar_width}%&quot; %&gt;&gt;
+    &lt;%= &quot;#{@bar_width}%&quot; %&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;button class=&quot;btn btn-primary&quot; drab-click=&quot;perform_long_process&quot;&gt;&lt;%= @long_process_button_text %&gt;&lt;/button&gt;</code></pre>
+      Notice that this time we used assigns in the DOM node attributes: <code>class</code> and <code>@style.width</code>. What will happen when we <code>poke</code> this assigns from the controller? In the first case, <code>class</code> <strong>attribute</strong> is updated as expected. In the second case, Drab sets <code>style.width</code> <strong>property</strong> of the corresponding node to whatever is <strong>evaluated of the given Elixir expression</strong>.
+    </p>
+    <p>
+      We are going to live update the assigns of the template above from <code>perform_long_process/2</code> function in the commander:
+      <pre><code class="elixir">def perform_long_process(socket, _sender) do
+  poke socket, progress_bar_class: &quot;progress-bar-danger&quot;, long_process_button_text: &quot;Processing...&quot;
+
+  steps = :rand.uniform(100)
+  for i &lt;- 1..steps do
+    Process.sleep(:rand.uniform(500)) #simulate real work
+    poke socket, bar_width: Float.round(i * 100 / steps, 2)
+  end
+
+  poke socket, progress_bar_class: &quot;progress-bar-success&quot;, long_process_button_text: &quot;Click me to restart&quot;
+end</code></pre>
+      This function simulates some process, which updates the User Interface after each step done. For more fun, we randomly choose the number of steps and the step "processing time". 
+    </p>
+    <p>
+      Before running loop of steps, we update the button text (to show the user that the work is in progress), and the progress bar <code>class</code> attribute. In the template, it was initially set to <code>class=&quot;progress-bar &lt;%= @progress_bar_class %&gt;&quot;</code>. After <em>poking</em> the <code>@progress_bar_class</code> assign, Drab updates the <code>class</code> attribute of the node, preserving the given pattern: it will become <code>class=&quot;progress-bar progress-bar-danger&quot;</code>.
+    </p>
+    <p>
+      Even more interesting happens when <em>poking</em> the <code>@bar_width</code> assign. Using the <strong><code>@property=&lt;%= expression %&gt;</code> syntax</strong>, we can bound any node property with the Elixir expression! In this case, <code>@style.width=&lt;%= &quot;#{@bar_width}%&quot; %&gt;</code> connects <code>style.width</code> of the DOM object with <code>&quot;#{@bar_width}%&quot;</code> expression. Elixir expression is evaluated every time you <code>poke</code> a new value of the assign(s), and the value of the evaluated expression updates given node property.
+    </p>
+    <p>
+      Unlike attributes, properties may be bound to any JSON encodable value: a list, a map, etc. And because of this, properties syntax does have some limitations. The only valid sytax is <code>@property=&lt;%= expression %&gt;</code>, no quotes or apostrophes. You can only bind one expression to one property; you may not use string patterns, like you could with attributes.
+    </p>
+    <p>
+      One more thing: you probably noticed that when the task is "processing", you can click another button in the page. This is because <strong>Drab requests are asynchronous on the server side</strong>. And this is a reason why buttons are disabled by default while processing - it is blocking the user from running the same action for few times. You may override this behaviour in `config.exs` with:
+      <pre><code class="elixir"><%=~s/config :drab, disable_controls_while_processing: false/%></code></pre>
+  </div>
+
+  <div class="col-md-4 left-bordered">
+    <p>
+      Click a button to simulate long-running process on the server.
+      <div class="progress">
+        <div class="progress-bar <%= @progress_bar_class %>" role="progressbar" @style.width=<%= "#{@bar_width}%" %>>
+          <%= "#{@bar_width}%" %>
+        </div>
+      </div>
+      <button class="btn btn-primary" drab-click="perform_long_process"><%= @long_process_button_text %></button>
+    </p>
+  </div>
+</div>
+<hr>
+
+
+
+
+<div class="row">
+  <a name="async_task">
+    <h4 class="anchored">Tens of Tasks Running in Parallel on the Server and Communicating Back to the Browser</h4>
+  </a>
+  <div class="col-md-8">
+    <p>
+      <pre><code class="html"></code></pre>
+    </p>
+    <p>
+      <pre><code class="html"></code></pre>
+      <pre><code class="elixir"></code></pre>
+    </p>
+  </div>
+
+  <div class="col-md-4 left-bordered">
+    <p>
+      Click the button below to simulate server-side long running process with asynchronous tasks.
+      <h4>Async task status: <span class="label label-<%= @async_task_label %>"><%= @async_task_status %></span></h4>
+      <div class="row">
+        <%= for i <- 1..54 do %>
+          <div class="col-md-2 col-xs-4 centered">
+            <span class="task label label-<%= @async_task_classes[i] %>">Task #<%= i |> Integer.to_string |> String.rjust(2, ?0) %></span>
+          </div>
+        <% end %>
+      </div>
+      <br>
+      <button class="btn btn-primary" drab-click="run_async_tasks">Start async task</button>
+    </p>
+  </div>
+</div>
+<hr>
+
+
+
+
+
+
+
+<div class="row">
   <a name="properties">
     <h4 class="anchored">Special Form for Properties</h4>
   </a>
@@ -230,26 +336,7 @@ end/%></code></pre>
 <hr>
 
 
-<div class="row">
-  <a name="properties">
-    <h4 class="anchored">Special Form for Properties</h4>
-  </a>
-  <div class="col-md-8">
-    <p>
-      <pre><code class="html"></code></pre>
-    </p>
-    <p>
-      <pre><code class="html"></code></pre>
-      <pre><code class="elixir"></code></pre>
-    </p>
-  </div>
 
-  <div class="col-md-4 left-bordered">
-    <p>
-    </p>
-  </div>
-</div>
-<hr>
 
 
 

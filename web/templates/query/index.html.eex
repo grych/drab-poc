@@ -171,6 +171,7 @@ end/%></code></pre>
     <p>
       Observe that when one button is "processing", you can click another one. This is because <strong>Drab requests are asynchronous on the server side</strong>. And this is a reason why buttons are disabled by default while processing - it is blocking the user from running the same action for few times. You may override this behaviour in `config.exs` with:
       <pre><code class="elixir"><%=~s/config :drab, disable_controls_while_processing: false/%></code></pre>
+    </p>
   </div>
   <div class="col-md-4 left-bordered">
     <p>
