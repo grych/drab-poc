@@ -2,7 +2,9 @@ defmodule DrabPoc.LiveCommander do
   require IEx
   require Logger
 
-  use Drab.Commander, modules: [Drab.Live]
+  use Drab.Commander, modules: [Drab.Live, Drab.Element]
+
+  onconnect :connected
 
   def uppercase(socket, sender) do
     text = sender.params["text_to_uppercase"]
@@ -40,21 +42,18 @@ defmodule DrabPoc.LiveCommander do
   end
 
   def run_async_tasks(socket, _sender) do
-    {:ok, async_task_classes} = Agent.start_link(fn -> for i <- 1..54, into: %{}, do: {i, "danger"} end)
-    poke socket, async_task_label: "danger", async_task_status: "running", 
-      async_task_classes: Agent.get(async_task_classes, &(&1))
+    poke socket, async_task_label: "danger", async_task_status: "running"
+    set_attr(socket, ".task[task-id]", class: "task label label-danger")
 
     tasks = Enum.map(1..54, fn(i) -> Task.async(fn -> 
         Process.sleep(:rand.uniform(4000)) # simulate real work
-        Agent.update(async_task_classes, fn state -> %{state | i => "success"} end)
-        poke socket, async_task_classes: Agent.get(async_task_classes, &(&1))
+        set_prop(socket, ".task[task-id='#{i}']", className: "task label label-success")
       end)
     end)
 
     begin_at = :os.system_time(:millisecond)
     Enum.each(tasks, fn(task) -> Task.await(task) end)
     end_at = :os.system_time(:millisecond)
-    Agent.stop(async_task_classes)
     
     poke socket, async_task_label: "success", async_task_status: 
       "finished in #{(end_at - begin_at)/1000} seconds"
@@ -78,5 +77,35 @@ defmodule DrabPoc.LiveCommander do
 
   def enlage_your_button_now(socket, _sender) do
     poke socket, button_height: peek(socket, :button_height) + 2
+  end
+
+  defp file_change_loop(socket, file_path) do
+    receive do
+      {_pid, {:fswatch, :file_event}, {^file_path, _opts}} ->
+        socket |> poke(access_log: last_n_lines(file_path, 8))
+      any_other ->
+        Logger.debug(inspect(any_other))
+    end
+    file_change_loop(socket, file_path)
+  end
+
+  defp last_n_lines(file_path, lines) do
+    case System.cmd("tail", ["-#{lines}", file_path]) do
+      {stdout, 0} -> stdout
+      {stdout, retval} -> raise "last_n_lines: tail returned #{retval}. Stdout:\n#{stdout}"
+    end
+  end
+
+  def changed_input(socket, sender) do
+    broadcast_prop socket, sender["dataset"]["update"], innerText: String.upcase(sender["value"])
+  end
+
+
+
+  def connected(socket) do
+    # Sentix is already started within application supervisor
+    Sentix.subscribe(:access_log)
+
+    file_change_loop(socket, Application.get_env(:drab_poc, :watch_file))
   end
 end
