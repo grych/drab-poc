@@ -5,6 +5,8 @@ defmodule DrabPoc.LiveCommander do
   use Drab.Commander, modules: [Drab.Live, Drab.Element]
 
   onconnect :connected
+  onload :page_loaded
+  access_session [:drab_test, :country_code]
 
   def uppercase(socket, sender) do
     text = sender.params["text_to_uppercase"]
@@ -75,6 +77,19 @@ defmodule DrabPoc.LiveCommander do
     poke socket, label: sender["value"]
   end
 
+  def increase_counter(socket, _sender) do
+    counter = get_store(socket, :counter) || 0
+    put_store(socket, :counter, counter + 1)
+  end
+
+  def show_counter(socket, _sender) do
+    poke socket, counter: get_store(socket, :counter)
+  end
+
+
+
+
+
   def enlage_your_button_now(socket, _sender) do
     poke socket, button_height: peek(socket, :button_height) + 2
   end
@@ -107,5 +122,9 @@ defmodule DrabPoc.LiveCommander do
     Sentix.subscribe(:access_log)
 
     file_change_loop(socket, Application.get_env(:drab_poc, :watch_file))
+  end
+
+  def page_loaded(socket) do
+    set_prop socket, "#show_session_test", value: get_session(socket, :drab_test)
   end
 end

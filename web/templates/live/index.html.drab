@@ -454,6 +454,78 @@ end</code></pre>
 
 
 
+<div class="row">
+  <a name="store">
+    <h4 class="anchored">Drab Store and access to Plug Session</h4>
+  </a>
+  <div class="col-md-12">
+    <p>
+      Analogically to Plug, Drab can store the values in its own session. To avoid confusion with the session, we will call it a Drab Store. You can use two functions, <code>put_store/3</code> and <code>get_store/2</code> to read and write the values in the Store. It works exactly the same as a "normal", Phoenix session.
+      <ul>
+        <li>By default, Drab Store is kept in browser Local Storage. This means it is gone when you close the browser or the tab. You may set up where to keep the data with <code>drab_store_storage</code> config entry.</li>
+        <li>Drab Store is not the Plug Session! This is a different entity. Anyway, you have an access to the Plug Session (details below).</li>
+        <li>Drab Store is stored on the client side and it is signed, but - as the Plug Session cookie - not ciphered.</li>
+      </ul>
+    </p>
+  </div>
+  <div class="col-md-8">
+    <p><pre><code class="elixir"><%=~S/def increase_counter(socket, _sender) do
+  counter = get_store(socket, :counter) || 0
+  put_store(socket, :counter, counter + 1)
+end
+
+def show_counter(socket, _sender) do
+  poke socket, counter: get_store(socket, :counter)
+end/%></code></pre>
+    </p>
+  </div>
+  <div class="col-md-4">
+    <p>
+      <button class="btn btn-primary" drab-click="increase_counter">Increase counter by 1</button><br><br>
+      <button class="btn btn-primary" drab-click="show_counter">Show the counter value: <%= @counter %></button>
+    </p>
+  </div>
+
+  <div class="col-md-8">
+    <p>
+    Although Drab Store is a different entity than Plug Session (used in Controllers), there is a way to access the Session. First, you need to whitelist the keys you wan to access in <code>access_session/1</code> macro (you may give it a list of atoms or a single atom). Whitelisting is due to security: it is kept in Token, on the client side, so it is signed but not encrypted. <br>
+
+    To show an example, we've put the key <code>:drab_test</code> to the Plug Session while rendering this page by the Controller:
+    <pre><code class="elixir"><%=~S/defmodule DrabPoc.PageController do
+  use DrabPoc.Web, :controller
+  use Drab.Controller
+
+  def index(conn, _params) do
+    conn = put_session(conn, :drab_test, "test string in Plug Session, set in the Controller")
+    render conn, "index.html"
+  end
+end/%></code></pre>
+    To use it in the Commander, you need to explicitly inherit this value:
+<pre><code class="elixir"><%=~S/defmodule DrabPoc.PageCommander do
+  use Drab.Commander
+
+  onload :page_loaded
+  access_session :drab_test
+
+  def page_loaded(socket) do
+    set_prop socket, "#show_session_test", value: get_session(socket, :drab_test)
+  end
+end/%></code></pre>
+    Notice that there is not way to update session from Drab. Session is read-only.
+    </p>
+  </div>
+  <div class="col-md-4 left-bordered">
+    <p>
+      Result of <code>get_session(socket, :drab_test)</code> in the <code>onload</code> handler: <br>
+      <input type="text" id="show_session_test" value="unknown..." class="form-control">
+    </p>
+  </div>
+
+</div>
+<hr>
+
+
+
 
 
 <div class="row">
