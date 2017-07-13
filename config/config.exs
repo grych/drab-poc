@@ -25,7 +25,8 @@ import_config "#{Mix.env}.exs"
 
 config :drab, 
   disable_controls_when_disconnected: true,
-  socket: "/drab/socket"
+  socket: "/drab/socket",
+  drab_store_storage: :session_storage
 
 config :phoenix, :template_engines,
   drab: Drab.Live.Engine
