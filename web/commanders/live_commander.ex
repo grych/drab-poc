@@ -2,11 +2,13 @@ defmodule DrabPoc.LiveCommander do
   require IEx
   require Logger
 
-  use Drab.Commander, modules: [Drab.Live, Drab.Element]
+  use Drab.Commander, modules: [Drab.Live, Drab.Element, Drab.Waiter]
 
   onconnect :connected
+  ondisconnect :disconnected
   onload :page_loaded
   access_session [:drab_test, :country_code]
+  broadcasting :same_controller
 
   def uppercase(socket, sender) do
     text = sender.params["text_to_uppercase"]
@@ -89,6 +91,119 @@ defmodule DrabPoc.LiveCommander do
 
 
 
+  def update_chat(socket, sender) do
+    do_update_chat(socket, sender, sender["value"])
+  end
+
+  # /who or /w gives a presence list
+  defp do_update_chat(socket, sender, "/w" <> _) do
+    users = DrabPoc.Presence.get_users() |> Map.values() |> Enum.sort |> Enum.join(", ") 
+    set_prop socket, this(sender), value: ""
+    socket  |> add_chat_message("<span class='chat-system-message'>*** Connected users: #{users}.</span><br>")
+  end
+
+  defp do_update_chat(socket, sender, message) do
+    nick = get_store(socket, :nickname, anon_nickname(socket))
+    html = "<strong>#{nick}:</strong> #{message}<br>"
+    set_prop socket, this(sender), value: ""
+    socket |> add_chat_message!(html)
+  end
+
+  def update_nick(socket, sender) do
+    new_nick = sender["value"]
+    message = """
+    <span class='chat-system-message'>
+      *** <b>#{get_store(socket, :nickname, anon_nickname(socket))}</b> is now known as 
+      <b>#{new_nick}</b>
+    </span><br>
+    """
+    socket 
+      |> put_store(:nickname, new_nick)
+      |> add_chat_message!(message)
+    DrabPoc.Presence.update_user(Node.self(), Drab.pid(socket), new_nick)
+    update_presence_list!(socket)
+  end
+
+  defp anon_nickname(socket) do
+    country = get_session(socket, :country_code)
+    anon_with_country_code(country)
+  end
+
+  defp anon_with_country_code(country) do
+    if country && country != :ZZ do
+      "Anonymous (#{country})"
+    else
+      "Anonymous"
+    end
+  end
+
+  defp chat_message_js(message) do
+    """
+    var time = "<span class='chat-time'>[" + (new Date()).toTimeString().substring(0, 5) + "]</span> "
+    document.querySelector('#chat').insertAdjacentHTML('beforeend', time + #{message |> Drab.Core.encode_js})
+    """
+  end
+
+  defp scroll_down!(subject) do
+    # socket |> execute!(animate: ["{scrollTop: $('#chat').prop('scrollHeight')}", 500], on: "#chat") 
+    # subject |> execute!("animate({scrollTop: $('#chat').prop('scrollHeight')},500)", on: "#chat")
+    broadcast_js subject, "document.querySelector('#chat').scrollTop = document.querySelector('#chat').scrollHeight"
+  end
+
+  defp scroll_down(socket) do
+    # socket |> execute(animate: ["{scrollTop: $('#chat').prop('scrollHeight')}", 500], on: "#chat") 
+    # socket |> execute("animate({scrollTop: $('#chat').prop('scrollHeight')},500)", on: "#chat")
+    exec_js socket, "document.querySelector('#chat').scrollTop = document.querySelector('#chat').scrollHeight"
+  end
+
+  defp add_chat_message!(subject, message) do
+    subject |> broadcast_js(chat_message_js(message))
+    subject |> scroll_down!()
+  end
+
+  defp add_chat_message(socket, message) do
+    exec_js(socket, chat_message_js(message))
+    scroll_down(socket)
+  end
+
+  defp update_presence_list!(socket_or_subject) do
+    users = DrabPoc.Presence.get_users() |> Map.values() |> Enum.sort |> Enum.join("<br>")
+    # socket_or_subject |> update!(:html, set: users, on: "#presence-list")
+    broadcast_prop socket_or_subject, "#presence-list", innerHTML: users
+  end
+
+
+
+  def waiter_example(socket, _dom_sender) do
+    buttons = render_to_string("waiter_example.html", [])
+
+    set_prop socket, "#waiter_answer_div", innerHTML: nil
+    insert_html socket, "#waiter_example_div", :beforeend, buttons
+
+    answer = waiter(socket) do
+      on "#waiter_example_div button", "click", fn(sender) ->
+        sender["text"]
+      end
+      on_timeout 5500, fn ->
+        "six times nine"
+      end
+    end
+
+    set_prop socket, "#waiter_example_div", innerHTML: nil
+    set_prop socket, "#waiter_answer_div", innerText: "Do you realy think it is #{answer}?"
+  end
+
+
+  def raise_error(_socket, _dom_sender) do
+    map = %{x: 1, y: 2}
+    # the following line will cause KeyError
+    map.z
+  end
+
+  def self_kill(_socket, _dom_sender) do
+    Process.exit(self(), :kill)
+  end
+
 
   def enlage_your_button_now(socket, _sender) do
     poke socket, button_height: peek(socket, :button_height) + 2
@@ -118,13 +233,43 @@ defmodule DrabPoc.LiveCommander do
 
 
   def connected(socket) do
+    # display chat join message
+    nickname = get_store(socket, :nickname, anon_nickname(socket))
+    joined = """
+    <span class='chat-system-message'>*** <b>#{nickname}</b> has joined the chat.</span><br>
+    """
+    socket |> add_chat_message!(joined)
+    info = "<span class='chat-system-message'>*** Type <b>/who</b> to get the presence list.</span><br>"
+    socket |> add_chat_message(info)
+
+    DrabPoc.Presence.add_user(Node.self(), Drab.pid(socket), nickname)
+    put_store(socket, :my_drab_pid, Drab.pid(socket))
+
+    update_presence_list!(socket)
+
+
     # Sentix is already started within application supervisor
     Sentix.subscribe(:access_log)
 
     file_change_loop(socket, Application.get_env(:drab_poc, :watch_file))
   end
 
+
+  def disconnected(store, session) do
+    # Drab is already dead, so we are broadcating using same_controller()
+    DrabPoc.Presence.remove_user(Node.self(), store[:my_drab_pid])
+
+    removed_user = store[:nickname] || anon_with_country_code(session[:country_code])
+    html = "<span class='chat-system-message'>*** <b>#{removed_user}</b> has left.</span><br>"
+    add_chat_message!(same_controller(DrabPoc.LiveController), html)
+    update_presence_list!(same_controller(DrabPoc.LiveController))
+
+    :ok
+  end
+
+
   def page_loaded(socket) do
     set_prop socket, "#show_session_test", value: get_session(socket, :drab_test)
+    set_prop socket, "#nickname", value: get_store(socket, :nickname, "")
   end
 end
