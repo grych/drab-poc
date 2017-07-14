@@ -20,10 +20,11 @@ defmodule DrabPoc.Router do
   scope "/drab", DrabPoc do
     pipe_through :browser # Use the default browser stack
 
-    get "/", QueryController, :index
+    get "/", LiveController, :index
+    get "/query", QueryController, :index
     get "/docs", DocsController, :index
     get "/nojquery", JquerylessController, :index
-    get "/live", LiveController, :index
+    # get "/live", LiveController, :index
   end
 
   # Other scopes may use custom stacks.

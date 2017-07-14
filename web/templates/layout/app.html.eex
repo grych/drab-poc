@@ -30,16 +30,16 @@
           <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="/drab">Tutorial <b class="caret"></b></a>
             <ul role="menu" class="dropdown-menu">
-              <li><a href="/drab#simple">Get and Set DOM Object Values</a></li>
-              <li><a href="/drab#dom_sender">DOM Sender Properties</a></li>
-              <li><a href="/drab#tens_of_processes">Running Parallel Tasks (Don't Try It in Rails!)</a></li>
-              <li><a href="/drab#long_running">Long Running Process Controlled by UI</a></li>
+              <li><a href="/drab#simple">First Step with Drab</a></li>
+              <li><a href="/drab#poke">More on Living Attributes</a></li>
+              <li><a href="/drab#long_running">Long Running Process with Feedback to UI</a></li>
+              <li><a href="/drab#async_task">Running Parallel Tasks (Don't Try It in Rails!)</a></li>
               <li><a href="/drab#tail_dash_f">Callbacks and Live File Change View ("tail -F")</a></li>
               <li><a href="/drab#broadcast">Is This Quick Enough? Plus Broadcast</a></li>
               <li><a href="/drab#store">Persistent Storage and Access to Plug Session</a></li>
               <li><a href="/drab#chat_example">Chat Example</a></li>
               <li><a href="/drab#presence">Using Callbacks to Create a Presence List</a></li>
-              <li><a href="/drab#waiter">Waiter: Another Way to Wait for User's Input</a></li>
+              <li><a href="/drab#waiter">Waiter: Wait for User's Input</a></li>
               <li><a href="/drab#errors">Showing Errors and Exceptions</a></li>
               <li><a href="/drab#debugging">Debugging Drab in IEx</a></li>
             </ul>
@@ -63,7 +63,8 @@
             </ul>
           </li>
 
-          <li><a href="/drab/nojquery">DOMless Drab</a></li>
+          <li><a href="/drab/nojquery">DOMless</a></li>
+          <li><a href="/drab/query">jQuery</a></li>
           <li><a href="https://github.com/grych/drab">Drab Source</a></li>
           <li><a href="https://github.com/grych/drab-poc">This Page Source</a></li>
           <li><a href="https://github.com/grych/drab-example">Sandbox</a></li>

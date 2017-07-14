@@ -1,4 +1,4 @@
-<h3 class="centered">Drab - Access the User Interface in browser from the Server Side</h3>
+<h3 class="centered">Drab - Access the User Interface from the Server Side</h3>
 <h4 class="centered">
   Living Pages in Phoenix
 </h4>
@@ -8,33 +8,41 @@
   <div class="col-md-8">
     <p>
       <img src="<%= static_path(@conn, "/images/drab-logo-200.png")%>" class="drab-logo" alt="pipe-shaped slingshot" title="pipe-shaped slingshot">
-      In the <i>"good old times"</i> the event handling was easy. The only thing you had to do was to create the event handler (remember <code>TForm1.Button1Click(Sender: TObject)</code>?) and you could do everything inside this handler: accessing data from models, manipulating user interface, sending raw Ethernet packets to the coffee machine...
+      <strong>Drab</strong> is the extention library to <a href="http://www.phoenixframework.org">Phoenix Framework</a> for <b>providing an access to the browser's User Interface (DOM objects) from the server side</b>. The main advantage of it is to eliminate necessity of writing two applications: one for the client-side, and one for the backend. All the UI control may be now done in the backend, eliminating JS and AJAX.
     </p>
     <p>
-      Nowadays, when the most of the applications are web based, it is not so easy anymore. You need either to create a form and submit the data via POST or GET or use AJAX to send or retrieve data. Whole interface manipulation is on the client side. In practice, you need to write two applications: on the client and the server side.  
+      Additionally, because <code>http</code> is a stateless and an one-way protocol, it is not easy to communicate back from the server to the browser. Like, for example, during execution of the long running process, when there is a need to update status (eg. progress bar), or to ask the operator about something (like "would you like to continue?"). Of course there are workarounds for this, like polling the server every few seconds to get a status, or even auto-refreshing the page, but those are just a dirty workarounds. The solution would be to allow an access to the interface directly from the server side. And here comes the <code>Drab</code>.
     </p>
     <p>
-      Additionally, because <code>http</code> is stateless and a one-way protocol, it is not easy to communicate back from the server to the browser. Like, for example, during execution of the long running process, when there is a need to update status (eg. progress bar), or to ask the operator about something (like "would you like to continue?"). Of course there are workarounds for this, like polling the server every few seconds to have a status, or even auto-refreshing the page, but those are just a dirty workarounds. The solution would be to allow an access to the interface directly from the server side. And here comes <code>Drab</code>.
+      Drab is made with <strong><a href="https://elixir-lang.org">Elixir</a> on <a href="http://www.phoenixframework.org">Phoenix</a></strong>, so all the code in the examples is HTML and Elixir. <b>This page is a living demo - all examples are actually working on the Drab server</b>.
+      You can find a <a href="https://github.com/grych/drab">source code of the Drab - here on Github</a>, and the source code of this demo page: <a href="https://github.com/grych/drab-poc">here</a>. For more detailed instructions, please refer to the <a href="https://hexdocs.pm/drab">documentation</a>.
     </p>
     <p>
-      <code>Drab</code> is a concept of <b>providing an access to User Interface (DOM objects) on the server side</b>, just like in the 
-      good-old Delphi times. The examples below should give you an overview of how does it work. For more detailed instructions, please refer to the <a href="https://hexdocs.pm/drab">documentation</a>.
+      <u><strong>Teaser:</strong></u> imagine having a Phoenix template like:
+      <pre><code class="html">&lt;a href=&quot;https://&lt;%= @url%&gt;&quot; class=&quot;btn btn-success&quot; @style.width=&lt;%= @width%&gt;&gt;
+  Visit &lt;%= @url %&gt;
+&lt;/a&gt;</code></pre>
+      With Drab, you may remote control this html element, live:<br>
+      <img src="<%= static_path(@conn, "/images/drab_example.gif")%>">
+
     </p>
-    <p>
-      Drab is written using <strong>Phoenix on Elixir</strong>, so all the code in examples is HTML and Elixir. <b>This page is a living demo - all examples are actually working on the Drab server</b>.
-      You can find a <a href="https://github.com/grych/drab">source code of the Drab - here on Github</a>, and the source code of this demo page: <a href="https://github.com/grych/drab-poc">here</a>.
-    </p>
-    <p style="background-color: #eeeeee;">
-      <strong>WARNING! Drab API has completely changed in 0.5.0!</strong> <code>Drab.Query</code> (the jQuery based module) is not longer the default one. If you still want to use it, you must declare it in the commander with <code>use Drab.Commander, modules: [Drab.Query, Drab.Modal]</code>. Drab.Query based tutorial is still available <a href="/drab/query">here</a>.
-    </p>
+
     <p><small>&copy; <a href="mailto:grych@tg.pl">Tomek "Grych" Gryszkiewicz</a> 2016 - 2017</small></p>
-    <iframe src="https://ghbtns.com/github-btn.html?user=grych&repo=drab&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe><br>
-    <iframe src="https://ghbtns.com/github-btn.html?user=grych&repo=drab&type=watch&count=true&v=2" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>
   </div>
 
 
 
   <div class="col-md-4 left-bordered">
+    <div class="panel panel-default" style="background-color: #FFE3DA;">
+      <div class="panel-heading">v0.5.0 - living assigns <span class="label label-default">2017-07-16</span></div>
+      <div class="panel-body">
+        <p>
+          <strong>WARNING! Drab API has been completely changed in 0.5.0!</strong> <code>Drab.Query</code> (the jQuery based module) is not longer the default one. If you still want to use it, you must declare it in the commander with <code>use Drab.Commander, modules: [Drab.Query, Drab.Modal]</code>. Drab.Query based tutorial is still available <a href="/drab/query">here</a>.
+        </p>
+      </div>
+    </div>
+
+
     <div class="panel panel-default">
       <div class="panel-heading">v0.4.0 improves reliability <span class="label label-default">2017-05-16</span></div>
       <div class="panel-body">
@@ -63,6 +71,8 @@
     </div>
 
  <h6>See all <a href="https://github.com/grych/drab/releases">Release Notes</a> to learn about the previous releases</h6>
+    <iframe src="https://ghbtns.com/github-btn.html?user=grych&repo=drab&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe><br>
+    <iframe src="https://ghbtns.com/github-btn.html?user=grych&repo=drab&type=watch&count=true&v=2" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>
 
   </div>
 </div>
@@ -88,7 +98,7 @@
 </code></pre>
     </p>
     <p>
-      What is a difference between standard html behaviour and Drab? Drab does not GETs or POSTs the form, it calls the event handler function via websockets instead, and updates the DOM nodes directly on the page. As you can see, clicking the button does not reload the page!
+      What is a difference between the standard behaviour and Drab? Drab does not GETs or POSTs the form, it calls the event handler function via websockets instead, and updates the DOM nodes directly on the page. As you can see, clicking the button does not reload the page.
     </p>
     <p>
       The idea is to reuse the existing Phoenix templates, but make them living. The pair of <code>drab-event</code> and <code>drab-handler</code> attributes in the <code>&lt;button&gt;</code> determines which <strong>event</strong> should be handled by which <strong>handler</strong>. This handler is a function in the <strong>commander</strong> module, analogically to action in the controller. And a commander is like a controller for living Drab pages.
@@ -824,7 +834,7 @@ iex(4)> set_style socket, "p", backgroundColor: "red"
 </h4>
 <hr>
 <p>
-  Warning: <b>this is an early beta version</b>, a lot of things are still not implemented, some are hardcoded. Any comments, criticism, thoughts are welcome - <a href="mailto:grych@tg.pl?Subject=Drab">grych@tg.pl</a>. Your feedback is highly appreciated!
+  Warning: <b>this is still a beta version</b>. Any comments, criticism, thoughts are welcome - <a href="mailto:grych@tg.pl?Subject=Drab">grych@tg.pl</a>. Your feedback is highly appreciated!
 </p>
 <hr>
 <p>

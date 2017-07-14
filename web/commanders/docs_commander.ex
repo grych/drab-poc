@@ -2,7 +2,7 @@ defmodule DrabPoc.DocsCommander do
   require IEx
   require Logger
 
-  use Drab.Commander
+  use Drab.Commander, modules: [Drab.Query, Drab.Modal, Drab.Waiter]
 
   access_session :test
 
