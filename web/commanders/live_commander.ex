@@ -76,7 +76,8 @@ defmodule DrabPoc.LiveCommander do
   end
 
   def changed_label(socket, sender) do
-    poke socket, label: sender["value"]
+    {:safe, label} =  Phoenix.HTML.html_escape(sender["value"])
+    poke socket, label: label
   end
 
   def increase_counter(socket, _sender) do
@@ -92,7 +93,8 @@ defmodule DrabPoc.LiveCommander do
 
 
   def update_chat(socket, sender) do
-    do_update_chat(socket, sender, sender["value"])
+    {:safe, v} = sender["value"] |> Phoenix.HTML.html_escape()
+    do_update_chat(socket, sender, v)
   end
 
   # /who or /w gives a presence list
@@ -110,7 +112,7 @@ defmodule DrabPoc.LiveCommander do
   end
 
   def update_nick(socket, sender) do
-    new_nick = sender["value"]
+    {:safe, new_nick} = sender["value"] |> Phoenix.HTML.html_escape()
     message = """
     <span class='chat-system-message'>
       *** <b>#{get_store(socket, :nickname, anon_nickname(socket))}</b> is now known as 
