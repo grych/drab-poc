@@ -363,7 +363,7 @@ end/%></code></pre>
 <div id="display_placeholder"></div>)%></code></pre>
       <pre><code class="elixir"><%=~s/def changed_input(socket, dom_sender) do
   socket |> update!(:text, 
-                 set: String.upcase(dom_sender["val"]),  
+                 set: String.upcase(dom_sender["val"],  
                   on: dom_sender["data"]["update"])
 end/%></code></pre>
     </p>
@@ -497,7 +497,7 @@ end/%></code></pre>
       The following code is the whole chat application! We retrieve the nickname from the Drab Store (or set it to <i>Anonymous</i> if not found), compose the message to be displayed, and we are ready to go. First, we insert the message to the chat panel (used the <code>append</code> method, so it is added at the bottom of the chat div). Second, clean up the message input. Third, scroll down chat to the bottom. All the changes of are broadcasted to all browsers viewing this page, because we used bang versions of functions here.
       <pre><code class="elixir"><%=~S/def update_chat(socket, sender) do
   nick = get_store(socket, :nickname, "Anonymous")
-  html = "<strong>#{nick}:<\/strong> #{sender["val"]}<br>"
+  html = "<strong>#{nick}:<\/strong> #{sender["val"] |> Phoenix.HTML.html_escape()}<br>"
   socket 
     |> insert!(html, append: "#chat")
     |> update(:val, set: "", on: this(sender))
@@ -527,7 +527,7 @@ end
 
 def update_chat(socket, sender) do
   nick = get_store(socket, :nickname, "Anonymous")
-  html = "<strong>#{nick}:<\/strong> #{sender["val"]}<br>"
+  html = "<strong>#{nick}:<\/strong> #{sender["val"] |> Phoenix.HTML.html_escape()}<br>"
   socket 
     |> update(:val, set: "", on: this(sender))
     |> add_chat_message!(html)

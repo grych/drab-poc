@@ -140,7 +140,8 @@ defmodule DrabPoc.QueryCommander do
   end
 
   def changed_input(socket, dom_sender) do
-    socket |> update!(:text, set: String.upcase(dom_sender["val"]),  on: dom_sender["data"]["update"])
+    v = dom_sender["val"]
+    socket |> update!(:text, set: String.upcase(v),  on: dom_sender["data"]["update"])
   end
 
   def increase_counter(socket, _dom_sender) do
@@ -155,7 +156,8 @@ defmodule DrabPoc.QueryCommander do
   end
 
   def update_chat(socket, sender) do
-    do_update_chat(socket, sender, sender["val"])
+    {:safe, v} = sender["val"] |> Phoenix.HTML.html_escape()
+    do_update_chat(socket, sender, v)
   end
 
   # /who or /w gives a presence list
@@ -175,7 +177,7 @@ defmodule DrabPoc.QueryCommander do
   end
 
   def update_nick(socket, sender) do
-    new_nick = sender["val"]
+    {:safe, new_nick} = sender["val"] |> Phoenix.HTML.html_escape()
     message = """
     <span class='chat-system-message'>
       *** <b>#{get_store(socket, :nickname, anon_nickname(socket))}</b> is now known as 
@@ -183,7 +185,7 @@ defmodule DrabPoc.QueryCommander do
     </span><br>
     """
     socket 
-      |> put_store(:nickname, new_nick)
+      |> put_store(:nickname, sender["val"])
       |> add_chat_message!(message)
     DrabPoc.Presence.update_user(Node.self(), Drab.pid(socket), new_nick)
     update_presence_list!(socket)
