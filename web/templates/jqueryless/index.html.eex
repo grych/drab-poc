@@ -7,8 +7,9 @@
   By default, Drab uses DOM tree and jQuery for accessing the User Interface. But it is not required! You don't have to use all the jQuery-dependent modules. The only required module is <code>Drab.Core</code>, which contains basic communication functions to launch the javascript from the server side (<code>exec_js</code> and <code>broadcast_js</code>) and few more. <br>
   To enable/disable Drab Modules, use <code>modules</code> option in <code>use Drab.Commander</code> directive.
 <pre><code class="elixir">defmodule DrabPoc.JquerylessCommander do
-  use Drab.Commander, onload: :page_loaded, modules: [] # only default Drab.Core
-
+  use Drab.Commander, modules: [] # only default Drab.Core
+  onload: :page_loaded
+  
   def page_loaded(socket) do
     socket |> exec_js("console.log('Alert from the other side!');")
   end

@@ -47,6 +47,7 @@
 
           <li><a href="https://hexdocs.pm/drab/api-reference.html">Docs</a></li>
 
+<%# 
           <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="/drab/docs">Docs with Examples <b class="caret"></b></a>
             <ul role="menu" class="dropdown-menu">
@@ -62,7 +63,7 @@
               <li><a href="/drab/docs#gen_commander">Mix.Tasks.Drab.Gen.Commander</a></li>
             </ul>
           </li>
-
+ %>
           <li><a href="/drab/nojquery">DOMless</a></li>
           <li><a href="/drab/query">jQuery</a></li>
           <li><a href="https://github.com/grych/drab">Drab Source</a></li>

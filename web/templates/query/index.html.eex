@@ -5,7 +5,7 @@
 
 
 <div class="row">
-  <div class="col-md-8">
+  <div class="col-md-12">
     <p>
       <img src="<%= static_path(@conn, "/images/drab-logo-200.png")%>" class="drab-logo" alt="pipe-shaped slingshot" title="pipe-shaped slingshot">
       In the <i>"good old times"</i> the event handling was easy. The only thing you had to do was to create the event handler (remember <code>TForm1.Button1Click(Sender: TObject)</code>?) and you could do everything inside this handler: accessing data from models, manipulating user interface, sending raw Ethernet packets to the coffee machine...
@@ -36,63 +36,6 @@ update(something, set: new_value, on: selector)/%></code></pre>
     <iframe src="https://ghbtns.com/github-btn.html?user=grych&repo=drab&type=watch&count=true&v=2" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>
   </div>
 
-  <div class="col-md-4 left-bordered">
-    <div class="panel panel-default">
-      <div class="panel-heading">v0.4.0 improves reliability <span class="label label-default">2017-05-16</span></div>
-      <div class="panel-body">
-        <p>
-          <a href="https://github.com/grych/drab/releases/tag/v0.4.0">This version</a> introduces redesigned API for the most essential part of Drab API: <code>Drab.Core</code>. <code>execjs</code> and <code>broadcastjs</code> has been depreciated in favor of <code>exec_js</code> and <code>broadcast_js</code>. Exciting!
-        </p>
-      </div>
-    </div>
-
-    <div class="panel panel-default">
-      <div class="panel-heading">New example - The Chat <span class="label label-default">2017-05-04</span></div>
-      <div class="panel-body">
-        <p>
-          What is the websocket-based application without a chat? Now, you can learn how to create the simplest one with Drab, based on <a href="#chat_example">this example</a>.
-        </p>
-      </div>
-    </div>
-
-    <div class="panel panel-default">
-      <div class="panel-heading">Drab v0.3.2 - tests, tests and tests <span class="label label-default">2017-04-14</span></div>
-      <div class="panel-body">
-        <p>
-          The <a href="https://github.com/grych/drab/releases/tag/v0.3.2">new release</a> introductes automated integration tests, finally. In addition, Drab package on github contains its own Phoenix Server, makes it easier to play with it.
-        </p>
-      </div>
-    </div>
-
-<%#     <div class="panel panel-default">
-      <div class="panel-heading">Drab v0.3.1 released! <span class="label label-default">2017-03-16</span></div>
-      <div class="panel-body">
-        <p>
-          Introducing <a href="https://github.com/grych/drab/releases/tag/v0.3.1">Drab 0.3.1</a>, version focused on error handling and debugging. Now you can run Drab functions directly from the <code>IEx</code>. It is fun! Learn more <a href="#debugging">here</a>. <a href="#errors">And here</a> you can find out how Drab presents exceptions.
-        </p>
-      </div>
-    </div> %>
-
-<%#     <div class="panel panel-default">
-      <div class="panel-heading">Drab v0.3.0 released! <span class="label label-default">2017-03-09</span></div>
-      <div class="panel-body">
-        <p>
-          New version of Drab <a href="https://github.com/grych/drab/releases/tag/v0.3.0">just arrived</a>, announcing <code>before_</code> and <code>after_handler</code> callbacks, new <code>Drab.Query.select(:all)</code>, better error handling and presenting errors to the user, brand new <code>waiter</code> functionality, and more.
-          <p> 
-            <strong>Warning: <code>Drab.Query.select</code> API has been changed!</strong>
-            Now there are singular and plural versions of jQuery methods, for ex. <code>select(:val)</code> returns value of first found element or nil, and <code>select(:vals)</code> returns a Map of all found objects with their name or id as a keys.
-          </p>
-        </p>
-        <p>
-          There is a new demo <a href="#waiter">down here</a>, explaining the Drab Waiter functionality.
-        </p>
-      </div>
-    </div>
- %>
-
- <h6>See all <a href="https://github.com/grych/drab/releases">Release Notes</a> to learn about the previous releases</h6>
-
-  </div>
 </div>
 
 <hr>

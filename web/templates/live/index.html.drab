@@ -8,13 +8,13 @@
   <div class="col-md-8">
     <p>
       <img src="<%= static_path(@conn, "/images/drab-logo-200.png")%>" class="drab-logo" alt="pipe-shaped slingshot" title="pipe-shaped slingshot">
-      <strong>Drab</strong> is the extention library to <a href="http://www.phoenixframework.org">Phoenix Framework</a> for <b>providing an access to the browser's User Interface (DOM objects) from the server side</b>. The main advantage of it is to eliminate necessity of writing two applications: one for the client-side, and one for the backend. All the UI control may be now done in the backend, eliminating JS and AJAX.
+      <strong>Drab</strong> is the extention library to <a href="http://www.phoenixframework.org">Phoenix Framework</a> for <b>providing an access to the browser's User Interface (DOM objects) from the server side</b>. The main advantage is to eliminate necessity of writing two applications: one for the client-side, and one for the backend. All the UI control may be now done in the backend, eliminating JS and AJAX.
     </p>
     <p>
       Additionally, because <code>http</code> is a stateless and an one-way protocol, it is not easy to communicate back from the server to the browser. Like, for example, during execution of the long running process, when there is a need to update status (eg. progress bar), or to ask the operator about something (like "would you like to continue?"). Of course there are workarounds for this, like polling the server every few seconds to get a status, or even auto-refreshing the page, but those are just a dirty workarounds. The solution would be to allow an access to the interface directly from the server side. And here comes the <code>Drab</code>.
     </p>
     <p>
-      Drab is made with <strong><a href="https://elixir-lang.org">Elixir</a> on <a href="http://www.phoenixframework.org">Phoenix</a></strong>, so all the code in the examples is HTML and Elixir. <b>This page is a living demo - all examples are actually working on the Drab server</b>.
+      Drab is made with <strong><a href="https://elixir-lang.org">Elixir</a> on <a href="http://www.phoenixframework.org">Phoenix</a></strong>. <b>This page is a living demo - all examples are actually working on the Drab server</b>.
       You can find a <a href="https://github.com/grych/drab">source code of the Drab - here on Github</a>, and the source code of this demo page: <a href="https://github.com/grych/drab-poc">here</a>. For more detailed instructions, please refer to the <a href="https://hexdocs.pm/drab">documentation</a>.
     </p>
     <p>
@@ -34,7 +34,7 @@
 
   <div class="col-md-4 left-bordered">
     <div class="panel panel-default" style="background-color: #FFE3DA;">
-      <div class="panel-heading">v0.5.0 - living assigns <span class="label label-default">2017-07-16</span></div>
+      <div class="panel-heading">v0.5.0 - living assigns <span class="label label-default">2017-07-17</span></div>
       <div class="panel-body">
         <p>
           <strong>WARNING! Drab API has been completely changed in 0.5.0!</strong> <code>Drab.Query</code> (the jQuery based module) is not longer the default one. If you still want to use it, you must declare it in the commander with <code>use Drab.Commander, modules: [Drab.Query, Drab.Modal]</code>. Drab.Query based tutorial is still available <a href="/drab/query">here</a>.
@@ -82,11 +82,11 @@
 
 <div class="row">
   <a name="simple">
-    <h4 class="anchored">Simple Input and Button Example</h4>
+    <h4 class="anchored">Introduction</h4>
   </a>
   <div class="col-md-8">
     <p>
-      Here is the simplest example  - text input and the buttons. Clicking the buttons change the string case. Awesome!
+      Here is the simplest example  - the text input and the buttons. Clicking the buttons change the string case. Awesome!
     </p>
     <p>
       On the client side there is a basic HTML with the input and the button:
@@ -98,10 +98,10 @@
 </code></pre>
     </p>
     <p>
-      What is a difference between the standard behaviour and Drab? Drab does not GETs or POSTs the form, it calls the event handler function via websockets instead, and updates the DOM nodes directly on the page. As you can see, clicking the button does not reload the page.
+      What is a difference between the standard behaviour and Drab? Drab does not GET or POST the form, it calls the event handler function via websockets instead, and updates the DOM nodes directly on the page. As you can see, clicking the button does not reload the page.
     </p>
     <p>
-      The idea is to reuse the existing Phoenix templates, but make them living. The pair of <code>drab-event</code> and <code>drab-handler</code> attributes in the <code>&lt;button&gt;</code> determines which <strong>event</strong> should be handled by which <strong>handler</strong>. This handler is a function in the <strong>commander</strong> module, analogically to action in the controller. And a commander is like a controller for living Drab pages.
+      The idea is to reuse the existing Phoenix templates, but make them living. The pair of <code>drab-event</code> and <code>drab-handler</code> attributes in the <code>&lt;button&gt;</code> determines which <strong>event</strong> should be handled by which <strong>handler</strong>. This handler is a function in the <strong>commander</strong> module, analogically to action in the controller. A commander is like a controller for living Drab pages.
     </p>
     <p>
       In this example, <code>click</code> event <b>in the browser</b> remotely runs <code>DrabPoc.LiveCommander.uppercase/2</code> <b>on the server.</b>
@@ -118,10 +118,10 @@ end</code></pre>
       Every <em>handler</em> function takes two parameters: first is a <code>%Phoenix.Socket{}</code>, and the second is a map with information about sender DOM object, as well as parameters from the surrounding form. <code>sender.params</code> contains values of all the <em>input</em> elements inside the form, where the keys are element's <code>name</code> or <code>id</code>.
     </p>
     <p>
-      After processing the inputs, we need to present it to back in the browser. This is where we use <code>poke/2</code> function - <b>it pushes the assign</b> (in this case: <code>&lt;%= @text %&gt;</code>) <b>back to the browser</b>. Input value is updated, without reloading the whole page.
+      After processing the inputs, we need to present it to back in the browser. This is where we use <code>poke/2</code> function - <b>it pushes the assign</b> (in this case: <code>&lt;%= @text %&gt;</code>) <b>back to the browser</b>. Input value is updated, without reloading the page.
     </p>
     <p>
-      Notice that you can have many event launchers (buttons, inputs, links) in the form, each one will call the different event handler. The second function handler is very similar, just makes the text lowercase.
+      Notice that you can have many event launchers (buttons, inputs, links) in the form, each one calling the different event handler. The second function handler is very similar, just makes the text lowercase.
     </p>
   </div>
 
@@ -147,7 +147,7 @@ end</code></pre>
   </a>
   <div class="col-md-8">
     <p>
-      <code>poke/2</code> is the most important function in Drab, so we should get a little bit deeper. Let's assume you have your <code>index.html.eex</code> already prepared, displaying some user list. There are two assigns there, <code>@title</code> and <code>@users</code>:
+      Function <code>poke/2</code> is one of the most imprortant in Drab, so we should go a little bit deeper. Let's assume you have your <code>index.html.eex</code> already prepared, displaying a list of some users. There are two assigns there, <code>@title</code> and <code>@users</code>:
 <pre><code class="html">&lt;strong&gt;&lt;%= @title %&gt;:&lt;/strong&gt;&lt;br&gt;
 &lt;%= for user &lt;- @users do %&gt;
   Username: &lt;%= user %&gt;&lt;br&gt;
@@ -165,10 +165,10 @@ end
 </code></pre>
     </p>
     <p>
-      Nothing special yet, except <code>use Drab.Controller</code>, which tells the controller that is has a corresponding commander. But, the goal of Drab is to update <code>assigns</code> live, without re-rendering the whole page. For this, <code>Drab</code> introduces its own <code>EEx Engine</code>. By default, it uses <code>.drab</code> extension, so you need to rename <code>index.html.eex</code> to <code>index.html.drab</code>.
+      Nothing special yet, except <code>use Drab.Controller</code>, which tells the controller that is has a corresponding commander. But, the goal of Drab is to update <code>assigns</code> live, without re-rendering the page. For this, <code>Drab</code> introduces its own <code>EEx Engine</code>. By default, it uses <code>.drab</code> extension, so you need to rename <code>index.html.eex</code> to <code>index.html.drab</code>.
     </p>
     <p>
-    Then, create some button to launch the Drab event in the commander, on the server-side:
+    Then, create some button to launch the Drab event in the commander:
 <pre><code class="html"><%=~s(<button drab-click="replace_list">Replace List</button>)%></code></pre>
     Did you notice <code>drab-click</code> attribute? This is a shorthand for <code>drab-event</code> and <code>drab-handler</code> combination. There is a number of such shorthands for most popular events, see documentation for more.
     </p>
@@ -190,14 +190,14 @@ end/%></code></pre>
     Of course you can change the values of many assigns in one <code>poke</code>, Drab will find and update the correspoding parts of the page.
     </p>
     <p>
-      Last, but not least, is a possibility to get the current value of assigns. For this, we have a function called <code>peek/2</code>. It returns the current value of the assign. In the example, the third button adds something to the existing list of users:
+      Last, but not least, is a possibility to get the current value of assigns. For this, we have a function called <code>peek/2</code>. In the example, the third button adds something to the existing list of users:
 <pre><code class="elixir"><%=~s/def add_to_list(socket, _sender) do
   users = Drab.Live.peek(socket, :users)
   Drab.Live.poke socket, users: users ++ ["Hegemon"]
 end/%></code></pre>
     </p>
     <p>
-      Notice that the assign is not updated, when it is a value of some <code>input</code> element, and the user changes it. This is why we couldn't use <code>peek/2</code> in the previous example.
+      Notice that assign is updated only on the server side, with <code>poke/2</code>. This is why we didn't use <code>peek/2</code> in the first example - having <code>&lt;input value=&quot;&lt;%= @assign %&gt;&quot;</code> does not update <code>@assign</code> when user changes the input.
     </p>
   </div>
 
@@ -229,8 +229,8 @@ end/%></code></pre>
   </a>
   <div class="col-md-8">
     <p>
-      Let's move on to show how to live update DOM node attributes and properties. At the same time, the example is going to demonstrate what Drab is good in: controlling user interface from long-running server process. <br>
-      Assume we have a process which is doing some stuff on the server side, and we want to report back to the user after each completed step. We will use the progress bar controlled from the server.
+      Let's move on to show how to update DOM node attributes and properties, live. At the same time, the next example is going to demonstrate what Drab is good in: controlling the user interface from the long-running server process. <br>
+      Assume we have a process which is doing some stuff on the server side, and we want to report back to the user after each completed step. We are going to use the progress bar controlled from the server.
       <pre><code class="html">&lt;div class=&quot;progress&quot;&gt;
   &lt;div class=&quot;progress-bar &lt;%= @progress_bar_class %&gt;&quot; @style.width=&lt;%= &quot;#{@bar_width}%&quot; %&gt;&gt;
     &lt;%= &quot;#{@bar_width}%&quot; %&gt;
@@ -242,7 +242,8 @@ end/%></code></pre>
     <p>
       We are going to live update the assigns of the template above from <code>perform_long_process/2</code> function in the commander:
       <pre><code class="elixir">def perform_long_process(socket, _sender) do
-  poke socket, progress_bar_class: &quot;progress-bar-danger&quot;, long_process_button_text: &quot;Processing...&quot;
+  poke socket, progress_bar_class: &quot;progress-bar-danger&quot;, 
+    long_process_button_text: &quot;Processing...&quot;
 
   steps = :rand.uniform(100)
   for i &lt;- 1..steps do
@@ -250,7 +251,8 @@ end/%></code></pre>
     poke socket, bar_width: Float.round(i * 100 / steps, 2)
   end
 
-  poke socket, progress_bar_class: &quot;progress-bar-success&quot;, long_process_button_text: &quot;Click me to restart&quot;
+  poke socket, progress_bar_class: &quot;progress-bar-success&quot;, 
+    long_process_button_text: &quot;Click me to restart&quot;
 end</code></pre>
       This function simulates some process, which updates the User Interface after each step done. For more fun, we randomly choose the number of steps and the step "processing time". 
     </p>
@@ -295,14 +297,14 @@ end</code></pre>
     </p>
     <p>
      HTML side contains button and few spans to display the status of the process and tasks:     
-     <pre><code class="html"><%=~s(Async task status: 
-<span id="async_task_status" class="label label-primary">
-  ready
-</span>
-<span class="task label label-danger" task-id="1">Task 1</span>
+     <pre><code class="html">Async task status: 
+&lt;span id=&quot;async_task_status&quot; class=&quot;label label-primary&quot;&gt;
+  &lt;%= @async_task_status %&gt;
+&lt;/span&gt;
+&lt;span class=&quot;task label label-danger&quot; task-id=&quot;1&quot;&gt;Task 1&lt;/span&gt;
   ...
-<span class="task label label-danger" task-id="54">Task 54</span>
-<button drab-click="run_async_tasks">Start async task</button>)%></code></pre>
+&lt;span class=&quot;task label label-danger&quot; task-id=&quot;54&quot;&gt;Task 54&lt;/span&gt;
+&lt;button drab-click=&quot;run_async_tasks&quot;&gt;Start async task&lt;/button&gt;</code></pre>
     </p>
     <p>
       All the processing is on the server side. Clicking the button runs <code>run_async_tasks/2</code> function:
@@ -442,14 +444,7 @@ end</code></pre>
       <pre><code class="html">&lt;input drab-keyup=&quot;changed_input&quot; 
        drab-options=&quot;debounce(500)&quot; 
        data-update=&quot;#display_placeholder2&quot;&gt;
-&lt;div id=&quot;display_placeholder&quot;&gt;Some text here&lt;/div&gt;</code></pre>
-      <pre><code class="html"><%= 
-
-~s[<input drab-keyup="changed_input"  drab-options="debounce(500)" data-update="#display_placeholder2">
-<div id="display_placeholder">Some text here</div>]
-
-%>
-      </code></pre>
+&lt;div id=&quot;display_placeholder2&quot;&gt;&lt;/div&gt;</code></pre>
       The code above is exactly the same as previous, except of <code>debounce(500)</code> option. The same event handler (<code>changed_input/2</code>) is launched, but not after every key up, but when you actually stop typing for 500 miliseconds. 
     </p>
   </div>
@@ -473,7 +468,7 @@ end</code></pre>
   </a>
   <div class="col-md-12">
     <p>
-      Analogically to Plug, Drab can store the values in its own session. To avoid confusion with the session, we will call it a Drab Store. You can use two functions, <code>put_store/3</code> and <code>get_store/2</code> to read and write the values in the Store. It works exactly the same as a "normal", Phoenix session.
+      Analogically to Plug, Drab can store the values in its own session. To avoid confusion with the session, we will call it a Drab Store. You can use two functions, <code>put_store/3</code> and <code>get_store/2</code> to read and write the values in the Store.
       <ul>
         <li>By default, Drab Store is kept in browser Local Storage. This means it is gone when you close the browser or the tab. You may set up where to keep the data with <code>drab_store_storage</code> config entry.</li>
         <li>Drab Store is not the Plug Session! This is a different entity. Anyway, you have an access to the Plug Session (details below).</li>
@@ -569,7 +564,7 @@ end/%></code></pre>
   set_prop socket, this(sender), value: ""
   broadcast_js socket, "document.querySelector('#chat').scrollTop = document.querySelector('#chat').scrollHeight"
 end/%></code></pre>
-      The only new thing is the <code>execute!</code> function. This is the simplest of all Drab.Query functions: it just runs given jQuery method on the selector.
+      The only new thing is the <code>broadcast_js/2</code> function. As you probably guess, it runs any JS partial on all connected clients.
     </p>
 
     <p>So far, chat just displays the message when someone type it in. It would also nice to have some additional information, like the time when the message appeared. This is quite complicated feature - we can't just display the server time, as users may go from the different timezones. Drab has a build-in function <code>Drab.Browser.now/1</code> function, which gives the <strong>client local time</strong>:
@@ -700,10 +695,10 @@ end/%></code></pre>
   </a>
   <div class="col-md-12">
     <p>
-      Sometimes it would be good to have a possibility to ask user about something, when you are in a middle of some process, and you don't want to finish your function. The good example is a <strong>database transaction, when you run some query and want to ask user wheter commit or rollback changes</strong>. We saw the use of <code>Drab.Modal</code> before, but sometimes modal window is not very elegant.
+      Sometimes it would be good to have a possibility to ask user about something, when you are in a middle of some process, and you don't want to finish your function. The good example is a <strong>database transaction, when you run some query and want to ask user wheter commit or rollback changes</strong>.
     </p>
     <p>
-      So the solution for this issue is called <strong>Drab Waiter</strong>. It is a tiny little DSL which stops processing the event handler function and waits for the event from the client side. You may register multiple events as well as a timeout (by default it is waiting forever). The example below is not very sophisticated, but shows the idea. 
+      So the solution for this issue is called <strong>Drab Waiter</strong>. It is a tiny little DSL which stops processing the event handler function and waits for some event from the client side. You may register multiple events as well as a timeout (by default it is waiting forever). The example below is not very sophisticated, but shows the idea. 
     </p>
   </div>
   <div class="col-md-8">
@@ -725,7 +720,6 @@ end/%></code></pre>
   set_prop socket, "#waiter_example_div", innerHTML: nil
   set_prop socket, "#waiter_answer_div", innerText: "Do you realy think it is #{answer}?"
 end/%></code></pre>
-      Please notice that <em>Waiter Example</em> button is disabled until you give an answer (or until timeout). It is because Drab re-enables it when Event Handler Function finish processing.
     </p>
   </div>
   <div class="col-md-4">
