@@ -2,6 +2,7 @@ defmodule DrabPoc.QueryCommander do
   require IEx
   require Logger
   # import Supervisor.Spec
+  import Phoenix.HTML
 
   use Drab.Commander, 
     modules: [Drab.Query, Drab.Modal, Drab.Waiter]
@@ -156,8 +157,7 @@ defmodule DrabPoc.QueryCommander do
   end
 
   def update_chat(socket, sender) do
-    {:safe, v} = sender["val"] |> Phoenix.HTML.html_escape()
-    do_update_chat(socket, sender, v)
+    do_update_chat(socket, sender, sender["val"])
   end
 
   # /who or /w gives a presence list
@@ -165,25 +165,27 @@ defmodule DrabPoc.QueryCommander do
     users = DrabPoc.Presence.get_users() |> Map.values() |> Enum.sort |> Enum.join(", ") 
     socket 
       |> update(:val, set: "", on: this(sender))
-      |> add_chat_message("<span class='chat-system-message'>*** Connected users: #{users}.</span><br>")
+      |> add_chat_message(~E"""
+        <span class='chat-system-message'>*** Connected users: <%= users %>.</span><br>
+        """ |> safe_to_string())
   end
 
   defp do_update_chat(socket, sender, message) do
     nick = get_store(socket, :nickname, anon_nickname(socket))
-    html = "<strong>#{nick}:</strong> #{message}<br>"
+    html = ~E"<strong><%= nick %>:</strong> <%= message %><br>" |> safe_to_string()
     socket 
       |> update(:val, set: "", on: this(sender))
       |> add_chat_message!(html)
   end
 
   def update_nick(socket, sender) do
-    {:safe, new_nick} = sender["val"] |> Phoenix.HTML.html_escape()
-    message = """
+    new_nick = sender["val"] 
+    message = ~E"""
     <span class='chat-system-message'>
-      *** <b>#{get_store(socket, :nickname, anon_nickname(socket))}</b> is now known as 
-      <b>#{new_nick}</b>
+      *** <b><%= get_store(socket, :nickname, anon_nickname(socket)) %></b> is now known as 
+      <b><%= (new_nick) %></b>
     </span><br>
-    """
+    """ |> safe_to_string()
     socket 
       |> put_store(:nickname, sender["val"])
       |> add_chat_message!(message)
@@ -232,7 +234,12 @@ defmodule DrabPoc.QueryCommander do
   end
 
   defp update_presence_list!(socket) do
-    users = DrabPoc.Presence.get_users() |> Map.values() |> Enum.sort |> Enum.join("<br>")
+    users = DrabPoc.Presence.get_users() 
+      |> Map.values() 
+      |> Enum.sort() 
+      |> Enum.map(&html_escape/1)
+      |> Enum.map(&safe_to_string/1)
+      |> Enum.join("<br>")
     socket |> update!(:html, set: users, on: "#presence-list")
   end
 
@@ -280,9 +287,9 @@ defmodule DrabPoc.QueryCommander do
   def connected(socket) do
     # display chat join message
     nickname = get_store(socket, :nickname, anon_nickname(socket))
-    joined = """
-    <span class='chat-system-message'>*** <b>#{nickname}</b> has joined the chat.</span><br>
-    """
+    joined = ~E"""
+      <span class='chat-system-message'>*** <b><%= nickname %></b> has joined the chat.</span><br>
+      """ |> safe_to_string()
     socket |> add_chat_message!(joined)
     info = "<span class='chat-system-message'>*** Type <b>/who</b> to get the presence list.</span><br>"
     socket |> add_chat_message(info)
@@ -306,7 +313,7 @@ defmodule DrabPoc.QueryCommander do
     DrabPoc.Presence.remove_user(Node.self(), store[:my_drab_pid])
 
     removed_user = store[:nickname] || anon_with_country_code(session[:country_code])
-    html = "<span class='chat-system-message'>*** <b>#{removed_user}</b> has left.</span><br>"
+    html = ~E"<span class='chat-system-message'>*** <b><%= removed_user %></b> has left.</span><br>" |> safe_to_string()
     add_chat_message!(same_controller(DrabPoc.QueryController), html)
     update_presence_list!(same_controller(DrabPoc.QuertController))
 

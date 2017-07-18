@@ -495,14 +495,14 @@ end/%></code></pre>
     </p>
     <p>
       The following code is the whole chat application! We retrieve the nickname from the Drab Store (or set it to <i>Anonymous</i> if not found), compose the message to be displayed, and we are ready to go. First, we insert the message to the chat panel (used the <code>append</code> method, so it is added at the bottom of the chat div). Second, clean up the message input. Third, scroll down chat to the bottom. All the changes of are broadcasted to all browsers viewing this page, because we used bang versions of functions here.
-      <pre><code class="elixir"><%=~S/def update_chat(socket, sender) do
-  nick = get_store(socket, :nickname, "Anonymous")
-  html = "<strong>#{nick}:<\/strong> #{sender["val"] |> Phoenix.HTML.html_escape()}<br>"
+      <pre><code class="elixir">def update_chat(socket, sender) do
+  nick = get_store(socket, :nickname, &quot;Anonymous&quot;)
+  html = ~E&quot;&lt;strong&gt;&lt;%= nick %&gt;:&lt;/strong&gt; &lt;%= message %&gt;&lt;br&gt;&quot; |&gt; safe_to_string()
   socket 
-    |> insert!(html, append: "#chat")
-    |> update(:val, set: "", on: this(sender))
-    |> execute!("animate({scrollTop: $('#chat').prop('scrollHeight')}, 500)", on: "#chat")
-end/%></code></pre>
+    |&gt; insert!(html, append: &quot;#chat&quot;)
+    |&gt; update(:val, set: &quot;&quot;, on: this(sender))
+    |&gt; execute!(&quot;animate({scrollTop: $('#chat').prop('scrollHeight')}, 500)&quot;, on: &quot;#chat&quot;)
+end</code></pre>
       The only new thing is the <code>execute!</code> function. This is the simplest of all Drab.Query functions: it just runs given jQuery method on the selector.
     </p>
     <p>So far, chat just displays the message when someone type it in. It would also nice to have some additional information, like the time when the message appeared. This is quite complicated feature - we can't just display the server time, as users may go from the different timezones. Drab has a build-in function <code>Drab.Browser.now/1</code> function, which gives the <strong>client local time</strong>:
@@ -513,25 +513,25 @@ end/%></code></pre>
     </p>
     <p>
       The solution is to use a bit of Javascript (sic!). Instead of adding the message to chat window with <code>socket |> insert!(html, append: "#chat")</code>, we directly will run the JS on all connected browsers!
-      <pre><code class="elixir"><%=~S/defp chat_message_js(message) do
-  """
-  var time = "[" + (new Date()).toTimeString().substring(0, 5) + "] "
-  $('#chat').append(time + #{message |> Drab.Core.encode_js})
-  """
+      <pre><code class="elixir">defp chat_message_js(message) do
+  &quot;&quot;&quot;
+  var time = &quot;[&quot; + (new Date()).toTimeString().substring(0, 5) + &quot;] &quot;
+  $('#chat').append(time + #{message |&gt; Drab.Core.encode_js})
+  &quot;&quot;&quot;
 end
 
 defp add_chat_message!(socket, message) do
-  socket |> broadcast_js(chat_message_js(message))
-  socket |> scroll_down!()
+  socket |&gt; broadcast_js(chat_message_js(message))
+  socket |&gt; scroll_down!()
 end
 
 def update_chat(socket, sender) do
-  nick = get_store(socket, :nickname, "Anonymous")
-  html = "<strong>#{nick}:<\/strong> #{sender["val"] |> Phoenix.HTML.html_escape()}<br>"
+  nick = get_store(socket, :nickname, &quot;Anonymous&quot;)
+  html = ~E&quot;&lt;strong&gt;&lt;%= nick %&gt;:&lt;/strong&gt; &lt;%= message %&gt;&lt;br&gt;&quot; |&gt; safe_to_string()  
   socket 
-    |> update(:val, set: "", on: this(sender))
-    |> add_chat_message!(html)
-end/%></code></pre>
+    |&gt; update(:val, set: &quot;&quot;, on: this(sender))
+    |&gt; add_chat_message!(html)
+end</code></pre>
     </p>
   </div>
   <div class="col-md-4">
@@ -565,14 +565,16 @@ end/%></code></pre>
   <div class="col-md-8">
     <p>
       You probably realized that actual chat is a little bit more complicated then it was explained in the previous example. It shows users connects and disconnects, as well as the list of connected users (type in <code>/who</code> in the chat to see the list). To archive it, we are going to use Drab callbacks, defined with <code>onconnect/1</code> and <code>ondisconnect/1</code> macros. Again, please treat it only as an example of Drab features - there are better ways to tracking the presence in Phoenix.
-      <pre><code class="elixie"><%=~S[def connected(socket) do
-  nickname = get_store(socket, :nickname, "Anonymous")
-  joined = "*** <b>#{nickname}</b> has joined the chat.<br>"
-  socket |> add_chat_message!(joined)
+      <pre><code class="elixir">def connected(socket) do
+  nickname = get_store(socket, :nickname, &quot;Anonymous&quot;)
+  joined = ~E&quot;&quot;&quot;
+    &lt;span class='chat-system-message'&gt;*** &lt;b&gt;&lt;%= nickname %&gt;&lt;/b&gt; has joined the chat.&lt;/span&gt;&lt;br&gt;
+    &quot;&quot;&quot; |&gt; safe_to_string()
+  socket |&gt; add_chat_message!(joined)
 
   DrabPoc.Presence.add_user(Node.self(), Drab.pid(socket), nickname)
   put_store(socket, :my_drab_pid, Drab.pid(socket))
-end]%></code></pre>
+end</code></pre>
     The code above is executed every time your browser connects to the server. First, we broadcasts the information about user connected to the chat. Second, we store the information about connected user in the special store, <code>DrabPoc.Presence</code>. It is just a simple <code>Agent</code>, which stores key/value pairs. It is out of the scope of this tutorial, but if you are interested how it works, read <a href="https://github.com/grych/drab-poc/blob/master/lib/drab_poc/presence.ex">the helpful source</a>.
     </p>
     <p>
@@ -583,13 +585,13 @@ end]%></code></pre>
     </p>
     <p>
       Let's move to the disconnect handler. As you probably guess, it is executed when the browser disconnects from the server. It may be because of navigate away from the page, close the tab or because of the network issues. Disconnect handler is different than the others - it does not receive the <code>socket</code> as an argument. It is beacuse the <code>socket</code> does not exist anymore! But we still have an access to Drab Store and Drab Session:
-      <pre><code class="elixir"><%=~S/def disconnected(store, session) do
+      <pre><code class="elixir">def disconnected(store, session) do
   DrabPoc.Presence.remove_user(Node.self(), store[:my_drab_pid])
   removed_user = store[:nickname] || anon_with_country_code(session[:country_code])
-  html = "*** #{removed_user} has left."
+  html = ~E&quot;*** &lt;%= removed_user %&gt; has left.&lt;br&gt;&quot; |&gt; safe_to_string()
   add_chat_message!(same_controller(DrabPoc.PageController), html)
   update_presence_list!(same_controller(DrabPoc.PageController))
-end/%></code></pre>
+end</code></pre>
       We are going to use the Drab Store to retrieve the user's nickname, and the Drab process PID (remember, it was set previously in <code>onconnect</code> handler). First, we need to remove the connection information from the presence list. We could finish here, but it would be good to inform all other users that this guy is gone. But how to broadcast the message, when the <code>socket</code> does not exist anymore? 
     </p>
     <p>
@@ -597,10 +599,15 @@ end/%></code></pre>
     </p>
     <p>
       As a bonus, we've got the list of connected users. Let's use it and do a live list of all the people currently connected to this page. First, create a function to update the panel on the right:
-      <pre><code class="elixir"><%=~S/defp update_presence_list!(topic) do
-  users = DrabPoc.Presence.get_users() |> Map.values() |> Enum.sort |> Enum.join("<br>")
-  topic |> update!(:html, set: users, on: "#presence-list")
-end/%></code></pre>
+      <pre><code class="elixir">defp update_presence_list!(topic) do
+  users = DrabPoc.Presence.get_users() 
+    |&gt; Map.values() 
+    |&gt; Enum.sort() 
+    |&gt; Enum.map(&amp;html_escape/1)
+    |&gt; Enum.map(&amp;safe_to_string/1)
+    |&gt; Enum.join(&quot;&lt;br&gt;&quot;)
+  topic |&gt; update!(:html, set: users, on: &quot;#presence-list&quot;)
+end</code></pre>
       Second, run this function on connect, disconnect or nickname change. Voila!
     </p>
   </div>
