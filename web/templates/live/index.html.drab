@@ -18,6 +18,9 @@
       You can find a <a href="https://github.com/grych/drab">source code of the Drab - here on Github</a>, and the source code of this demo page: <a href="https://github.com/grych/drab-poc">here</a>. For more detailed instructions, please refer to the <a href="https://hexdocs.pm/drab">documentation</a>.
     </p>
     <p>
+      Drab does not use any browser plugins, flash players, java applets, silverlights, etc. It works in any modern broser capable to run html5 + javascript.
+    </p>
+    <p>
       <u><strong>Teaser:</strong></u> imagine having a Phoenix template like:
       <pre><code class="html">&lt;a href=&quot;https://&lt;%= @url%&gt;&quot; class=&quot;btn btn-success&quot; @style.width=&lt;%= @width%&gt;&gt;
   Visit &lt;%= @url %&gt;
