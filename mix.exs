@@ -4,7 +4,7 @@ defmodule DrabPoc.Mixfile do
 
   def project do
     [app: :drab_poc,
-     version: "0.5.2",
+     version: "0.5.3",
      elixir: "~> 1.4",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix, :gettext] ++ Mix.compilers,
@@ -36,7 +36,7 @@ defmodule DrabPoc.Mixfile do
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
      {:earmark, "~> 1.0.3"},
-     {:drab, "~> 0.5.2"},
+     {:drab, "~> 0.5.3"},
      # {:drab, in_umbrella: true},
      # {:drab, path: "../drab"},
      {:logger_file_backend, "~> 0.0.9"},
