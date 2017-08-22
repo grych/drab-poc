@@ -221,7 +221,7 @@ defmodule DrabPoc.LiveCommander do
   defp file_change_loop(socket, file_path) do
     receive do
       {_pid, {:fswatch, :file_event}, {^file_path, _opts}} ->
-        socket |> poke(access_log: last_n_lines(file_path, 6))
+        socket |> poke(access_log: last_n_lines(file_path, 5))
       any_other ->
         Logger.debug(inspect(any_other))
     end
