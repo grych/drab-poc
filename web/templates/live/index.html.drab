@@ -345,7 +345,7 @@ end</code></pre>
       <div class="row">
         <%= for i <- 1..54 do %>
           <div class="col-md-2 col-xs-4 centered">
-            <span class="task label label-danger" task-id="<%= i %>">Task #<%= i |> Integer.to_string |> String.rjust(2, ?0) %></span>
+            <span class="task label label-danger" task-id="<%= i %>">Task #<%= i |> Integer.to_string |> String.pad_leading(2, "0") %></span>
           </div>
         <% end %>
       </div>

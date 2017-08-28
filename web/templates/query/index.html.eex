@@ -11,13 +11,13 @@
       In the <i>"good old times"</i> the event handling was easy. The only thing you had to do was to create the event handler (remember <code>TForm1.Button1Click(Sender: TObject)</code>?) and you could do everything inside this handler: accessing data from models, manipulating user interface, sending raw Ethernet packets to the coffee machine...
     </p>
     <p>
-      Nowadays, when the most of the applications are web based, it is not so easy anymore. You need either to create a form and submit the data via POST or GET or use AJAX to send or retrieve data. Whole interface manipulation is on the client side. In practice, you need to write two applications: on the client and the server side.  
+      Nowadays, when the most of the applications are web based, it is not so easy anymore. You need either to create a form and submit the data via POST or GET or use AJAX to send or retrieve data. Whole interface manipulation is on the client side. In practice, you need to write two applications: on the client and the server side.
     </p>
     <p>
       Additionally, because <code>http</code> is stateless and a one-way protocol, it is not easy to communicate back from the server to the browser. Like, for example, during execution of the long running process, when there is a need to update status (eg. progress bar), or to ask the operator about something (like "would you like to continue?"). Of course there are workarounds for this, like polling the server every few seconds to have a status, or even auto-refreshing the page, but those are just a dirty workarounds. The solution would be to allow an access to the interface directly from the server side. And here comes <code>Drab</code>.
     </p>
     <p>
-      <code>Drab</code> is a concept of <b>providing an access to User Interface (DOM objects) on the server side</b>, just like in the 
+      <code>Drab</code> is a concept of <b>providing an access to User Interface (DOM objects) on the server side</b>, just like in the
       good-old Delphi times. The examples below should give you an overview of how does it work. For more detailed instructions, please refer to the <a href="https://hexdocs.pm/drab">documentation</a>.
     </p>
     <p>
@@ -61,7 +61,7 @@ update(something, set: new_value, on: selector)/%></code></pre>
   end
 end]%></code></pre>
     <p>
-      How does it work? <code>Drab.Query.select(socket, :val, from: "#text_to_uppercase")</code> launches jQuery <code>$("#text_to_uppercase").val()</code> on the client side and returns it to the server. Then, the returned string is converted to uppercase using <code>String.upcase</code> and passed to <code>Drab.Query.update/3</code> function, which - analogically to jQuery <code>.val(value)</code> - sets the value of the input. 
+      How does it work? <code>Drab.Query.select(socket, :val, from: "#text_to_uppercase")</code> launches jQuery <code>$("#text_to_uppercase").val()</code> on the client side and returns it to the server. Then, the returned string is converted to uppercase using <code>String.upcase</code> and passed to <code>Drab.Query.update/3</code> function, which - analogically to jQuery <code>.val(value)</code> - sets the value of the input.
     </p>
     <p>
       There is a number of jQuery methods mapped to <code>Drab.Query.Select</code> - like <code>:html</code>, <code>:attr</code>, etc. They all behave exactly like their jQuery equivalent - for example, <code>Drab.Query.select(:html, ...)</code> returns String with html of the first found DOM object. But what if you want to get html of all DOM object found? It is still possible with Drab - you just need to use the <strong>plural version</strong> of the method (<code>:htmls</code> instead of <code>:html</code>). This is going to return a map of all DOM object found, where key is the object name or id (or special string "__undefined_[number]", if neither name or id found) and the value is the return value of the method you run. <br>
@@ -103,7 +103,7 @@ name = socket |> select(:vals, from: "input")
     Did you notice <code>drab-click</code> attribute? This is a shorthand for <code>drab-event</code> and <code>drab-handler</code> combination. There is a number of such shorthands for most popular events, see documentation for more.
     </p>
     <p>
-      On the server side the code is not very sophisticated as well. The whole functionality is to sleep for a few seconds. But the sleep interval is given with <code>data</code> property in <code>dom_sender</code> variable. Please notice that this variable contains more interesting values to be used, like <code>val</code>, <code>html</code> or <code>text</code>. 
+      On the server side the code is not very sophisticated as well. The whole functionality is to sleep for a few seconds. But the sleep interval is given with <code>data</code> property in <code>dom_sender</code> variable. Please notice that this variable contains more interesting values to be used, like <code>val</code>, <code>html</code> or <code>text</code>.
       <pre><code class="elixir"><%=~s/def clicked_sleep_button(socket, dom_sender) do
   socket |> update(class: "btn-primary", set: "btn-danger", on: this(dom_sender))
   :timer.sleep(dom_sender["data"]["sleep"] * 1000)
@@ -138,7 +138,7 @@ end/%></code></pre>
     </p>
     <p>
       HTML side contains button and few DIVs which displays the status of the process and tasks:
-<pre><code class="html"><%=~s(Async task status: 
+<pre><code class="html"><%=~s(Async task status:
 <span id="async_task_status" class="label label-primary">
   ready
 </span>
@@ -150,17 +150,17 @@ end/%></code></pre>
     <p>
       The whole processing is on the server side. Clicking the button runs <code>run_async_tasks/2</code> function on the server side:
 <pre><code class="elixir"><%=~s/def run_async_tasks(socket, dom_sender) do
-  socket 
+  socket
     |> update(class: "label-success", set: "label-danger", on: ".task")
     |> update(:text, set: "running", on: "#async_task_status")
 
-  tasks = Enum.map(1..54, fn(i) -> Task.async(fn -> 
+  tasks = Enum.map(1..54, fn(i) -> Task.async(fn ->
     :timer.sleep(:rand.uniform(4000)) # simulate real work
     socket |> update(class: "label-danger", set: "label-success", on: ".task[data-task_id=#\{i\}]")
     end)
   end)
   Enum.each(tasks, fn(task) -> Task.await(task) end)
-  
+
   socket |> update(:html,
     set: "finished",
     on: "#async_task_status")
@@ -178,7 +178,7 @@ end/%></code></pre>
       <div class="row">
         <%= for i <- 1..54 do %>
           <div class="col-md-2 col-xs-4 centered">
-            <span class="task label label-danger" data-task_id="<%= i %>">Task #<%= i |> Integer.to_string |> String.rjust(2, ?0) %></span>
+            <span class="task label label-danger" data-task_id="<%= i %>">Task #<%= i |> Integer.to_string |> String.pad_leading(2, "0") %></span>
           </div>
         <% end %>
       </div>
@@ -211,7 +211,7 @@ end/%></code></pre>
     socket
       |> execute(:hide, on: this(dom_sender))
       |> insert(cancel_button(socket, self()), after: "[drab-click=perform_long_process]")
-    start_background_process(socket) 
+    start_background_process(socket)
   end
 
   defp start_background_process(socket) do
@@ -227,7 +227,7 @@ end/%></code></pre>
     case socket |> alert("Finished!", "Do you want to retry?", buttons: [ok: "Yes", cancel: "No!"]) do
       {:ok, _} -> start_background_process(socket)
       {:cancel, _} -> clean_up(socket)
-    end 
+    end
   end
 
   defp step(socket, steps, i) do
@@ -237,7 +237,7 @@ end/%></code></pre>
   end
 
   defp update_bar(socket, steps, i) do
-    socket 
+    socket
       |> update(css: "width", set: "#{i * 100 / steps}%", on: ".progress-bar")
       |> update(:html, set: "#{Float.round(i * 100 / steps, 2)}%", on: ".progress-bar")
   end
@@ -247,14 +247,14 @@ end/%></code></pre>
 <p>
 <pre><code class="elixir"><%=~S[defp cancel_button(socket, pid) do
   """
-  <button class="btn btn-danger" 
-          drab-click="cancel_long_process" 
+  <button class="btn btn-danger"
+          drab-click="cancel_long_process"
           data-pid="#{Drab.tokenize_pid(socket, pid)}">
     Cancel
   </button>
-  """    
+  """
 end]%></code></pre>
-  This function builds the simple button html to be inserted into the DOM tree. What is interesting here, is that button has its event handler (function <code>cancel_long_process/2</code>) and <code>data-pid</code> property, containing the PID of the Elixir process which runs the steps loop (in this case it is <code>self()</code>). This is because we need to know which process to cancel! 
+  This function builds the simple button html to be inserted into the DOM tree. What is interesting here, is that button has its event handler (function <code>cancel_long_process/2</code>) and <code>data-pid</code> property, containing the PID of the Elixir process which runs the steps loop (in this case it is <code>self()</code>). This is because we need to know which process to cancel!
   <br>
   Tokenizing the PID prevents data tampering (and also translates Elixir PID to String, so it could be inserted into the DOM tree). Remember that Tokens are signed, but not encrypted, so do not store any sensitive data in this way.
 </p>
@@ -265,9 +265,9 @@ To be able to cancel the process we need to modify <code>step/3</code> to receiv
   update_bar(socket, steps, i)
   # wait for a cancel message
   receive do
-    :cancel_processing -> 
+    :cancel_processing ->
       clean_up(socket)
-  after 0 -> 
+  after 0 ->
     step(socket, steps, i + 1)
   end
 end
@@ -277,7 +277,7 @@ def cancel_long_process(socket, dom_sender) do
   send(pid, :cancel_processing)
 end
 /%></code></pre>
-In the cancel button handler, you just need to get the tokenized pid from <code>dom_sender["data"]["pid"]</code> and decrypt it with <code>Drab.detokenize_pid/2</code> function. Then send it a gentle message asking for not to continue. 
+In the cancel button handler, you just need to get the tokenized pid from <code>dom_sender["data"]["pid"]</code> and decrypt it with <code>Drab.detokenize_pid/2</code> function. Then send it a gentle message asking for not to continue.
 
 </p>
     <p>
@@ -316,7 +316,7 @@ onconnect :connected/%></code></pre>
       <code>onconnect</code> launches every time client connects to the server, so after first load, network crashes, server crashes etc. There is also <code>onload</code> callback, which runs only once and ignores disconnects.
     </p>
     <p>
-      In the handler function we subscribe to <code>Sentix</code> file watcher (it is a wrapper around <code>fswatch</code> utility): 
+      In the handler function we subscribe to <code>Sentix</code> file watcher (it is a wrapper around <code>fswatch</code> utility):
 <pre><code class="elixir"><%=~s/def connected(socket) do
   clean_up(socket)
 
@@ -325,7 +325,7 @@ onconnect :connected/%></code></pre>
 
   file_change_loop(socket, Application.get_env(:drab_poc, :watch_file))
 end/%></code></pre>
-      Watcher sends a message each time the file change. In this case we are going to update the <code>#log_file</code> div to present the last few lines of the file. 
+      Watcher sends a message each time the file change. In this case we are going to update the <code>#log_file</code> div to present the last few lines of the file.
 <pre><code class="elixir"><%=~s/defp file_change_loop(socket, file_path) do
   receive do
     {_pid, {:fswatch, :file_event}, {^file_path, _opts}} ->
@@ -362,8 +362,8 @@ end/%></code></pre>
       <pre><code class="html"><%=~s(<input drab-keyup="changed_input" data-update="#display_placeholder">
 <div id="display_placeholder"></div>)%></code></pre>
       <pre><code class="elixir"><%=~s/def changed_input(socket, dom_sender) do
-  socket |> update!(:text, 
-                 set: String.upcase(dom_sender["val"],  
+  socket |> update!(:text,
+                 set: String.upcase(dom_sender["val"],
                   on: dom_sender["data"]["update"])
 end/%></code></pre>
     </p>
@@ -383,11 +383,11 @@ end/%></code></pre>
   <div class="col-md-8">
     <p>
       In many situation you don't need to react on every single key press, and you want to launch the event when user stop typing. The good example is autocomplete - you don't want to search the database after each keypress. This is the are where <code>debounce()</code> option becomes handy:
-      <pre><code class="html"><%=~s[<input drab-keyup="changed_input" 
-       drab-options="debounce(500)" 
+      <pre><code class="html"><%=~s[<input drab-keyup="changed_input"
+       drab-options="debounce(500)"
        data-update="#display_placeholder2">
 <div id="display_placeholder">Some text here</div>]%></code></pre>
-      The code above is exactly the same as previous, except of <code>debounce(500)</code> option. The same event handler (<code>changed_input/2</code>) is launched, but not after every key up, but when you actually stop typing for 500 miliseconds. 
+      The code above is exactly the same as previous, except of <code>debounce(500)</code> option. The same event handler (<code>changed_input/2</code>) is launched, but not after every key up, but when you actually stop typing for 500 miliseconds.
     </p>
   </div>
   <div class="col-md-4 left-bordered">
@@ -455,11 +455,11 @@ end/%></code></pre>
 <pre><code class="elixir"><%=~S/defmodule DrabPoc.PageCommander do
   use Drab.Commander
 
-  onload :page_loaded, 
+  onload :page_loaded,
   access_session :drab_test
 
   def page_loaded(socket) do
-    socket 
+    socket
     |> update(:val, set: get_session(socket, :drab_test), on: "#show_session_test")
   end
 end/%></code></pre>
@@ -498,7 +498,7 @@ end/%></code></pre>
       <pre><code class="elixir">def update_chat(socket, sender) do
   nick = get_store(socket, :nickname, &quot;Anonymous&quot;)
   html = ~E&quot;&lt;strong&gt;&lt;%= nick %&gt;:&lt;/strong&gt; &lt;%= message %&gt;&lt;br&gt;&quot; |&gt; safe_to_string()
-  socket 
+  socket
     |&gt; insert!(html, append: &quot;#chat&quot;)
     |&gt; update(:val, set: &quot;&quot;, on: this(sender))
     |&gt; execute!(&quot;animate({scrollTop: $('#chat').prop('scrollHeight')}, 500)&quot;, on: &quot;#chat&quot;)
@@ -527,8 +527,8 @@ end
 
 def update_chat(socket, sender) do
   nick = get_store(socket, :nickname, &quot;Anonymous&quot;)
-  html = ~E&quot;&lt;strong&gt;&lt;%= nick %&gt;:&lt;/strong&gt; &lt;%= message %&gt;&lt;br&gt;&quot; |&gt; safe_to_string()  
-  socket 
+  html = ~E&quot;&lt;strong&gt;&lt;%= nick %&gt;:&lt;/strong&gt; &lt;%= message %&gt;&lt;br&gt;&quot; |&gt; safe_to_string()
+  socket
     |&gt; update(:val, set: &quot;&quot;, on: this(sender))
     |&gt; add_chat_message!(html)
 end</code></pre>
@@ -592,7 +592,7 @@ end</code></pre>
   add_chat_message!(same_controller(DrabPoc.PageController), html)
   update_presence_list!(same_controller(DrabPoc.PageController))
 end</code></pre>
-      We are going to use the Drab Store to retrieve the user's nickname, and the Drab process PID (remember, it was set previously in <code>onconnect</code> handler). First, we need to remove the connection information from the presence list. We could finish here, but it would be good to inform all other users that this guy is gone. But how to broadcast the message, when the <code>socket</code> does not exist anymore? 
+      We are going to use the Drab Store to retrieve the user's nickname, and the Drab process PID (remember, it was set previously in <code>onconnect</code> handler). First, we need to remove the connection information from the presence list. We could finish here, but it would be good to inform all other users that this guy is gone. But how to broadcast the message, when the <code>socket</code> does not exist anymore?
     </p>
     <p>
       Drab's broadcasting functions can live without socket. Socket is needed only to find out to which browser send a message (so event handlers in Commander know which browser pressed a button). Broadcasts are just pushed into a void and being received by all the browsers, which currently listen to the given topic. Because we set up the commander with <code>broadcasting :same_controller</code>, we can send the broadcast to <code>same_controller(Controller.Name)</code> instead of the socket.
@@ -600,9 +600,9 @@ end</code></pre>
     <p>
       As a bonus, we've got the list of connected users. Let's use it and do a live list of all the people currently connected to this page. First, create a function to update the panel on the right:
       <pre><code class="elixir">defp update_presence_list!(topic) do
-  users = DrabPoc.Presence.get_users() 
-    |&gt; Map.values() 
-    |&gt; Enum.sort() 
+  users = DrabPoc.Presence.get_users()
+    |&gt; Map.values()
+    |&gt; Enum.sort()
     |&gt; Enum.map(&amp;html_escape/1)
     |&gt; Enum.map(&amp;safe_to_string/1)
     |&gt; Enum.join(&quot;&lt;br&gt;&quot;)
@@ -635,13 +635,13 @@ end</code></pre>
       Sometimes it would be good to have a possibility to ask user about something, when you are in a middle of some process, and you don't want to finish your function. The good example is a <strong>database transaction, when you run some query and want to ask user wheter commit or rollback changes</strong>. We saw the use of <code>Drab.Modal</code> before, but sometimes modal window is not very elegant.
     </p>
     <p>
-      So the solution for this issue is called <strong>Drab Waiter</strong>. It is a tiny little DSL which stops processing the event handler function and waits for the event from the client side. You may register multiple events as well as a timeout (by default it is waiting forever). The example below is not very sophisticated, but shows the idea. 
+      So the solution for this issue is called <strong>Drab Waiter</strong>. It is a tiny little DSL which stops processing the event handler function and waits for the event from the client side. You may register multiple events as well as a timeout (by default it is waiting forever). The example below is not very sophisticated, but shows the idea.
     </p>
   </div>
   <div class="col-md-8">
     <p><pre><code class="elixir"><%=~S/  def waiter_example(socket, _dom_sender) do
     buttons = Phoenix.View.render_to_string(DrabPoc.PageView, "waiter_example.html", [])
-    socket 
+    socket
       |> delete(from: "#waiter_answer_div")
       |> insert(buttons, append: "#waiter_example_div")
 
@@ -654,7 +654,7 @@ end</code></pre>
       end
     end
 
-    socket 
+    socket
       |> delete(from: "#waiter_example_div")
       |> update(:text, set: "Do you realy think it is #{answer}?", on: "#waiter_answer_div")
   end/%></code></pre>
@@ -684,7 +684,7 @@ end</code></pre>
   <div class="col-md-12">
     <p>
       Drab intercepts all exceptions from event handler function and let it die, but before it presents the error message in the logs, and, for development environment, on the page. For production, it shows just an alert with the generic error. <br>
-      Please notice that an error in the specific handler function will not harm anything else: all the processing are going on normally. 
+      Please notice that an error in the specific handler function will not harm anything else: all the processing are going on normally.
     </p>
   </div>
   <div class="col-md-8">
@@ -735,7 +735,7 @@ end|%></code></pre>
   <div class="col-md-12">
     <p>
       There is an easy way to check and debug Drab functions directly in the <code>IEx</code>. The only you need to do is to run your Drab-enabled phoenix server (you can get one with pre-installed Phoenix and Drab from <a href="https://github.com/grych/drab-example">https://github.com/grych/drab-example</a>) with IEx: <code>iex -S mix phoenix.server</code>. Then, connect with the browser to <code>http://localhost:4000</code> and observe the IEx console. When started, Drab will show you some important debugging information:
-      <pre><code class="text"><%=~S{[debug] 
+      <pre><code class="text"><%=~S{[debug]
     Started Drab for /drab, handling events in DrabPoc.PageCommander
     You may debug Drab functions in IEx by copy/paste the following:
 import Drab.Core; import Drab.Query; import Drab.Modal; import Drab.Waiter
@@ -754,7 +754,7 @@ Drab.Waiter
 iex(2)> socket = GenServer.call(pid("0.663.0"), :get_socket)
 %Phoenix.Socket{assigns: %{__action: :index,
    __controller: DrabPoc.PageController, __drab_pid: #PID<0.663.0>,
-   ... 
+   ...
    transport_pid: #PID<0.1548.0>}
 
 iex(3)> socket |> select(:htmls, from: "h4")
