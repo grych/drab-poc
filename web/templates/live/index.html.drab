@@ -746,7 +746,7 @@ end/%></code></pre>
   # the following line will cause KeyError
   map.z
 end|%></code></pre>
-    By default it is just an <code>alert()</code>, but you can easly override it by creating the template in <code>priv/templates/drab/drab.handler_error.prod.js</code> with your own javascript presenting the error.
+    By default it is just an <code>alert()</code>, but you can easly override it by creating the template in <code>priv/templates/drab/drab.error_handler.js</code> with your own javascript presenting the error.
     </p>
     <p>
     There is a very descriptive message in the logs. The same message is shown within the alert on development environment.
