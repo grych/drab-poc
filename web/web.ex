@@ -42,7 +42,7 @@ defmodule DrabPoc.Web do
       use Phoenix.HTML
 
       import DrabPoc.Router.Helpers
-      import DrabPoc.ErrorHelpers
+      import DrabPoc.ErrorHelpersRenamed
       import DrabPoc.Gettext
     end
   end

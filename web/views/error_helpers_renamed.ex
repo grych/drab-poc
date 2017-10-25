@@ -1,4 +1,4 @@
-defmodule DrabPoc.ErrorHelpers do
+defmodule DrabPoc.ErrorHelpersRenamed do
   @moduledoc """
   Conveniences for translating and building error messages.
   """
