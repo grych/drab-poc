@@ -47,7 +47,7 @@
 
           <li><a href="https://hexdocs.pm/drab/api-reference.html">Docs</a></li>
 
-<%# 
+<%#
           <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="/drab/docs">Docs with Examples <b class="caret"></b></a>
             <ul role="menu" class="dropdown-menu">
@@ -67,8 +67,8 @@
           <li><a href="/drab/nojquery">DOMless</a></li>
           <li><a href="/drab/query">jQuery</a></li>
           <li><a href="https://github.com/grych/drab">Drab Source</a></li>
-          <li><a href="https://github.com/grych/drab-poc">This Page Source</a></li>
-          <li><a href="https://github.com/grych/drab-example">Sandbox</a></li>
+          <li><a href="https://github.com/grych/drab-poc">Demo Page Source</a></li>
+          <li><a href="https://github.com/grych/drab-example">Sandbox Project Source</a></li>
           <li><a href="https://github.com/grych/drab/blob/master/README.md#installation">Installation</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
@@ -86,7 +86,7 @@
       </main>
 
     </div> <!-- /container -->
-    
+
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
     <%= Drab.Client.js(@conn, user_id: 4, any_other: "test") %>
     <script type="text/javascript">
