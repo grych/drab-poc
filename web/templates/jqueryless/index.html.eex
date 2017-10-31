@@ -15,7 +15,7 @@
   end
 
   def clicked(socket, payload) do
-    socket |> Drab.Browser.console("You've sent me this: #{payload |> inspect}")
+    socket |> Drab.Browser.broadcast_console!("You've sent me this: #{payload |> inspect}")
   end
 end</code></pre>
 Module <code>Drab.Core</code> is always loaded. By default, modules <code>[Drab.Query, Drab.Modal]</code> are enabled. To disable them, use an empty list, like in the example above.
