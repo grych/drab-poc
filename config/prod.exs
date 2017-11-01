@@ -26,6 +26,8 @@ config :logger, :log,
 
 config :drab_poc, :watch_file, "/var/log/nginx/access.log"
 config :drab_poc, :watch_monitor, :inotify_monitor
+# config :drab_poc, :watch_file, "/private/var/log/system.log"
+# config :drab_poc, :watch_monitor, :kqueue_monitor
 
 # ## SSL Support
 #
