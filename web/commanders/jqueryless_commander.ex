@@ -10,6 +10,7 @@ defmodule DrabPoc.JquerylessCommander do
   end
 
   def clicked(socket, payload) do
-    socket |> Drab.Browser.broadcast_console!("You've sent me this: #{payload |> inspect}")
+    unused = :save_assign
+    socket |> Drab.Browser.broadcast_console("You've sent me this: #{payload |> inspect}")
   end
 end
