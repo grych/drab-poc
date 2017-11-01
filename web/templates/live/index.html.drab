@@ -36,6 +36,16 @@
 
 
   <div class="col-md-4 left-bordered">
+
+    <div class="panel panel-default">
+      <div class="panel-heading">v0.6.0 new, better living assigns <span class="label label-default">2017-10-31</span></div>
+      <div class="panel-body">
+        <p>
+          <a href="https://github.com/grych/drab/releases/tag/v0.6.0">This version</a> introduces a completely rewritten <code>Drab.Live</code> module: it is not putting its <code>&lt;span&gt;</code> everywhere into your template. Also introduces <em>Shared Commanders</em>.
+        </p>
+      </div>
+    </div>
+
     <div class="panel panel-default" style="background-color: #FFE3DA;">
       <div class="panel-heading">v0.5.0 - living assigns <span class="label label-default">2017-07-17</span></div>
       <div class="panel-body">
@@ -64,14 +74,6 @@
       </div>
     </div>
 
-    <div class="panel panel-default">
-      <div class="panel-heading">Drab v0.3.2 - tests, tests and tests <span class="label label-default">2017-04-14</span></div>
-      <div class="panel-body">
-        <p>
-          The <a href="https://github.com/grych/drab/releases/tag/v0.3.2">new release</a> introduces automated integration tests, finally. In addition, Drab's package on Github contains its own Phoenix Server, making it easier to play with it.
-        </p>
-      </div>
-    </div>
 
  <h6>See all <a href="https://github.com/grych/drab/releases">Release Notes</a> to learn about the previous releases</h6>
     <iframe src="https://ghbtns.com/github-btn.html?user=grych&repo=drab&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe><br>
