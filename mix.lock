@@ -6,7 +6,7 @@
   "cowlib": {:hex, :cowlib, "1.0.2", "9d769a1d062c9c3ac753096f868ca121e2730b9a377de23dec0f7e08b1df84ee", [:make], [], "hexpm"},
   "decorator": {:hex, :decorator, "1.2.2", "28f88fe99b1ec462cb1a394e568f50fbd0e6e949602372a2d0365181c997ed7d", [:mix], [], "hexpm"},
   "deppie": {:hex, :deppie, "1.1.0", "cfb6fcee7dfb64eb78cb8505537971a0805131899326ad469ef10df04520f451", [:mix], [], "hexpm"},
-  "drab": {:hex, :drab, "0.6.0", "3d9de9e089d47015f13e23f6031c3d55195337a762d5d962b0e44142ef9b8803", [:mix], [{:cowboy, "~> 1.0", [hex: :cowboy, repo: "hexpm", optional: false]}, {:deppie, "~> 1.0", [hex: :deppie, repo: "hexpm", optional: false]}, {:floki, "~> 0.17", [hex: :floki, repo: "hexpm", optional: false]}, {:gettext, "~> 0.11", [hex: :gettext, repo: "hexpm", optional: false]}, {:phoenix, "~> 1.2", [hex: :phoenix, repo: "hexpm", optional: false]}, {:phoenix_html, "~> 2.6", [hex: :phoenix_html, repo: "hexpm", optional: false]}, {:phoenix_pubsub, "~> 1.0", [hex: :phoenix_pubsub, repo: "hexpm", optional: false]}], "hexpm"},
+  "drab": {:git, "https://github.com/grych/drab.git", "9a5af63882d755bb4c24e4d81dbe9e2a269eb7fc", []},
   "earmark": {:hex, :earmark, "1.0.3", "89bdbaf2aca8bbb5c97d8b3b55c5dd0cff517ecc78d417e87f1d0982e514557b", [:mix], [], "hexpm"},
   "erlexec": {:hex, :erlexec, "1.2.2", "122edf6be532475dd44d2c99653439528e3b3799e2ee0125f2560bcca60a6716", [:rebar3], [], "hexpm"},
   "eternal": {:hex, :eternal, "1.1.4", "3a40fd9b9708f79216a6ec8ae886f2b17685dc26b119b9c0403c2b0d3dc1ac69", [:mix], [{:deppie, "~> 1.1", [hex: :deppie, repo: "hexpm", optional: false]}], "hexpm"},
