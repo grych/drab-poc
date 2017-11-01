@@ -2,6 +2,7 @@
 # cd ../drab
 # git pull
 # cd ../drab-poc
+rm mix.lock
 git pull
 mix deps.get
 npm install && node_modules/brunch/bin/brunch build --production
