@@ -32,7 +32,7 @@ config :drab,
 config :phoenix, :template_engines,
   drab: Drab.Live.Engine
 
-config :drab_poc, DrabPoc.Endpoint,
-  instrumenters: [Appsignal.Phoenix.Instrumenter]
+# config :drab_poc, DrabPoc.Endpoint,
+#   instrumenters: [Appsignal.Phoenix.Instrumenter]
 
-import_config "appsignal.exs"
+# import_config "appsignal.exs"

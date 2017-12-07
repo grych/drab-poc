@@ -18,7 +18,7 @@ defmodule DrabPoc.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {DrabPoc, []},
-     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext, :sentix, :drab, :appsignal]]
+     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext, :sentix, :drab]]
   end
 
   # Specifies which paths to compile per environment.

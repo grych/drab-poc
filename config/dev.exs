@@ -41,4 +41,4 @@ config :logger, :console, format: "[$level] $message\n"
 config :phoenix, :stacktrace_depth, 20
 
 
-config :appsignal, :config, active: true
+# config :appsignal, :config, active: true
