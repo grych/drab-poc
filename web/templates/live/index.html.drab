@@ -152,7 +152,7 @@ end</code></pre>
   </a>
   <div class="col-md-8">
     <p>
-      Function <code>poke/2</code> is one of the most imprortant in Drab, so we should go a little bit deeper. Let's assume you have your <code>index.html.eex</code> already prepared, displaying a list of some users. There are two assigns there, <code>@title</code> and <code>@users</code>:
+      Function <code>poke/2</code> is one of the most important in Drab, so we should go a little bit deeper. Let's assume you have your <code>index.html.eex</code> already prepared, displaying a list of some users. There are two assigns there, <code>@title</code> and <code>@users</code>:
 <pre><code class="html">&lt;strong&gt;&lt;%= @title %&gt;:&lt;/strong&gt;&lt;br&gt;
 &lt;%= for user &lt;- @users do %&gt;
   Username: &lt;%= user %&gt;&lt;br&gt;
