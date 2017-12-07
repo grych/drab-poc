@@ -15,16 +15,16 @@ defmodule DrabPoc.Presence do
     end
   end
 
-  def add_user(node, pid, user) do 
+  def add_user(ref, user) do
     # {:safe, u} = Phoenix.HTML.html_escape(user)
-    Agent.update(@name, &Map.put(&1, {node, pid}, user))
+    Agent.update(@name, &Map.put(&1, ref, user))
   end
 
-  def get_user(node, pid), do: Agent.get(@name, &Map.get(&1, {node, pid}))
+  def get_user(ref), do: Agent.get(@name, &Map.get(&1, ref))
 
-  def update_user(node, pid, user), do: add_user(node, pid, user)
+  def update_user(ref, user), do: add_user(ref, user)
 
-  def remove_user(node, pid), do: Agent.update(@name, &Map.delete(&1, {node, pid}))
+  def remove_user(ref), do: Agent.update(@name, &Map.delete(&1, ref))
 
   def get_users(), do: Agent.get(@name, fn map -> map end)
 end

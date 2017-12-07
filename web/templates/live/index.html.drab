@@ -633,21 +633,19 @@ end</code></pre>
     &quot;&quot;&quot; |&gt; safe_to_string()
   socket |&gt; add_chat_message!(joined)
 
-  DrabPoc.Presence.add_user(Node.self(), Drab.pid(socket), nickname)
-  put_store(socket, :my_drab_pid, Drab.pid(socket))
+  ref = make_ref()
+  DrabPoc.Presence.add_user(ref, nickname)
+  put_store(socket, :my_drab_ref, ref)
 end</code></pre>
     The code above is executed every time your browser connects to the server. First, we broadcasts the information to all to show them that some has joined the chat. Second, we store the information about connected user in the special store, <code>DrabPoc.Presence</code>. It is just a simple <code>Agent</code>, which stores key/value pairs. It is out of the scope of this tutorial, but if you are interested how it works, read <a href="https://github.com/grych/drab-poc/blob/master/lib/drab_poc/presence.ex">the helpful source</a>.
     </p>
     <p>
-    We are going to use a tuple <code>{node, drab_pid}</code> as a key, and the nickname as a value. When you connect to the page which uses Drab, it creates its own <code>GenServer</code> - <code>drab_pid</code> is the PID of this process. The Node name is used in the key, as this webpage runs on multiple Phoenix servers.
-    </p>
-    <p>
-      Last, we save <code>drab_pid</code> to the Drab Store. We are going to need it while handling disconnects.
+      We are going to use a reference as a key, which will be stored on the client side with the Drab Store. We are going to need it while handling disconnects.
     </p>
     <p>
       Let's move to the disconnect handler. As you can probably guess, it is executed when the browser disconnects from the server. It may be because of navigating away from the page, close the tab or because of the network issues. Disconnect handler is different than the others - it does not receive the <code>socket</code> as an argument. It is because the <code>socket</code> does not exist anymore! But we still have an access to Drab Store and Drab Session:
       <pre><code class="elixir">def disconnected(store, session) do
-  DrabPoc.Presence.remove_user(Node.self(), store[:my_drab_pid])
+  DrabPoc.Presence.remove_user(store[:my_drab_ref])
   removed_user = store[:nickname] || anon_with_country_code(session[:country_code])
   html = ~E&quot;&lt;%= removed_user %&gt; has left.&quot; |&gt; safe_to_string()
   add_chat_message!(same_controller(DrabPoc.PageController), html)

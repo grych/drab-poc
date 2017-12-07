@@ -36,21 +36,21 @@ defmodule DrabPoc.LiveCommander do
 
   def clicked_sleep_button(socket, sender) do
     button_no = sender["data"]["sleep"] |> String.to_integer()
-    
+
     cl = peek socket, :sleep_button_classes
     poke socket, sleep_button_classes: %{cl | button_no => "btn-danger"}
 
     Process.sleep(button_no * 1000)
-    
+
     cl = peek socket, :sleep_button_classes
-    poke socket, sleep_button_classes: %{cl | button_no => "btn-primary"}    
+    poke socket, sleep_button_classes: %{cl | button_no => "btn-primary"}
   end
 
   def run_async_tasks(socket, _sender) do
     poke socket, async_task_label: "danger", async_task_status: "running"
     set_attr(socket, ".task[task-id]", class: "task label label-danger")
 
-    tasks = Enum.map(1..54, fn(i) -> Task.async(fn -> 
+    tasks = Enum.map(1..54, fn(i) -> Task.async(fn ->
         Process.sleep(:rand.uniform(4000)) # simulate real work
         set_prop(socket, ".task[task-id='#{i}']", className: "task label label-success")
       end)
@@ -59,8 +59,8 @@ defmodule DrabPoc.LiveCommander do
     begin_at = :os.system_time(:millisecond)
     Enum.each(tasks, fn(task) -> Task.await(task) end)
     end_at = :os.system_time(:millisecond)
-    
-    poke socket, async_task_label: "success", async_task_status: 
+
+    poke socket, async_task_label: "success", async_task_status:
       "finished in #{(end_at - begin_at)/1000} seconds"
   end
 
@@ -99,7 +99,7 @@ defmodule DrabPoc.LiveCommander do
 
   # /who or /w gives a presence list
   defp do_update_chat(socket, sender, "/w" <> _) do
-    users = DrabPoc.Presence.get_users() |> Map.values() |> Enum.sort |> Enum.join(", ") 
+    users = DrabPoc.Presence.get_users() |> Map.values() |> Enum.sort |> Enum.join(", ")
     set_prop socket, this(sender), value: ""
     socket  |> add_chat_message(~E"""
       <span class='chat-system-message'>*** Connected users: <%= users %>.</span><br>
@@ -114,17 +114,17 @@ defmodule DrabPoc.LiveCommander do
   end
 
   def update_nick(socket, sender) do
-    new_nick = sender["value"] 
+    new_nick = sender["value"]
     message = ~E"""
     <span class='chat-system-message'>
-      *** <b><%= get_store(socket, :nickname, anon_nickname(socket)) %></b> is now known as 
+      *** <b><%= get_store(socket, :nickname, anon_nickname(socket)) %></b> is now known as
       <b><%= (new_nick) %></b>
     </span><br>
     """ |> safe_to_string()
-    socket 
+    socket
       |> put_store(:nickname, new_nick)
       |> add_chat_message!(message)
-    DrabPoc.Presence.update_user(Node.self(), Drab.pid(socket), new_nick)
+    DrabPoc.Presence.update_user(get_store(socket, :my_drab_ref), new_nick)
     update_presence_list!(socket)
   end
 
@@ -149,13 +149,13 @@ defmodule DrabPoc.LiveCommander do
   end
 
   defp scroll_down!(subject) do
-    # socket |> execute!(animate: ["{scrollTop: $('#chat').prop('scrollHeight')}", 500], on: "#chat") 
+    # socket |> execute!(animate: ["{scrollTop: $('#chat').prop('scrollHeight')}", 500], on: "#chat")
     # subject |> execute!("animate({scrollTop: $('#chat').prop('scrollHeight')},500)", on: "#chat")
     broadcast_js subject, "document.querySelector('#chat').scrollTop = document.querySelector('#chat').scrollHeight"
   end
 
   defp scroll_down(socket) do
-    # socket |> execute(animate: ["{scrollTop: $('#chat').prop('scrollHeight')}", 500], on: "#chat") 
+    # socket |> execute(animate: ["{scrollTop: $('#chat').prop('scrollHeight')}", 500], on: "#chat")
     # socket |> execute("animate({scrollTop: $('#chat').prop('scrollHeight')},500)", on: "#chat")
     exec_js socket, "document.querySelector('#chat').scrollTop = document.querySelector('#chat').scrollHeight"
   end
@@ -171,9 +171,9 @@ defmodule DrabPoc.LiveCommander do
   end
 
   defp update_presence_list!(socket_or_subject) do
-    users = DrabPoc.Presence.get_users() 
-      |> Map.values() 
-      |> Enum.sort() 
+    users = DrabPoc.Presence.get_users()
+      |> Map.values()
+      |> Enum.sort()
       |> Enum.map(&html_escape/1)
       |> Enum.map(&safe_to_string/1)
       |> Enum.join("<br>")
@@ -251,8 +251,9 @@ defmodule DrabPoc.LiveCommander do
     info = "<span class='chat-system-message'>*** Type <b>/who</b> to get the presence list.</span><br>"
     socket |> add_chat_message(info)
 
-    DrabPoc.Presence.add_user(Node.self(), Drab.pid(socket), nickname)
-    put_store(socket, :my_drab_pid, Drab.pid(socket))
+    ref = make_ref()
+    DrabPoc.Presence.add_user(ref, nickname)
+    put_store(socket, :my_drab_ref, ref)
 
     update_presence_list!(socket)
 
@@ -265,12 +266,12 @@ defmodule DrabPoc.LiveCommander do
 
 
   def disconnected(store, session) do
-    # Drab is already dead, so we are broadcating using same_controller()
-    DrabPoc.Presence.remove_user(Node.self(), store[:my_drab_pid])
+    DrabPoc.Presence.remove_user(store[:my_drab_ref])
 
     removed_user = store[:nickname] || anon_with_country_code(session[:country_code])
     html = ~E"<span class='chat-system-message'>*** <b><%= removed_user %></b> has left.</span><br>" |> safe_to_string()
     add_chat_message!(same_controller(DrabPoc.LiveController), html)
+    # Drab is already dead, so we are broadcating using same_controller()
     update_presence_list!(same_controller(DrabPoc.LiveController))
 
     :ok

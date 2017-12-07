@@ -4,7 +4,7 @@ defmodule DrabPoc.QueryCommander do
   # import Supervisor.Spec
   import Phoenix.HTML
 
-  use Drab.Commander, 
+  use Drab.Commander,
     modules: [Drab.Query, Drab.Modal, Drab.Waiter]
 
   onload :page_loaded
@@ -54,7 +54,7 @@ defmodule DrabPoc.QueryCommander do
     socket
       |> execute(:hide, on: this(dom_sender))
       |> insert(cancel_button(socket, self()), after: "[drab-click=perform_long_process]")
-    start_background_process(socket) 
+    start_background_process(socket)
   end
 
   defp start_background_process(socket) do
@@ -71,7 +71,7 @@ defmodule DrabPoc.QueryCommander do
     case socket |> alert("Finished!", "Do you want to retry?", buttons: [ok: "Yes", cancel: "No!"]) do
       {:ok, _} -> start_background_process(socket)
       {:cancel, _} -> clean_up(socket)
-    end 
+    end
   end
 
   defp step(socket, steps, i) do
@@ -79,27 +79,27 @@ defmodule DrabPoc.QueryCommander do
     update_bar(socket, steps, i)
 
     receive do
-      :cancel_processing -> 
+      :cancel_processing ->
         clean_up(socket)
-    after 0 -> 
+    after 0 ->
       step(socket, steps, i + 1)
     end
   end
 
   defp update_bar(socket, steps, i) do
-    socket 
+    socket
       |> update(css: "width", set: "#{i * 100 / steps}%", on: ".progress-bar")
       |> update(:html, set: "#{Float.round(i * 100 / steps, 2)}%", on: ".progress-bar")
   end
 
   defp cancel_button(socket, pid) do
     """
-     <button class="btn btn-danger" 
-             drab-click="cancel_long_process" 
+     <button class="btn btn-danger"
+             drab-click="cancel_long_process"
              data-pid="#{Drab.tokenize(socket, pid)}">
     Cancel
     </button>
-    """    
+    """
   end
 
   defp clean_up(socket) do
@@ -115,20 +115,20 @@ defmodule DrabPoc.QueryCommander do
   end
 
   def run_async_tasks(socket, _dom_sender) do
-    socket 
+    socket
       |> update(class: "label-success", set: "label-danger", on: ".task")
       |> update(:text, set: "running", on: "#async_task_status")
 
     {_, begin_at_sec, begin_at_micsec } = :os.timestamp
-    tasks = Enum.map(1..54, fn(i) -> Task.async(fn -> 
+    tasks = Enum.map(1..54, fn(i) -> Task.async(fn ->
       :timer.sleep(:rand.uniform(4000)) # simulate real work
       socket |> update(class: "label-danger", set: "label-success", on: ".task[data-task_id=#{i}]")
       end)
     end)
     Enum.each(tasks, fn(task) -> Task.await(task) end)
     {_, end_at_sec, end_at_micsec } = :os.timestamp
-    
-    socket |> update(:html, set: 
+
+    socket |> update(:html, set:
       "finished in #{((end_at_sec - begin_at_sec)*1000_000 + (end_at_micsec - begin_at_micsec))/1000_000} seconds",
       on: "#async_task_status")
   end
@@ -162,8 +162,8 @@ defmodule DrabPoc.QueryCommander do
 
   # /who or /w gives a presence list
   defp do_update_chat(socket, sender, "/w" <> _) do
-    users = DrabPoc.Presence.get_users() |> Map.values() |> Enum.sort |> Enum.join(", ") 
-    socket 
+    users = DrabPoc.Presence.get_users() |> Map.values() |> Enum.sort |> Enum.join(", ")
+    socket
       |> update(:val, set: "", on: this(sender))
       |> add_chat_message(~E"""
         <span class='chat-system-message'>*** Connected users: <%= users %>.</span><br>
@@ -173,23 +173,23 @@ defmodule DrabPoc.QueryCommander do
   defp do_update_chat(socket, sender, message) do
     nick = get_store(socket, :nickname, anon_nickname(socket))
     html = ~E"<strong><%= nick %>:</strong> <%= message %><br>" |> safe_to_string()
-    socket 
+    socket
       |> update(:val, set: "", on: this(sender))
       |> add_chat_message!(html)
   end
 
   def update_nick(socket, sender) do
-    new_nick = sender["val"] 
+    new_nick = sender["val"]
     message = ~E"""
     <span class='chat-system-message'>
-      *** <b><%= get_store(socket, :nickname, anon_nickname(socket)) %></b> is now known as 
+      *** <b><%= get_store(socket, :nickname, anon_nickname(socket)) %></b> is now known as
       <b><%= (new_nick) %></b>
     </span><br>
     """ |> safe_to_string()
-    socket 
+    socket
       |> put_store(:nickname, sender["val"])
       |> add_chat_message!(message)
-    DrabPoc.Presence.update_user(Node.self(), Drab.pid(socket), new_nick)
+    DrabPoc.Presence.update_user(get_store(socket, :my_drab_ref), new_nick)
     update_presence_list!(socket)
   end
 
@@ -214,12 +214,12 @@ defmodule DrabPoc.QueryCommander do
   end
 
   defp scroll_down!(socket_or_topic) do
-    # socket |> execute!(animate: ["{scrollTop: $('#chat').prop('scrollHeight')}", 500], on: "#chat") 
+    # socket |> execute!(animate: ["{scrollTop: $('#chat').prop('scrollHeight')}", 500], on: "#chat")
     socket_or_topic |> execute!("animate({scrollTop: $('#chat').prop('scrollHeight')},500)", on: "#chat")
   end
 
   defp scroll_down(socket_or_topic) do
-    # socket |> execute(animate: ["{scrollTop: $('#chat').prop('scrollHeight')}", 500], on: "#chat") 
+    # socket |> execute(animate: ["{scrollTop: $('#chat').prop('scrollHeight')}", 500], on: "#chat")
     socket_or_topic |> execute("animate({scrollTop: $('#chat').prop('scrollHeight')},500)", on: "#chat")
   end
 
@@ -234,9 +234,9 @@ defmodule DrabPoc.QueryCommander do
   end
 
   defp update_presence_list!(socket) do
-    users = DrabPoc.Presence.get_users() 
-      |> Map.values() 
-      |> Enum.sort() 
+    users = DrabPoc.Presence.get_users()
+      |> Map.values()
+      |> Enum.sort()
       |> Enum.map(&html_escape/1)
       |> Enum.map(&safe_to_string/1)
       |> Enum.join("<br>")
@@ -247,7 +247,7 @@ defmodule DrabPoc.QueryCommander do
     buttons = Phoenix.View.render_to_string(DrabPoc.QueryView, "waiter_example.html", [])
     # TODO: change it in a new version
     # buttons = render_to_string("waiter_example.html", [])
-    socket 
+    socket
       |> delete(from: "#waiter_answer_div")
       |> insert(buttons, append: "#waiter_example_div")
 
@@ -260,7 +260,7 @@ defmodule DrabPoc.QueryCommander do
       end
     end
 
-    socket 
+    socket
       |> delete(from: "#waiter_example_div")
       |> update(:text, set: "Do you realy think it is #{answer}?", on: "#waiter_answer_div")
   end
@@ -275,13 +275,14 @@ defmodule DrabPoc.QueryCommander do
     Process.exit(self(), :kill)
   end
 
-  # Drab Callbacks 
+  # Drab Callbacks
   def page_loaded(socket) do
     Logger.debug("LOADED: Counter: #{get_store(socket, :counter)}")
-    socket 
-    |> Drab.Browser.console("Launched onload callback")
-    |> update(:val, set: get_session(socket, :drab_test), on: "#show_session_test")
-    |> update(:val, set: get_store(socket, :nickname, ""), on: "#nickname" )
+    socket
+      |> Drab.Browser.console("Launched onload callback")
+    socket
+      |> update(:val, set: get_session(socket, :drab_test, ""), on: "#show_session_test")
+      |> update(:val, set: get_store(socket, :nickname, ""), on: "#nickname" )
   end
 
   def connected(socket) do
@@ -294,8 +295,9 @@ defmodule DrabPoc.QueryCommander do
     info = "<span class='chat-system-message'>*** Type <b>/who</b> to get the presence list.</span><br>"
     socket |> add_chat_message(info)
 
-    DrabPoc.Presence.add_user(Node.self(), Drab.pid(socket), nickname)
-    put_store(socket, :my_drab_pid, Drab.pid(socket))
+    ref = make_ref()
+    DrabPoc.Presence.add_user(ref, nickname)
+    put_store(socket, :my_drab_ref, ref)
 
     update_presence_list!(socket)
 
@@ -310,7 +312,7 @@ defmodule DrabPoc.QueryCommander do
 
   def disconnected(store, session) do
     # Drab is already dead, so we are broadcating using same_controller()
-    DrabPoc.Presence.remove_user(Node.self(), store[:my_drab_pid])
+    DrabPoc.Presence.remove_user(store[:my_drab_ref])
 
     removed_user = store[:nickname] || anon_with_country_code(session[:country_code])
     html = ~E"<span class='chat-system-message'>*** <b><%= removed_user %></b> has left.</span><br>" |> safe_to_string()
