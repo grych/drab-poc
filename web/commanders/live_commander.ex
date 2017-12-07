@@ -13,6 +13,8 @@ defmodule DrabPoc.LiveCommander do
 
   def uppercase(socket, sender) do
     text = sender.params["text_to_uppercase"]
+    # IO.inspect sender
+    # IO.inspect String.upcase(text)
     poke socket, text: String.upcase(text)
   end
 
