@@ -26,7 +26,10 @@
   Visit &lt;%= @url %&gt;
 &lt;/a&gt;</code></pre>
       With Drab, you may remote control this html element, live:<br>
-      <img src="<%= static_path(@conn, "/images/drab_example.gif")%>">
+      <video width="692px" height="418px" controls autoplay loop>
+        <source src="<%= static_path(@conn, "/images/drab_example.mp4")%>" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
 
     </p>
 
