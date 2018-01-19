@@ -14,7 +14,7 @@
       Additionally, because <code>http</code> is a stateless and an one-way protocol, it is not easy to communicate back from the server to the browser. Like, for example, during execution of the long running process, when there is a need to update status (eg. progress bar), or to ask the operator about something (like "would you like to continue?"). Of course there are workarounds for this, like polling the server every few seconds to get a status, or even auto-refreshing the page, but those are just a dirty workarounds. The solution would be to allow an access to the interface directly from the server side. And here comes the <code>Drab</code>.
     </p>
     <p>
-      Drab is made with <strong><a href="https://elixir-lang.org">Elixir</a> on <a href="http://www.phoenixframework.org">Phoenix</a></strong>. <b>This page is a living demo - all examples are actually working on the Drab server</b>.
+      Drab is made with <strong><a href="https://elixir-lang.org">Elixir</a> on <a href="http://www.phoenixframework.org">Phoenix</a></strong>. <b>This page is a living demo - all examples are actually working on the Drab server (v<%= {:ok, v} = :application.get_key(:drab, :vsn); v %>)</b>.
       You can find the source code of Drab <a href="https://github.com/grych/drab">on Github</a>, and the source code of this demo page: <a href="https://github.com/grych/drab-poc">here</a>. For more detailed instructions, please refer to the <a href="https://hexdocs.pm/drab">documentation</a>.
     </p>
     <p>
