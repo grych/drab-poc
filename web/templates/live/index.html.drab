@@ -41,6 +41,16 @@
   <div class="col-md-4 left-bordered">
 
     <div class="panel panel-default">
+      <div class="panel-heading">v0.7.0: Drab core rearranged <span class="label label-default">2018-01-22</span></div>
+      <div class="panel-body">
+        <p>
+          <a href="https://github.com/grych/drab/releases/tag/v0.7.0">v0.7.0</a> looks small, but it brings important
+          changes in the core.
+        </p>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
       <div class="panel-heading">v0.6.0 new, better living assigns <span class="label label-default">2017-10-31</span></div>
       <div class="panel-body">
         <p>
@@ -68,15 +78,6 @@
       </div>
     </div>
 
-    <div class="panel panel-default">
-      <div class="panel-heading">New example - The Chat <span class="label label-default">2017-05-04</span></div>
-      <div class="panel-body">
-        <p>
-          What is the websocket-based application without a chat? Now, you can learn how to create the simplest one with Drab, based on <a href="#chat_example">this example</a>.
-        </p>
-      </div>
-    </div>
-
 
  <h6>See all <a href="https://github.com/grych/drab/releases">Release Notes</a> to learn about the previous releases</h6>
     <iframe src="https://ghbtns.com/github-btn.html?user=grych&repo=drab&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe><br>
@@ -100,8 +101,8 @@
       On the client side there is basic HTML with the input and the button:
       <pre><code class="html">&lt;form&gt;
   &lt;input name=&quot;text_to_uppercase&quot; value=&quot;&lt;%= @text %&gt;&quot;&gt;
-  &lt;button drab-event=&quot;click&quot; drab-handler=&quot;uppercase&quot;&gt;Upcase&lt;/button&gt;
-  &lt;button drab-event=&quot;click&quot; drab-handler=&quot;lowercase&quot;&gt;Downcase&lt;/button&gt;
+  &lt;button drab=&quot;click:uppercase&quot;&gt;Upcase&lt;/button&gt;
+  &lt;button drab=&quot;click:downcase&quot;&gt;Downcase&lt;/button&gt;
 &lt;/form&gt;
 </code></pre>
     </p>
@@ -109,7 +110,7 @@
       What is a difference between the standard behaviour and Drab? Drab does not GET or POST the form, it calls the event handler function via websockets instead, and updates the DOM nodes directly on the page. As you can see, clicking the button does not reload the page.
     </p>
     <p>
-      The idea is to reuse the existing Phoenix templates, but make them living. The pair of <code>drab-event</code> and <code>drab-handler</code> attributes in the <code>&lt;button&gt;</code> determines which <strong>event</strong> should be handled by which <strong>handler</strong>. This handler is a function in the <strong>commander</strong> module, analogically to action in the controller. A commander is like a controller for living Drab pages.
+      The idea is to reuse the existing Phoenix templates, but make them living. <code>drab="event:handler"</code> attribute defines on which Phoenix function (handler) is going to be run in case of the given event. This handler is a function in the <strong>commander</strong> module, analogically to action in the controller. A commander is like a controller for living Drab pages.
     </p>
     <p>
       In this example, <code>click</code> event <b>in the browser</b> remotely runs <code>DrabPoc.LiveCommander.uppercase/2</code> <b>on the server.</b>
@@ -139,8 +140,8 @@ end</code></pre>
       <br><br>
       <form>
         <input class="form-control" name="text_to_uppercase" value="<%= @text %>"><br>
-        <button class="btn btn-primary" id="uppercase_button" drab-event="click" drab-handler="uppercase">Upcase</button>
-        <button class="btn btn-primary" id="lowercase_button" drab-event="click" drab-handler="lowercase">Downcase</button>
+        <button class="btn btn-primary" id="uppercase_button" drab="click:uppercase">Upcase</button>
+        <button class="btn btn-primary" id="lowercase_button" drab="click:lowercase">Downcase</button>
       </form>
     </p>
     </p>
@@ -178,7 +179,7 @@ end
     <p>
     Then, create some button to launch the Drab event in the commander:
 <pre><code class="html"><%=~s(<button drab-click="replace_list">Replace List</button>)%></code></pre>
-    Did you notice <code>drab-click</code> attribute? This is a shorthand for <code>drab-event</code> and <code>drab-handler</code> combination. There is a number of such shorthands for most popular events, see documentation for more.
+    Did you notice <code>drab-click</code> attribute? This is an alternative method for defining handler for an event. There is a number of such shorthands for most popular events, see documentation for more.
     </p>
     <p>The event handler function simply replaces the users list with the new one:
 <pre><code class="elixir"><%=~s/defmodule DrabPoc.LiveCommander do
