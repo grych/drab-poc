@@ -64,11 +64,20 @@
             </ul>
           </li>
  %>
-          <li><a href="/drab/nojquery">DOMless</a></li>
-          <li><a href="/drab/query">jQuery</a></li>
+          <li><a href="/drab/nojquery">Naked Drab</a></li>
+          <li><a href="/drab/query">Drab.Query</a></li>
           <li><a href="https://github.com/grych/drab">Drab Source</a></li>
-          <li><a href="https://github.com/grych/drab-poc">Demo Page Source</a></li>
-          <li><a href="https://github.com/grych/drab-example">Sandbox Project Source</a></li>
+          <li><a href="https://github.com/grych/drab-poc">This Page Source</a></li>
+          <li class="dropdown">
+            <a data-toggle="dropdown" class="dropdown-toggle" href="/drab">Sandboxes <b class="caret"></b></a>
+            <ul role="menu" class="dropdown-menu">
+              <li><a href="https://github.com/grych/drab-example">Sandbox Project Source</a></li>
+              <li><a href="https://github.com/grych/drab-example-jquery">jQuery-installed Example Project</a></li>
+              <li><a href="https://github.com/grych/drab_example_nojquery">Naked Drab Example Project</a></li>
+            </ul>
+          </li>
+
+
           <li><a href="https://github.com/grych/drab/blob/master/README.md#installation">Installation</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
