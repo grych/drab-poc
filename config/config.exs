@@ -27,7 +27,7 @@ config :drab,
   disable_controls_when_disconnected: true,
   socket: "/drab/socket",
   drab_store_storage: :local_storage,
-  live_helper_modules: {Router.Helpers, ErrorHelpersRenamed, Gettext}
+  live_helper_modules: [Router.Helpers, ErrorHelpersRenamed, Gettext]
 
 config :phoenix, :template_engines,
   drab: Drab.Live.Engine
