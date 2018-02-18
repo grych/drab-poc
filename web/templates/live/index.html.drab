@@ -41,6 +41,15 @@
   <div class="col-md-4 left-bordered">
 
     <div class="panel panel-default">
+      <div class="panel-heading">v0.7.1:  <span class="label label-default">2018-02-17</span></div>
+      <div class="panel-body">
+        <p>
+          <a href="https://github.com/grych/drab/releases/tag/v0.7.1">v0.7.1</a> is a step forward to possibility to create component-like piece of code with Drab, with new attributes of <code>drab-commander</code> and <code>drab-argument</code>.
+        </p>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
       <div class="panel-heading">v0.7.0: Drab core rearranged <span class="label label-default">2018-01-22</span></div>
       <div class="panel-body">
         <p>
@@ -51,7 +60,7 @@
     </div>
 
     <div class="panel panel-default">
-      <div class="panel-heading">v0.6.0 new, better living assigns <span class="label label-default">2017-10-31</span></div>
+      <div class="panel-heading">v0.6.0: New, better living assigns <span class="label label-default">2017-10-31</span></div>
       <div class="panel-body">
         <p>
           <a href="https://github.com/grych/drab/releases/tag/v0.6.0">This version</a> introduces a completely rewritten <code>Drab.Live</code> module: it is not putting its <code>&lt;span&gt;</code> everywhere into your template. Also introduces <em>Shared Commanders</em>.
@@ -64,16 +73,6 @@
       <div class="panel-body">
         <p>
           <strong>WARNING! Drab API has been completely changed in 0.5.0!</strong> <code>Drab.Query</code> (the jQuery based module) is no longer the default one. If you still want to use it, you must declare it in the commander with <code>use Drab.Commander, modules: [Drab.Query, Drab.Modal]</code>. Drab.Query based tutorial is still available <a href="/drab/query">here</a>.
-        </p>
-      </div>
-    </div>
-
-
-    <div class="panel panel-default">
-      <div class="panel-heading">v0.4.0 improves reliability <span class="label label-default">2017-05-16</span></div>
-      <div class="panel-body">
-        <p>
-          <a href="https://github.com/grych/drab/releases/tag/v0.4.0">This version</a> introduces a redesigned API for the most essential part of Drab API: <code>Drab.Core</code>. <code>execjs</code> and <code>broadcastjs</code> has been deprecated in favor of <code>exec_js</code> and <code>broadcast_js</code>. Exciting!
         </p>
       </div>
     </div>
@@ -460,13 +459,127 @@ end</code></pre>
   <div class="col-md-4 left-bordered">
     <p>
       The same event with <code>debounce(500)</code>:
-      <input drab-keyup="changed_input" drab-options="debounce(500)" data-update="#display_placeholder2" class="form-control">
+      <input id="debounce" drab-keyup="changed_input" drab-options="debounce(500)" data-update="#display_placeholder2" class="form-control">
       <div id="display_placeholder2"></div>
     </p>
   </div>
 
 </div>
 <hr>
+
+
+
+
+<div class="row">
+  <a name="argument">
+    <h4 class="anchored">Optional Argument</h4>
+  </a>
+
+  <div class="col-md-8">
+    To pass one additional argument to the event handler, just add it in the parenthesis after the handler function name:
+    <p><pre><code class="html"><%=~S|<button class="btn btn-primary" drab-click="sleep(1)">Sleep 1 second</button><br>
+<button class="btn btn-primary" drab-click="sleep(1+1)">Sleep 2 seconds</button><br>
+<button class="btn btn-primary" drab-click="sleep(parseInt('3'))">Sleep 3 seconds</button>|%></code></pre>
+    </p>
+    <p>
+      In this case, event handler must have arity of 3. Notice that the argument is evaluated on the client side before sending to the browser, so it can be any valid JS piece of code. In this example it is Integer, and it is passed to the Elixir function correctly, as Integer.
+      <pre><code class="elixir"><%=~S/def sleep(_socket, _sender, interval) do
+  Process.sleep(interval * 1000)
+end/%></code></pre>
+      Observe that when one button is "processing", you can click another one. This is because <strong>Drab requests are asynchronous on the server side</strong>. And this is a reason why buttons are disabled by default while processing - it is blocking the user from running the same action for few times. You may override this behaviour, see documentation for <code>Drab.Config</code>.
+    </p>
+  </div>
+  <div class="col-md-4">
+    <p>
+      <button id="sleep_1_button" class="btn btn-primary" drab-click="sleep(1)">Sleep 1 second</button><br><br>
+      <button id="sleep_2_button" class="btn btn-primary" drab-click="sleep(1 + 1)">Sleep 2 seconds</button><br><br>
+      <button id="sleep_3_button" class="btn btn-primary" drab-click="sleep(parseInt('3'))">Sleep 3 seconds</button>
+    </p>
+  </div>
+</div>
+<hr>
+
+
+
+<div class="row">
+  <a name="shared">
+    <h4 class="anchored">Shared Commanders</h4>
+  </a>
+  <div class="col-md-8">
+    <p>
+      So far, we did run events in the specific commander - the one which is related to the controller, which rendered the current page. This is done by the reason: we don't want to allow browser to launch any public function in our server! But it would be nice to run event handlers from another module, for staying DRY.
+      Drab gives you an opportunity to do it with <b>Shared Commander</b>, just by specifying the module name in the drab attribute: <code>&lt;button drab-click=&quot;My.Module.function&quot;&gt;</code>.
+      <br>
+      We are going to create re-usable countdown commander, with two parameters: number of seconds to countdown from, and the selector of the node, on which the output will be displayed:
+      <pre><code class="html"><%=~S|<button drab-click="DrabPoc.TimerCommander.countdown({seconds: 5, output: '#first_example'})">
+  Count down from 5
+</button>
+<span id="first_example">SPAN #first_example</span>|%></code></pre>
+    </p>
+    <p>
+      The whole <code>TimerCommander</code> is simply the commander, with <code>countdown/3</code> event handler function:
+      <pre><code class="elixir"><%=~S/defmodule DrabPoc.TimerCommander do
+  use Drab.Commander
+
+  public [:countdown]
+
+  def countdown(socket, _sender, options) do
+    for i <- 1..options["seconds"] do
+      Process.sleep(1000)
+      set_prop socket, options["output"], innerText: options["seconds"] - i
+    end
+  end
+end
+/%></code></pre>
+      The only difference between this module, and the standard commander, is usage of <code>public/1</code> macro. This is where you specify the functions, which may be called from javascript using the Module.function dot syntax. It is done for a security reason: without it, you could be able to run any elixir function in any module!
+      <br>
+      The handler function is easy then. It is getting a map, defined in the <code>drab-click</code> attribute in html, as a third argument.
+    </p>
+  </div>
+  <div class="col-md-4">
+    <p>
+      <button class="btn btn-primary" drab-click="DrabPoc.TimerCommander.countdown({seconds: 5, output: '#first_example'})">
+        Count down from 5
+      </button>
+      <br><span id="first_example">SPAN #first_example</span>
+    </p>
+  </div>
+
+
+  <div class="col-md-8">
+    <p>
+      Now we are going to reuse <code>TimerCommander</code> with the different options. But this time, we are going to use <code>drab-commander</code> and <code>drab-argument</code> attributes. You may set them in any tag, and all the children of this tag will use given Shared Commander and the given argument:
+      <pre><code class="html"><%=~S|<p drab-commander="DrabPoc.TimerCommander" drab-argument="{seconds: 10, output: '#second_example'}">
+  <button class="btn btn-primary" drab-click="countdown">
+    Count down from 10
+  </button>
+  <br><span id="second_example">SPAN #second_example</span>
+  <button class="btn btn-primary" drab-click="countdown({seconds: 20, output: '#third_example'})">
+    Count down from 20
+  </button>
+  <br><span id="third_example">SPAN #third_example</span>
+</p>|%></code></pre>
+      Notice that it does not override the existing commander or argument (see third example).
+    </p>
+  </div>
+  <div class="col-md-4">
+    <p drab-commander="DrabPoc.TimerCommander" drab-argument="{seconds: 10, output: '#second_example'}">
+      <button class="btn btn-primary" drab-click="countdown">
+        Count down from 10
+      </button>
+      <br><span id="second_example">SPAN #second_example</span>
+      <br>
+      <br>
+      <button class="btn btn-primary" drab-click="countdown({seconds: 20, output: '#third_example'})">
+        Count down from 20
+      </button>
+      <br><span id="third_example">SPAN #third_example</span>
+    </p>
+  </div>
+
+</div>
+<hr>
+
 
 
 

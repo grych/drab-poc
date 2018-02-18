@@ -241,6 +241,9 @@ defmodule DrabPoc.LiveCommander do
     broadcast_prop socket, sender["dataset"]["update"], innerText: String.upcase(sender["value"])
   end
 
+  def sleep(_socket, _sender, interval) do
+    Process.sleep(interval * 1000)
+  end
 
 
   def connected(socket) do
