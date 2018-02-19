@@ -27,7 +27,7 @@
 &lt;/a&gt;</code></pre>
       With Drab, you may remote control this html element, live:<br>
       <video width="692px" height="418px" controls autoplay loop>
-        <source src="https://ipfs.io/ipfs/QmbuXhJAXPDcLCBs7dexiyAXzAJrmjLXkSbWAjN8PmkZvW" type="video/mp4">
+        <source src="<%= static_path(@conn, "/images/drab_example.mp4")%>" type="video/mp4">
         Your browser does not support the video tag.
       </video>
 
@@ -41,7 +41,7 @@
   <div class="col-md-4 left-bordered">
 
     <div class="panel panel-default">
-      <div class="panel-heading">v0.7.1:  <span class="label label-default">2018-02-17</span></div>
+      <div class="panel-heading">v0.7.1: Optional argument and Shared Commanders <span class="label label-default">2018-02-17</span></div>
       <div class="panel-body">
         <p>
           <a href="https://github.com/grych/drab/releases/tag/v0.7.1">v0.7.1</a> is a step forward to possibility to create component-like piece of code with Drab, with new attributes of <code>drab-commander</code> and <code>drab-argument</code>.
