@@ -41,10 +41,10 @@
   <div class="col-md-4 left-bordered">
 
     <div class="panel panel-default">
-      <div class="panel-heading">v0.7.1: Optional argument and Shared Commanders <span class="label label-default">2018-02-17</span></div>
+      <div class="panel-heading">v0.7.2: API Changes and Reusable Components <span class="label label-default">2018-04-01</span></div>
       <div class="panel-body">
         <p>
-          <a href="https://github.com/grych/drab/releases/tag/v0.7.1">v0.7.1</a> is a step forward to possibility to create component-like piece of code with Drab, with new attributes of <code>drab-commander</code> and <code>drab-argument</code>.
+          Please read the <a href="https://github.com/grych/drab/releases/tag/v0.7.2">Release Notes</a> - API has been changed. Also, introduced the new feature: creating reusable components!
         </p>
       </div>
     </div>
