@@ -223,7 +223,7 @@ defmodule DrabPoc.LiveCommander do
   defp file_change_loop(socket, file_path) do
     receive do
       {_pid, {:fswatch, :file_event}, {^file_path, _opts}} ->
-        socket |> poke(access_log: last_n_lines(file_path, 5))
+        socket |> poke(access_log: last_n_lines(file_path, 10))
       any_other ->
         Logger.debug(inspect(any_other))
     end
@@ -232,7 +232,11 @@ defmodule DrabPoc.LiveCommander do
 
   defp last_n_lines(file_path, lines) do
     case System.cmd("tail", ["-#{lines}", file_path]) do
-      {stdout, 0} -> stdout
+      {stdout, 0} ->
+        stdout
+        |> String.split("\n")
+        |> Enum.map(fn line -> String.slice(line, 0..80) end)
+        |> Enum.join("\n")
       {stdout, retval} -> raise "last_n_lines: tail returned #{retval}. Stdout:\n#{stdout}"
     end
   end
