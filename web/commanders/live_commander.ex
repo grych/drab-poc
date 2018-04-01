@@ -235,7 +235,7 @@ defmodule DrabPoc.LiveCommander do
       {stdout, 0} ->
         stdout
         |> String.split("\n")
-        |> Enum.map(fn line -> String.slice(line, 0..80) end)
+        |> Enum.map(fn line -> String.slice(line, 0..60) <> " ..." end)
         |> Enum.join("\n")
       {stdout, retval} -> raise "last_n_lines: tail returned #{retval}. Stdout:\n#{stdout}"
     end
