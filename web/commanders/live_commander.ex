@@ -11,32 +11,32 @@ defmodule DrabPoc.LiveCommander do
   access_session [:drab_test, :country_code]
   broadcasting :same_controller
 
-  def uppercase(socket, sender) do
+  defhandler uppercase(socket, sender) do
     text = sender.params["text_to_uppercase"]
     # IO.inspect sender
     # IO.inspect String.upcase(text)
     poke socket, text: String.upcase(text)
   end
 
-  def lowercase(socket, sender) do
+  defhandler lowercase(socket, sender) do
     text = sender.params["text_to_uppercase"]
     poke socket, text: String.downcase(text)
   end
 
-  def replace_list(socket, _sender) do
+  defhandler replace_list(socket, _sender) do
     Drab.Live.poke socket, users: ["Mścisław", "Bożydar", "Mściwój", "Bogumił", "Mirmił"]
   end
 
-  def replace_title(socket, _sender) do
+  defhandler replace_title(socket, _sender) do
     Drab.Live.poke socket, title: "New, better Title"
   end
 
-  def add_to_list(socket, _sender) do
+  defhandler add_to_list(socket, _sender) do
     users = Drab.Live.peek(socket, :users)
     Drab.Live.poke socket, users: users ++ ["Hegemon"]
   end
 
-  def clicked_sleep_button(socket, sender) do
+  defhandler clicked_sleep_button(socket, sender) do
     button_no = sender["data"]["sleep"] |> String.to_integer()
 
     cl = peek socket, :sleep_button_classes
@@ -48,7 +48,7 @@ defmodule DrabPoc.LiveCommander do
     poke socket, sleep_button_classes: %{cl | button_no => "btn-primary"}
   end
 
-  def run_async_tasks(socket, _sender) do
+  defhandler run_async_tasks(socket, _sender) do
     poke socket, async_task_label: "danger", async_task_status: "running"
     set_attr(socket, ".task[task-id]", class: "task label label-danger")
 
@@ -66,7 +66,7 @@ defmodule DrabPoc.LiveCommander do
       "finished in #{(end_at - begin_at)/1000} seconds"
   end
 
-  def perform_long_process(socket, _sender) do
+  defhandler perform_long_process(socket, _sender) do
     poke socket, progress_bar_class: "progress-bar-danger", long_process_button_text: "Processing..."
 
     steps = :rand.uniform(100)
@@ -78,24 +78,24 @@ defmodule DrabPoc.LiveCommander do
     poke socket, progress_bar_class: "progress-bar-success", long_process_button_text: "Click me to restart"
   end
 
-  def changed_label(socket, sender) do
+  defhandler changed_label(socket, sender) do
     {:safe, label} =  Phoenix.HTML.html_escape(sender["value"])
     poke socket, label: label
   end
 
-  def increase_counter(socket, _sender) do
+  defhandler increase_counter(socket, _sender) do
     counter = get_store(socket, :counter) || 0
     put_store(socket, :counter, counter + 1)
   end
 
-  def show_counter(socket, _sender) do
+  defhandler show_counter(socket, _sender) do
     poke socket, counter: get_store(socket, :counter)
   end
 
 
 
 
-  def update_chat(socket, sender) do
+  defhandler update_chat(socket, sender) do
     do_update_chat(socket, sender, sender["value"])
   end
 
@@ -115,7 +115,7 @@ defmodule DrabPoc.LiveCommander do
     socket |> add_chat_message!(html)
   end
 
-  def update_nick(socket, sender) do
+  defhandler update_nick(socket, sender) do
     new_nick = sender["value"]
     message = ~E"""
     <span class='chat-system-message'>
@@ -185,7 +185,7 @@ defmodule DrabPoc.LiveCommander do
 
 
 
-  def waiter_example(socket, _dom_sender) do
+  defhandler waiter_example(socket, _dom_sender) do
     buttons = render_to_string("waiter_example.html", [])
 
     set_prop socket, "#waiter_answer_div", innerHTML: nil
@@ -205,18 +205,18 @@ defmodule DrabPoc.LiveCommander do
   end
 
 
-  def raise_error(_socket, _dom_sender) do
+  defhandler raise_error(_socket, _dom_sender) do
     map = %{x: 1, y: 2}
     # the following line will cause KeyError
     map.z
   end
 
-  def self_kill(_socket, _dom_sender) do
+  defhandler self_kill(_socket, _dom_sender) do
     Process.exit(self(), :kill)
   end
 
 
-  def enlage_your_button_now(socket, _sender) do
+  defhandler enlage_your_button_now(socket, _sender) do
     poke socket, button_height: peek(socket, :button_height) + 2
   end
 
@@ -237,11 +237,11 @@ defmodule DrabPoc.LiveCommander do
     end
   end
 
-  def changed_input(socket, sender) do
+  defhandler changed_input(socket, sender) do
     broadcast_prop socket, sender["dataset"]["update"], innerText: String.upcase(sender["value"])
   end
 
-  def sleep(_socket, _sender, interval) do
+  defhandler sleep(_socket, _sender, interval) do
     Process.sleep(interval * 1000)
   end
 

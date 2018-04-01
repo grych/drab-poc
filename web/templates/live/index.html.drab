@@ -116,14 +116,14 @@
       <pre><code class="elixir">defmodule DrabPoc.LiveCommander do
   use Drab.Commander
 
-  def uppercase(socket, sender) do
+  defhandler uppercase(socket, sender) do
     text = sender.params[&quot;text_to_uppercase&quot;]
     poke socket, text: String.upcase(text)
   end
 end</code></pre>
     </p>
     <p>
-      Every <em>handler</em> function takes two parameters: first is a <code>%Phoenix.Socket{}</code>, and the second is a map with information about sender DOM object, as well as parameters from the surrounding form. <code>sender.params</code> contains values of all the <em>input</em> elements inside the form, where the keys are element's <code>name</code> or <code>id</code>.
+      The code above creates `uppercase/2` function and mark it as an <em>event handler</em>. Such function takes two parameters: first is a <code>%Phoenix.Socket{}</code>, and the second is a map with information about sender DOM object, as well as parameters from the surrounding form. <code>sender.params</code> contains values of all the <em>input</em> elements inside the form, where the keys are element's <code>name</code> or <code>id</code>.
     </p>
     <p>
       After processing the inputs, we need to present it to back in the browser. This is where we use <code>poke/2</code> function - <b>it pushes the assign</b> (in this case: <code>&lt;%= @text %&gt;</code>) <b>back to the browser</b>. Input value is updated, without reloading the page.
@@ -164,7 +164,6 @@ end</code></pre>
 The code is rendered as usual, in the simple Controller:
 <pre><code class="elixir">defmodule DrabPoc.LiveController do
   use DrabPoc.Web, :controller
-  use Drab.Controller
 
   def index(conn, _params) do
     render conn, "index.html", users: ["Dżesika", "Brajanek", "Zdzichu"], title: "Users List"
@@ -173,18 +172,19 @@ end
 </code></pre>
     </p>
     <p>
-      Nothing special yet, except <code>use Drab.Controller</code>, which tells the controller that is has a corresponding commander. But, the goal of Drab is to update <code>assigns</code> live, without re-rendering the page. For this, <code>Drab</code> introduces its own <code>EEx Engine</code>. By default, it uses <code>.drab</code> extension, so you need to rename <code>index.html.eex</code> to <code>index.html.drab</code>.
+      The goal of Drab is to update <code>assigns</code> live, without re-rendering the page. For this, <code>Drab</code> introduces its own <code>EEx Engine</code>. By default, it uses <code>.drab</code> extension, so you need to rename <code>index.html.eex</code> to <code>index.html.drab</code>.
     </p>
     <p>
-    Then, create some button to launch the Drab event in the commander:
+      Then, create some button to launch the Drab event in the commander:
 <pre><code class="html"><%=~s(<button drab-click="replace_list">Replace List</button>)%></code></pre>
     Did you notice <code>drab-click</code> attribute? This is an alternative method for defining handler for an event. There is a number of such shorthands for most popular events, see documentation for more.
     </p>
-    <p>The event handler function simply replaces the users list with the new one:
+    <p>
+      The event handler function should be placed inside the commander module. By default, Drab searches for the corresponding names, so pages generated with <code>DrabPoc.LiveController</code> are handled by <code>DrabPoc.LiveCommander</code>. Handler below simply replaces the users list with the new one:
 <pre><code class="elixir"><%=~s/defmodule DrabPoc.LiveCommander do
   use Drab.Commander
 
-  def replace_list(socket, _sender) do
+  defhandler replace_list(socket, _sender) do
     Drab.Live.poke socket, users: ["Mścisław", "Bożydar", "Mściwój", "Bogumił", "Mirmił"]
   end
 end/%></code></pre>
@@ -192,14 +192,14 @@ end/%></code></pre>
     </p>
     <p>
       The second button runs <code>replace_title</code> event handler, which changes the value of the <code>@title</code> assign:
-<pre><code class="elixir"><%=~s/def replace_title(socket, _sender) do
+<pre><code class="elixir"><%=~s/defhandler replace_title(socket, _sender) do
   Drab.Live.poke socket, title: "New, better Title"
 end/%></code></pre>
     Of course you can change the values of many assigns in one <code>poke</code>, Drab will find and update the corresponding parts of the page.
     </p>
     <p>
       Last, but not least, is the possibility to get the current value of assigns. For this, we have a function called <code>peek/2</code>. In the example, the third button adds something to the existing list of users:
-<pre><code class="elixir"><%=~s/def add_to_list(socket, _sender) do
+<pre><code class="elixir"><%=~s/defhandler add_to_list(socket, _sender) do
   users = Drab.Live.peek(socket, :users)
   Drab.Live.poke socket, users: users ++ ["Hegemon"]
 end/%></code></pre>
@@ -249,7 +249,7 @@ end/%></code></pre>
     </p>
     <p>
       We are going to live update the assigns of the template above from <code>perform_long_process/2</code> function in the commander:
-      <pre><code class="elixir">def perform_long_process(socket, _sender) do
+      <pre><code class="elixir">defhandler perform_long_process(socket, _sender) do
   poke socket, progress_bar_class: &quot;progress-bar-danger&quot;,
     long_process_button_text: &quot;Processing...&quot;
 
@@ -316,7 +316,7 @@ end</code></pre>
     </p>
     <p>
       All the processing is on the server side. Clicking the button runs the <code>run_async_tasks/2</code> function:
-      <pre><code class="elixir">def run_async_tasks(socket, _sender) do
+      <pre><code class="elixir">defhandler run_async_tasks(socket, _sender) do
   poke socket, async_task_label: &quot;danger&quot;, async_task_status: &quot;running&quot;
   set_attr(socket, &quot;.task[task-id]&quot;, class: &quot;task label label-danger&quot;)
 
@@ -428,7 +428,7 @@ end/%></code></pre>
       You may concern about Drab performance - is it quick enough to handle events in the realtime? The best to find it out is to check with, lets say, the <code>keyup</code> event.
       <pre><code class="html">&lt;input drab-keyup=&quot;changed_input&quot; class=&quot;form-control&quot; data-update=&quot;#display_placeholder&quot;&gt;
 &lt;div id=&quot;display_placeholder&quot;&gt;&lt;/div&gt;</code></pre>
-      <pre><code class="elixir">def changed_input(socket, sender) do
+      <pre><code class="elixir">defhandler changed_input(socket, sender) do
   broadcast_prop socket, sender[&quot;dataset&quot;][&quot;update&quot;], innerText: String.upcase(sender[&quot;value&quot;])
 end</code></pre>
     </p>
@@ -483,7 +483,7 @@ end</code></pre>
     </p>
     <p>
       In this case, event handler must have arity of 3. Notice that the argument is evaluated on the client side before sending to the browser, so it can be any valid JS piece of code. In this example it is Integer, and it is passed to the Elixir function correctly, as Integer.
-      <pre><code class="elixir"><%=~S/def sleep(_socket, _sender, interval) do
+      <pre><code class="elixir"><%=~S/defhandler sleep(_socket, _sender, interval) do
   Process.sleep(interval * 1000)
 end/%></code></pre>
       Observe that when one button is "processing", you can click another one. This is because <strong>Drab requests are asynchronous on the server side</strong>. And this is a reason why buttons are disabled by default while processing - it is blocking the user from running the same action for few times. You may override this behaviour, see documentation for <code>Drab.Config</code>.
@@ -517,24 +517,28 @@ end/%></code></pre>
 <span id="first_example">SPAN #first_example</span>|%></code></pre>
     </p>
     <p>
+      For the security reasons, you must declare all shared commanders you want to use, in the controller:
+      <pre><code class="elixir"><%=~S/defmodule DrabPoc.LiveController do
+  use Drab.Controller, commanders: [DrabPoc.TimerCommander]
+end
+/%></code></pre>
+    </p>
+    <p>
       The whole <code>TimerCommander</code> is simply the commander, with <code>countdown/3</code> event handler function:
       <pre><code class="elixir"><%=~S/defmodule DrabPoc.TimerCommander do
   use Drab.Commander
 
-  public [:countdown]
-
-  def countdown(socket, _sender, options) do
+  defhandler countdown(socket, _sender, options) do
     for i <- 1..options["seconds"] do
-      Process.sleep(1000)
       set_prop socket, options["output"], innerText: options["seconds"] - i
+      Process.sleep(1000)
     end
   end
 end
 /%></code></pre>
-      The only difference between this module, and the standard commander, is usage of <code>public/1</code> macro. This is where you specify the functions, which may be called from javascript using the Module.function dot syntax. It is done for a security reason: without it, you could be able to run any elixir function in any module!
-      <br>
-      The handler function is easy then. It is getting a map, defined in the <code>drab-click</code> attribute in html, as a third argument.
+      The handler function is getting a map, defined in the <code>drab-click</code> attribute in html, as a third argument.
     </p>
+
   </div>
   <div class="col-md-4">
     <p>
@@ -545,35 +549,61 @@ end
     </p>
   </div>
 
+</div>
+<hr>
+<div class="row">
+  <a name="components">
+    <h4 class="anchored">Creating Reusable Components with Shared Commanders</h4>
+  </a>
 
   <div class="col-md-8">
     <p>
-      Now we are going to reuse <code>TimerCommander</code> with the different options. But this time, we are going to use <code>drab-commander</code> and <code>drab-argument</code> attributes. You may set them in any tag, and all the children of this tag will use given Shared Commander and the given argument:
-      <pre><code class="html"><%=~S|<p drab-commander="DrabPoc.TimerCommander" drab-argument="{seconds: 10, output: '#second_example'}">
+      Now we are going to modify the example a bit. And this time, we are going to use <code>drab-commander</code> and <code>drab-argument</code> attributes. You may set them in any tag, and all the children of this tag will use given Shared Commander and the given argument:
+      <pre><code class="html"><%=~S|<p drab-commander="DrabPoc.Timer2Commander" drab-argument="{seconds: 10}">
   <button class="btn btn-primary" drab-click="countdown">
     Count down from 10
   </button>
-  <br><span id="second_example">SPAN #second_example</span>
-  <button class="btn btn-primary" drab-click="countdown({seconds: 20, output: '#third_example'})">
+  <br><span class="output">SPAN .output</span>
+</p>
+<p drab-commander="DrabPoc.Timer2Commander" drab-argument="{seconds: 20}">
+  <br>
+  <button class="btn btn-primary" drab-click="countdown">
     Count down from 20
   </button>
-  <br><span id="third_example">SPAN #third_example</span>
+  <br><span class="output">SPAN .output</span>
 </p>|%></code></pre>
-      Notice that it does not override the existing commander or argument (see third example).
     </p>
+
+    <p>
+      Observe the example. When you click one of the buttons, the only corresponding <code>span.output</code> is updated. But how does Drab know which one to update? Here comes  function:
+      <pre><code class="elixir"><%=~S/defmodule DrabPoc.Timer2Commander do
+  use Drab.Commander
+
+  defhandler countdown(socket, sender, options) do
+    for i <- 1..options["seconds"] do
+      set_prop socket, this_commander(sender) <> " .output", innerText: options["seconds"] - i
+      Process.sleep(1000)
+    end
+  end
+end/%></code></pre>
+      <code>this_commander/1</code> function returns the unique selector of the tag with <code>drab-commander</code>. Using it, you may create reusable components.
+    </p>
+
+
   </div>
   <div class="col-md-4">
-    <p drab-commander="DrabPoc.TimerCommander" drab-argument="{seconds: 10, output: '#second_example'}">
+    <p drab-commander="DrabPoc.Timer2Commander" drab-argument="{seconds: 10}">
       <button class="btn btn-primary" drab-click="countdown">
         Count down from 10
       </button>
-      <br><span id="second_example">SPAN #second_example</span>
+      <br><span class="output">SPAN .output</span>
+    </p>
+    <p drab-commander="DrabPoc.Timer2Commander" drab-argument="{seconds: 20}">
       <br>
-      <br>
-      <button class="btn btn-primary" drab-click="countdown({seconds: 20, output: '#third_example'})">
+      <button class="btn btn-primary" drab-click="countdown">
         Count down from 20
       </button>
-      <br><span id="third_example">SPAN #third_example</span>
+      <br><span class="output">SPAN .output</span>
     </p>
   </div>
 
@@ -599,12 +629,12 @@ end
     </p>
   </div>
   <div class="col-md-8">
-    <p><pre><code class="elixir"><%=~S/def increase_counter(socket, _sender) do
+    <p><pre><code class="elixir"><%=~S/defhandler increase_counter(socket, _sender) do
   counter = get_store(socket, :counter) || 0
   put_store(socket, :counter, counter + 1)
 end
 
-def show_counter(socket, _sender) do
+defhandler show_counter(socket, _sender) do
   poke socket, counter: get_store(socket, :counter)
 end/%></code></pre>
     </p>
@@ -668,11 +698,11 @@ end/%></code></pre>
 
     <p>
       On the Elixir side, <code>update_nick</code> event handler saves your nickname for the future use:
-      <pre><code class="elixir"><%=~S/def update_nick(socket, sender), do: put_store(socket, :nickname, sender["value"])/%></code></pre>
+      <pre><code class="elixir"><%=~S/defhandler update_nick(socket, sender), do: put_store(socket, :nickname, sender["value"])/%></code></pre>
     </p>
     <p>
       The following code is the whole chat application! We retrieve the nickname from the Drab Store (or set it to <i>Anonymous</i> if not found), compose the message to be displayed, and we are ready to go. First, we insert the message to the chat panel (used the <code>broadcast_insert</code> method with <code>:beforeend</code> modifier, so it is added at the bottom of the chat div). Second, clean up the message input. Third, scroll down chat to the bottom. All the changes of are broadcasted to all browsers viewing this page.
-      <pre><code class="elixir">def update_chat(socket, sender) do
+      <pre><code class="elixir">defhandler update_chat(socket, sender) do
   nick = get_store(socket, :nickname, &quot;Anonymous&quot;)
   html = ~E&quot;&lt;strong&gt;&lt;%= nick %&gt;:&lt;/strong&gt; &lt;%= message %&gt;&lt;br&gt;&quot; |&gt; safe_to_string()
   broadcast_insert socket, &quot;#chat&quot;, :beforeend, html
@@ -702,7 +732,7 @@ defp add_chat_message!(subject, message) do
   subject |&gt; scroll_down!()
 end
 
-def update_chat(socket, sender) do
+defhandler update_chat(socket, sender) do
   nick = get_store(socket, :nickname, &quot;Anonymous&quot;)
   html = ~E&quot;&lt;strong&gt;&lt;%= nick %&gt;:&lt;/strong&gt; &lt;%= message %&gt;&lt;br&gt;&quot; |&gt; safe_to_string()
   set_prop socket, this(sender), value: &quot;&quot;
@@ -814,7 +844,7 @@ end</code></pre>
     </p>
   </div>
   <div class="col-md-8">
-    <p><pre><code class="elixir"><%=~S/def waiter_example(socket, _sender) do
+    <p><pre><code class="elixir"><%=~S/defhandler waiter_example(socket, _sender) do
   buttons = render_to_string("waiter_example.html", [])
 
   set_prop socket, "#waiter_answer_div", innerHTML: nil
@@ -858,7 +888,7 @@ end/%></code></pre>
   </div>
   <div class="col-md-8">
     <p>
-    <pre><code class="elixir"><%=~S|def raise_error(_socket, _dom_sender) do
+    <pre><code class="elixir"><%=~S|defhandler raise_error(_socket, _dom_sender) do
   map = %{x: 1, y: 2}
   # the following line will cause KeyError
   map.z
@@ -882,7 +912,7 @@ end|%></code></pre>
   <div class="col-md-8">
     <p>
     But what when the Handler Process is killed for some reason, other than the exception, - like being brutally murdered? The story is quite similar - we can show the error banner, but in this case there is no way to clean up. In practice the button will stay disabled.
-    <pre><code class="elixir"><%=~S|def self_kill(_socket, _dom_sender) do
+    <pre><code class="elixir"><%=~S|defhandler self_kill(_socket, _dom_sender) do
   Process.exit(self(), :kill)
 end|%></code></pre>
     </p>

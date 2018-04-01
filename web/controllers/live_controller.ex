@@ -1,6 +1,7 @@
 defmodule DrabPoc.LiveController do
   use DrabPoc.Web, :controller
-  use Drab.Controller
+  # use Drab.Controller
+  use Drab.Controller, commanders: [DrabPoc.TimerCommander, DrabPoc.Timer2Commander]
 
   def index(conn, _params) do
     conn = put_session(conn, :drab_test, "test string from the Plug Session, set in the Controller")

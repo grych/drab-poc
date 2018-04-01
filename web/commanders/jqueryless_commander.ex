@@ -9,7 +9,7 @@ defmodule DrabPoc.JquerylessCommander do
     socket |> exec_js!("console.log('Alert from the other side!');")
   end
 
-  def clicked(socket, payload) do
+  defhandler clicked(socket, payload) do
     socket |> Drab.Browser.broadcast_console("You've sent me this: #{payload |> inspect}")
   end
 end

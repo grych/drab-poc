@@ -39,7 +39,7 @@ update(something, set: new_value, on: selector)/%></code></pre>
       The only thing which might be considered new is the pair of <code>drab-event</code> and <code>drab-handler</code> attributes. What do this values mean? <code>drab-event</code> is obviously a name of the event, and <code>drab-handler</code> is a name of the <b>Elixir function on the server side</b>, in <code>DrabPoc.PageCommander</code> module (see the code below). Clicking on the <code>&lt;button&gt;</code> <b>in the browser</b> runs <code>DrabPoc.PageCommander.uppercase/2</code> <b>on the server.</b>
 <pre><code class="elixir"><%=~s{defmodule DrabPoc.PageCommander do
   use Drab.Commander, modules: [Drab.Query, Drab.Modal, Drab.Waiter]
-  def uppercase(socket, sender) do
+  defhandler uppercase(socket, sender) do
     t = socket |> select(:val, from: "#text_to_uppercase")
     socket |> update(:val, set: String.upcase(t), on: "#text_to_uppercase")
   end
@@ -88,7 +88,7 @@ name = socket |> select(:vals, from: "input")
     </p>
     <p>
       On the server side the code is not very sophisticated as well. The whole functionality is to sleep for a few seconds. But the sleep interval is given with <code>data</code> property in <code>dom_sender</code> variable. Please notice that this variable contains more interesting values to be used, like <code>val</code>, <code>html</code> or <code>text</code>.
-      <pre><code class="elixir"><%=~s/def clicked_sleep_button(socket, dom_sender) do
+      <pre><code class="elixir"><%=~s/defhandler clicked_sleep_button(socket, dom_sender) do
   socket |> update(class: "btn-primary", set: "btn-danger", on: this(dom_sender))
   :timer.sleep(dom_sender["data"]["sleep"] * 1000)
   socket |> update(class: "btn-danger", set: "btn-primary", on: this(dom_sender))
@@ -133,7 +133,7 @@ end/%></code></pre>
     </p>
     <p>
       The whole processing is on the server side. Clicking the button runs <code>run_async_tasks/2</code> function on the server side:
-<pre><code class="elixir"><%=~s/def run_async_tasks(socket, dom_sender) do
+<pre><code class="elixir"><%=~s/defhandler run_async_tasks(socket, dom_sender) do
   socket
     |> update(class: "label-success", set: "label-danger", on: ".task")
     |> update(:text, set: "running", on: "#async_task_status")
@@ -191,7 +191,7 @@ end/%></code></pre>
       <br>
       Notice that updates can be stacked, because all Drab setter functions return <code>socket</code>.
 <pre><code class="elixir"><%=~S"""
-  def perform_long_process(socket, dom_sender) do
+  defhandler perform_long_process(socket, dom_sender) do
     socket
       |> execute(:hide, on: this(dom_sender))
       |> insert(cancel_button(socket, self()), after: "[drab-click=perform_long_process]")
@@ -256,7 +256,7 @@ To be able to cancel the process we need to modify <code>step/3</code> to receiv
   end
 end
 
-def cancel_long_process(socket, dom_sender) do
+defhandler cancel_long_process(socket, dom_sender) do
   pid = Drab.detokenize_pid(socket, dom_sender["data"]["pid"])
   send(pid, :cancel_processing)
 end
@@ -345,7 +345,7 @@ end/%></code></pre>
       You may concern about Drab performance - is it quick enough to handle events in the realtime? The best to find it out is to check - lets say the <code>keyup</code> event.
       <pre><code class="html"><%=~s(<input drab-keyup="changed_input" data-update="#display_placeholder">
 <div id="display_placeholder"></div>)%></code></pre>
-      <pre><code class="elixir"><%=~s/def changed_input(socket, dom_sender) do
+      <pre><code class="elixir"><%=~s/defhandler changed_input(socket, dom_sender) do
   socket |> update!(:text,
                  set: String.upcase(dom_sender["val"],
                   on: dom_sender["data"]["update"])
@@ -402,12 +402,12 @@ end/%></code></pre>
     </p>
   </div>
   <div class="col-md-8">
-    <p><pre><code class="elixir"><%=~S/def increase_counter(socket, _dom_sender) do
+    <p><pre><code class="elixir"><%=~S/defhandler increase_counter(socket, _dom_sender) do
   counter = get_store(socket, :counter) || 0
   put_store(socket, :counter, counter + 1)
 end
 
-def show_counter(socket, _dom_sender) do
+defhandler show_counter(socket, _dom_sender) do
   counter = get_store(socket, :counter)
   socket |> alert("Counter", "Counter value: #{counter}")
   socket
@@ -475,11 +475,11 @@ end/%></code></pre>
     </p>
     <p>
       On the Elixir side, <code>update_nick</code> event handler saves your nickname for the future use:
-      <pre><code class="elixir"><%=~S/def update_nick(socket, sender), do: socket |> put_store(:nickname, sender["val"])/%></code></pre>
+      <pre><code class="elixir"><%=~S/defhandler update_nick(socket, sender), do: socket |> put_store(:nickname, sender["val"])/%></code></pre>
     </p>
     <p>
       The following code is the whole chat application! We retrieve the nickname from the Drab Store (or set it to <i>Anonymous</i> if not found), compose the message to be displayed, and we are ready to go. First, we insert the message to the chat panel (used the <code>append</code> method, so it is added at the bottom of the chat div). Second, clean up the message input. Third, scroll down chat to the bottom. All the changes of are broadcasted to all browsers viewing this page, because we used bang versions of functions here.
-      <pre><code class="elixir">def update_chat(socket, sender) do
+      <pre><code class="elixir">defhandler update_chat(socket, sender) do
   nick = get_store(socket, :nickname, &quot;Anonymous&quot;)
   html = ~E&quot;&lt;strong&gt;&lt;%= nick %&gt;:&lt;/strong&gt; &lt;%= message %&gt;&lt;br&gt;&quot; |&gt; safe_to_string()
   socket
@@ -509,7 +509,7 @@ defp add_chat_message!(socket, message) do
   socket |&gt; scroll_down!()
 end
 
-def update_chat(socket, sender) do
+defhandler update_chat(socket, sender) do
   nick = get_store(socket, :nickname, &quot;Anonymous&quot;)
   html = ~E&quot;&lt;strong&gt;&lt;%= nick %&gt;:&lt;/strong&gt; &lt;%= message %&gt;&lt;br&gt;&quot; |&gt; safe_to_string()
   socket
@@ -621,7 +621,7 @@ end</code></pre>
     </p>
   </div>
   <div class="col-md-8">
-    <p><pre><code class="elixir"><%=~S/  def waiter_example(socket, _dom_sender) do
+    <p><pre><code class="elixir"><%=~S/  defhandler waiter_example(socket, _dom_sender) do
     buttons = Phoenix.View.render_to_string(DrabPoc.PageView, "waiter_example.html", [])
     socket
       |> delete(from: "#waiter_answer_div")
@@ -671,7 +671,7 @@ end</code></pre>
   </div>
   <div class="col-md-8">
     <p>
-    <pre><code class="elixir"><%=~S|def raise_error(_socket, _dom_sender) do
+    <pre><code class="elixir"><%=~S|defhandler raise_error(_socket, _dom_sender) do
   map = %{x: 1, y: 2}
   # the following line will cause KeyError
   map.z
@@ -695,7 +695,7 @@ end|%></code></pre>
   <div class="col-md-8">
     <p>
     But what when the Handler Process is killed for some other, than the exception, reason - like being brutally murdered? The story is quite similar - we can show the error banner, but in this case there is no way to clean up. In practice the button will stay disabled.
-    <pre><code class="elixir"><%=~S|def self_kill(_socket, _dom_sender) do
+    <pre><code class="elixir"><%=~S|defhandler self_kill(_socket, _dom_sender) do
   Process.exit(self(), :kill)
 end|%></code></pre>
     </p>

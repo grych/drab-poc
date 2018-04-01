@@ -19,20 +19,20 @@ defmodule DrabPoc.QueryCommander do
 
   broadcasting :same_controller
 
-  def run_before_uppercase(_socket, _dom_sender) do
+  defhandler run_before_uppercase(_socket, _dom_sender) do
     Logger.debug("BEFORE uppercase")
   end
 
-  def run_before_each(_socket, _dom_sender) do
+  defhandler run_before_each(_socket, _dom_sender) do
     Logger.debug("BEFORE EACH")
   end
 
-  def run_after_except_uppercase(_socket, _dom_sender, handler_return) do
+  defhandler run_after_except_uppercase(_socket, _dom_sender, handler_return) do
     Logger.debug("AFTER EXCEPT uppercase. Handler returned: #{inspect handler_return}")
   end
 
   # Drab Events
-  def uppercase(socket, dom_sender) do
+  defhandler uppercase(socket, dom_sender) do
     t = socket |> select(:val, from: "#text_to_uppercase")
     socket |> update(:val, set: String.upcase(t), on: "#text_to_uppercase")
     Logger.debug("****** SOCKET:  #{inspect(socket)}")
@@ -50,7 +50,7 @@ defmodule DrabPoc.QueryCommander do
   #   looop(socket)
   # end
 
-  def perform_long_process(socket, dom_sender) do
+  defhandler perform_long_process(socket, dom_sender) do
     socket
       |> execute(:hide, on: this(dom_sender))
       |> insert(cancel_button(socket, self()), after: "[drab-click=perform_long_process]")
@@ -107,14 +107,14 @@ defmodule DrabPoc.QueryCommander do
     socket |> execute(:show, on: "[drab-click=perform_long_process]")
   end
 
-  def cancel_long_process(socket, dom_sender) do
+  defhandler cancel_long_process(socket, dom_sender) do
     pid = Drab.detokenize(socket, dom_sender["data"]["pid"])
     if Process.alive?(pid) do
       send(pid, :cancel_processing)
     end
   end
 
-  def run_async_tasks(socket, _dom_sender) do
+  defhandler run_async_tasks(socket, _dom_sender) do
     socket
       |> update(class: "label-success", set: "label-danger", on: ".task")
       |> update(:text, set: "running", on: "#async_task_status")
@@ -133,30 +133,30 @@ defmodule DrabPoc.QueryCommander do
       on: "#async_task_status")
   end
 
-  def clicked_sleep_button(socket, dom_sender) do
+  defhandler clicked_sleep_button(socket, dom_sender) do
     socket |> update(class: "btn-primary", set: "btn-danger", on: this(dom_sender))
     :timer.sleep(dom_sender["data"]["sleep"] * 1000)
     socket |> update(class: "btn-danger", set: "btn-primary", on: this(dom_sender))
     dom_sender["data"]["sleep"]
   end
 
-  def changed_input(socket, dom_sender) do
+  defhandler changed_input(socket, dom_sender) do
     v = dom_sender["val"]
     socket |> update!(:text, set: String.upcase(v),  on: dom_sender["data"]["update"])
   end
 
-  def increase_counter(socket, _dom_sender) do
+  defhandler increase_counter(socket, _dom_sender) do
     counter = get_store(socket, :counter) || 0
     put_store(socket, :counter, counter + 1)
   end
 
-  def show_counter(socket, _dom_sender) do
+  defhandler show_counter(socket, _dom_sender) do
     counter = get_store(socket, :counter)
     socket |> alert("Counter", "Counter value: #{counter}")
     socket
   end
 
-  def update_chat(socket, sender) do
+  defhandler update_chat(socket, sender) do
     do_update_chat(socket, sender, sender["val"])
   end
 
@@ -178,7 +178,7 @@ defmodule DrabPoc.QueryCommander do
       |> add_chat_message!(html)
   end
 
-  def update_nick(socket, sender) do
+  defhandler update_nick(socket, sender) do
     new_nick = sender["val"]
     message = ~E"""
     <span class='chat-system-message'>
@@ -243,7 +243,7 @@ defmodule DrabPoc.QueryCommander do
     socket |> update!(:html, set: users, on: "#presence-list")
   end
 
-  def waiter_example(socket, _dom_sender) do
+  defhandler waiter_example(socket, _dom_sender) do
     buttons = Phoenix.View.render_to_string(DrabPoc.QueryView, "waiter_example.html", [])
     # TODO: change it in a new version
     # buttons = render_to_string("waiter_example.html", [])
@@ -265,13 +265,13 @@ defmodule DrabPoc.QueryCommander do
       |> update(:text, set: "Do you realy think it is #{answer}?", on: "#waiter_answer_div")
   end
 
-  def raise_error(_socket, _dom_sender) do
+  defhandler raise_error(_socket, _dom_sender) do
     map = %{x: 1, y: 2}
     # the following line will cause KeyError
     map.z
   end
 
-  def self_kill(_socket, _dom_sender) do
+  defhandler self_kill(_socket, _dom_sender) do
     Process.exit(self(), :kill)
   end
 
