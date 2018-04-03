@@ -339,6 +339,10 @@ defmodule DrabPoc.QueryCommander do
   defp last_n_lines(file_path, lines) do
     case System.cmd("tail", ["-#{lines}", file_path]) do
       {stdout, 0} -> stdout
+        |> String.split("\n")
+        |> Enum.map(fn line -> String.slice(line, 0..60) <> " ..." end)
+        |> Enum.join("\n")
+
       {stdout, retval} -> raise "last_n_lines: tail returned #{retval}. Stdout:\n#{stdout}"
     end
   end
