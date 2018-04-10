@@ -784,7 +784,7 @@ end</code></pre>
   DrabPoc.Presence.add_user(ref, nickname)
   put_store(socket, :my_drab_ref, ref)
 end</code></pre>
-    The code above is executed every time your browser connects to the server. First, we broadcasts the information to all to show them that some has joined the chat. Second, we store the information about connected user in the special store, <code>DrabPoc.Presence</code>. It is just a simple <code>Agent</code>, which stores key/value pairs. It is out of the scope of this tutorial, but if you are interested how it works, read <a href="https://github.com/grych/drab-poc/blob/master/lib/drab_poc/presence.ex">the helpful source</a>.
+    The code above is executed every time your browser connects to the server. First, we broadcasts the information to all to show them that some has joined the chat. Second, we store the information about connected user in the special store, <code>DrabPoc.Presence</code>. It is just a simple <code>Agent</code>, which stores key/value pairs. It is out of the scope of this tutorial, but if you are interested how it works, read <a href="https://github.com/grych/drab-poc/blob/master/lib/drab_poc/presence.ex">the friendly source</a>.
     </p>
     <p>
       We are going to use a reference as a key, which will be stored on the client side with the Drab Store. We are going to need it while handling disconnects.
