@@ -204,7 +204,7 @@ defmodule DrabPoc.LiveCommander do
     set_prop socket, "#waiter_answer_div", innerText: "Do you realy think it is #{answer}?"
   end
 
-
+  @spec raise_error(any, any) :: any | no_return
   defhandler raise_error(_socket, _dom_sender) do
     map = %{x: 1, y: 2}
     # the following line will cause KeyError

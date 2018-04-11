@@ -39,6 +39,7 @@
               <li><a href="/drab#argument">Optional Argument</a></li>
               <li><a href="/drab#shared">Shared Commanders</a></li>
               <li><a href="/drab#components">Creating Reusable Components with Shared Commanders</a></li>
+              <li><a href="/drab#living_shared">Shared Commanders and Living Assigns</a></li>
               <li><a href="/drab#store">Persistent Storage and Access to Plug Session</a></li>
               <li><a href="/drab#chat_example">Chat Example</a></li>
               <li><a href="/drab#presence">Using Callbacks to Create a Presence List</a></li>

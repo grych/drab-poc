@@ -14,7 +14,8 @@ defmodule DrabPoc.LiveController do
       bar_width: 0, progress_bar_class: "",
       long_process_button_text: "Click me to start processing ...",
       access_log: "... this pane will update when access.log change ...",
-      counter: ""
+      counter: "",
+      countdown: "here be countdown"
   end
 
   defp country_code(conn) do

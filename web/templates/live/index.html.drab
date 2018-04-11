@@ -41,6 +41,16 @@
   <div class="col-md-4 left-bordered">
 
     <div class="panel panel-default">
+      <div class="panel-heading">v0.7.5: Tge Great Unification <span class="label label-default">2018-04-11</span></div>
+      <div class="panel-body">
+        <p>
+          <a href="https://github.com/grych/drab/releases/tag/v0.7.5">Shared and Page commanders are finally unified.</a>
+          Also, <a href="#living_shared">living assigns gained more magic powers</a>!
+        </p>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
       <div class="panel-heading">v0.7.2: API Changes and Reusable Components <span class="label label-default">2018-04-01</span></div>
       <div class="panel-body">
         <p>
@@ -610,7 +620,63 @@ end/%></code></pre>
 </div>
 <hr>
 
+<div class="row">
+  <a name="living_shared">
+    <h4 class="anchored">Shared Commanders and Living Assigns</h4>
+  </a>
 
+  <div class="col-md-8">
+    <p>
+      The previous example was nice, but what about living assigns? They are using the pure magic to update the page, not the selector, so we can't use <code>this_commander/1</code> as above. Consider almost exactly the same html, but with the assigns:
+      <pre><code class="html">&lt;p drab-commander=&quot;DrabPoc.Timer3Commander&quot; drab-argument=&quot;{seconds: 10}&quot;&gt;
+  &lt;button class=&quot;btn btn-primary&quot; drab-click=&quot;countdown&quot;&gt;
+    Count down from 10
+  &lt;&#x2F;button&gt;
+  &lt;br&gt;&lt;span &gt;&lt;%= @countdown %&gt;&lt;&#x2F;span&gt;
+&lt;&#x2F;p&gt;
+&lt;p drab-commander=&quot;DrabPoc.Timer3Commander&quot; drab-argument=&quot;{seconds: 20}&quot;&gt;
+  &lt;br&gt;
+  &lt;button class=&quot;btn btn-primary&quot; drab-click=&quot;countdown&quot;&gt;
+    Count down from 20
+  &lt;&#x2F;button&gt;
+  &lt;br&gt;&lt;span &gt;&lt;%= @countdown %&gt;&lt;&#x2F;span&gt;
+&lt;&#x2F;p&gt;</code></pre>
+    </p>
+
+    <p>
+      What to do if we want to update the corresponding secion of the page with <code>poke</code>? The answer is: <b>nothing</b>. All is done automagically. Only the assigns, which are in the same <code>drab-commander</code> section as the element, which generated the event, are updated.
+      <pre><code class="elixir"><%=~S/defmodule DrabPoc.Timer2Commander do
+  use Drab.Commander
+
+  defhandler countdown(socket, _sender, options) do
+    for i <- 1..options["seconds"] do
+      poke socket, countdown: options["seconds"] - i
+    end
+  end
+end/%></code></pre>
+      Notice in this handler we've removed <code>Process.sleep/1</code> - this is to demonstrate the network latency between the browser and the server.
+    </p>
+
+
+  </div>
+  <div class="col-md-4">
+    <p drab-commander="DrabPoc.Timer3Commander" drab-argument="{seconds: 10}">
+      <button class="btn btn-primary" drab-click="countdown">
+        Count down from 10
+      </button>
+      <br><span><%= @countdown %></span>
+    </p>
+    <p drab-commander="DrabPoc.Timer3Commander" drab-argument="{seconds: 20}">
+      <br>
+      <button class="btn btn-primary" drab-click="countdown">
+        Count down from 20
+      </button>
+      <br><span><%= @countdown %></span>
+    </p>
+  </div>
+
+</div>
+<hr>
 
 
 
