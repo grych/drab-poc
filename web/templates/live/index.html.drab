@@ -627,7 +627,7 @@ end/%></code></pre>
 
   <div class="col-md-8">
     <p>
-      The previous example was nice, but what about living assigns? They are using the pure magic to update the page, not the selector, so we can't use <code>this_commander/1</code> as above. Consider almost exactly the same html, but with the assigns:
+      The previous example was nice, but what about living assigns? They are using the pure magic to update the page, not the selector, so we can't just use <code>this_commander/1</code> as above. Consider almost exactly the same html, but with the assigns:
       <pre><code class="html">&lt;p drab-commander=&quot;DrabPoc.Timer3Commander&quot; drab-argument=&quot;{seconds: 10}&quot;&gt;
   &lt;button class=&quot;btn btn-primary&quot; drab-click=&quot;countdown&quot;&gt;
     Count down from 10
@@ -644,7 +644,7 @@ end/%></code></pre>
     </p>
 
     <p>
-      What to do if we want to update the corresponding secion of the page with <code>poke</code>? The answer is: <b>nothing</b>. All is done automagically. Only the assigns, which are in the same <code>drab-commander</code> section as the element, which generated the event, are updated.
+      What to do if we want to update the corresponding section of the page with <code>poke</code>? The answer is: <b>nothing</b>. All is done automagically. Only the assigns, which are in the same <code>drab-commander</code> section as the element, which generated the event, are updated.
       <pre><code class="elixir"><%=~S/defmodule DrabPoc.Timer2Commander do
   use Drab.Commander
 
