@@ -654,7 +654,7 @@ end/%></code></pre>
     end
   end
 end/%></code></pre>
-      Notice in this handler we've removed <code>Process.sleep/1</code> - this is to demonstrate the network latency between the browser and the server.
+      Notice in this handler we've removed <code>Process.sleep/1</code> - this is to demonstrate the network latency between the browser and the server (which is located in France).
     </p>
 
 
