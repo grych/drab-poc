@@ -645,7 +645,7 @@ end/%></code></pre>
 
     <p>
       What to do if we want to update the corresponding section of the page with <code>poke</code>? The answer is: <b>nothing</b>. All is done automagically. Only the assigns, which are in the same <code>drab-commander</code> section as the element, which generated the event, are updated.
-      <pre><code class="elixir"><%=~S/defmodule DrabPoc.Timer2Commander do
+      <pre><code class="elixir"><%=~S/defmodule DrabPoc.Timer3Commander do
   use Drab.Commander
 
   defhandler countdown(socket, _sender, options) do
