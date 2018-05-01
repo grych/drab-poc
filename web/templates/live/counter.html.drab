@@ -1,0 +1,13 @@
+<p drab-commander="DrabPoc.Timer4Commander" drab-argument="{seconds: 100}">
+  <button class="btn btn-primary" drab-click="countdown">
+    Count down from 100
+  </button>
+  <br><span><%= @countdown %></span>
+</p>
+<p drab-commander="DrabPoc.Timer4Commander" drab-argument="{seconds: 200}">
+  <br>
+  <button class="btn btn-primary" drab-click="countdown">
+    Count down from 200
+  </button>
+  <br><span><%= @countdown %></span>
+</p>

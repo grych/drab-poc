@@ -681,6 +681,34 @@ end/%></code></pre>
 
 
 <div class="row">
+  <a name="partials">
+    <h4 class="anchored">Using Living Assigns with Partials</h4>
+  </a>
+
+  <div class="col-md-8">
+    <p>
+      In Phoenix, assigns live withing the templates. So far, we did <code>poke</code> to the main template, the one rendered in the controller. But what if you want to use living assigns within the partials? Let's move the previous example to the <code>counter.html.drab</code> file and render it inside the main template with standard, Phoenix way:
+      <pre><code class="elixir">&lt;%= render "counter.html", countdown: "the countdown in partial" %&gt;</code></pre>
+    </p>
+
+    <p>
+      On the Commander side, the only difference is the line with the <code>poke</code>. You need to tell poke in which partial you want to update the assign. Do it by adding the partial name as a second argument of the <code>poke</code>. Notice that you may also specify the View, but without it, Drab takes the default view for the main template.
+      <pre><code class="elixir"><%=~S/poke socket, "counter.html", countdown: options["seconds"] - i/%></code></pre>
+      Did you spot the performance difference between those two operations? <strong>Yes, <code>Drab.Live</code> works best with the small templates</strong>. This is because each time you <code>poke</code> anything, it must get the assigns from page, re-render the template and parse the html. It might be quite a long operation on a big, bad designed pages, like this one!
+    </p>
+
+
+  </div>
+  <div class="col-md-4">
+    <%= render "counter.html", countdown: "the countdown in partial" %>
+  </div>
+
+</div>
+<hr>
+
+
+
+<div class="row">
   <a name="store">
     <h4 class="anchored">Drab Store and access to Plug Session</h4>
   </a>
