@@ -628,16 +628,16 @@ end/%></code></pre>
   <div class="col-md-8">
     <p>
       The previous example was nice, but what about living assigns? They are using the pure magic to update the page, not the selector, so we can't just use <code>this_commander/1</code> as above. Consider almost exactly the same html, but with the assigns:
-      <pre><code class="html">&lt;p drab-commander=&quot;DrabPoc.Timer3Commander&quot; drab-argument=&quot;{seconds: 100}&quot;&gt;
+      <pre><code class="html">&lt;p drab-commander=&quot;DrabPoc.Timer3Commander&quot; drab-argument=&quot;{seconds: 10}&quot;&gt;
   &lt;button class=&quot;btn btn-primary&quot; drab-click=&quot;countdown&quot;&gt;
-    Count down from 100
+    Count down from 10
   &lt;&#x2F;button&gt;
   &lt;br&gt;&lt;span &gt;&lt;%= @countdown %&gt;&lt;&#x2F;span&gt;
 &lt;&#x2F;p&gt;
-&lt;p drab-commander=&quot;DrabPoc.Timer3Commander&quot; drab-argument=&quot;{seconds: 200}&quot;&gt;
+&lt;p drab-commander=&quot;DrabPoc.Timer3Commander&quot; drab-argument=&quot;{seconds: 20}&quot;&gt;
   &lt;br&gt;
   &lt;button class=&quot;btn btn-primary&quot; drab-click=&quot;countdown&quot;&gt;
-    Count down from 202
+    Count down from 20
   &lt;&#x2F;button&gt;
   &lt;br&gt;&lt;span &gt;&lt;%= @countdown %&gt;&lt;&#x2F;span&gt;
 &lt;&#x2F;p&gt;</code></pre>
@@ -660,16 +660,16 @@ end/%></code></pre>
 
   </div>
   <div class="col-md-4">
-    <p drab-commander="DrabPoc.Timer3Commander" drab-argument="{seconds: 100}">
+    <p drab-commander="DrabPoc.Timer3Commander" drab-argument="{seconds: 10}">
       <button class="btn btn-primary" drab-click="countdown">
-        Count down from 100
+        Count down from 10
       </button>
       <br><span><%= @countdown %></span>
     </p>
-    <p drab-commander="DrabPoc.Timer3Commander" drab-argument="{seconds: 200}">
+    <p drab-commander="DrabPoc.Timer3Commander" drab-argument="{seconds: 20}">
       <br>
       <button class="btn btn-primary" drab-click="countdown">
-        Count down from 200
+        Count down from 20
       </button>
       <br><span><%= @countdown %></span>
     </p>

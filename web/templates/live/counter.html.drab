@@ -1,13 +1,13 @@
-<p drab-commander="DrabPoc.Timer4Commander" drab-argument="{seconds: 100}">
+<p drab-commander="DrabPoc.Timer4Commander" drab-argument="{seconds: 10}">
   <button class="btn btn-primary" drab-click="countdown">
-    Count down from 100
+    Count down from 10
   </button>
   <br><span><%= @countdown %></span>
 </p>
-<p drab-commander="DrabPoc.Timer4Commander" drab-argument="{seconds: 200}">
+<p drab-commander="DrabPoc.Timer4Commander" drab-argument="{seconds: 20}">
   <br>
   <button class="btn btn-primary" drab-click="countdown">
-    Count down from 200
+    Count down from 20
   </button>
   <br><span><%= @countdown %></span>
 </p>
