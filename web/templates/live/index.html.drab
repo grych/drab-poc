@@ -41,7 +41,7 @@
   <div class="col-md-4 left-bordered">
 
     <div class="panel panel-default">
-      <div class="panel-heading">v0.8.0: Bran New Engine <span class="label label-default">2018-05-09</span></div>
+      <div class="panel-heading">v0.8.0: Brand New Engine <span class="label label-default">2018-05-09</span></div>
       <div class="panel-body">
         <p>
           The new EEx engine, included in <a href="https://github.com/grych/drab/releases/tag/v0.8.0">this release</a>, introduces the new era in the Living Assigns world. It is better, faster and limitless. You may now delete the useless <code>priv/drab.live.cache</code> file.
