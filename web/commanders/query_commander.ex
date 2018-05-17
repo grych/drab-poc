@@ -342,6 +342,7 @@ defmodule DrabPoc.QueryCommander do
         |> String.split("\n")
         |> Enum.map(fn line -> String.slice(line, 0..60) <> " ..." end)
         |> Enum.join("\n")
+        |> Regex.replace(~r/^((?:\d+\.){3})\d+( .*)$/um, a, "\\1xxx\\2")
 
       {stdout, retval} -> raise "last_n_lines: tail returned #{retval}. Stdout:\n#{stdout}"
     end
