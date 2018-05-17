@@ -338,11 +338,12 @@ defmodule DrabPoc.QueryCommander do
 
   defp last_n_lines(file_path, lines) do
     case System.cmd("tail", ["-#{lines}", file_path]) do
-      {stdout, 0} -> stdout
+      {stdout, 0} ->
+        trimmed = stdout
         |> String.split("\n")
         |> Enum.map(fn line -> String.slice(line, 0..60) <> " ..." end)
         |> Enum.join("\n")
-        |> Regex.replace(~r/^((?:\d+\.){3})\d+( .*)$/um, a, "\\1xxx\\2")
+        Regex.replace(~r/^((?:\d+\.){3})\d+( .*)$/um, trimmed, "\\1xxx\\2")
 
       {stdout, retval} -> raise "last_n_lines: tail returned #{retval}. Stdout:\n#{stdout}"
     end
