@@ -49,30 +49,14 @@
               <li><a href="/drab#debugging">Debugging Drab in IEx</a></li>
             </ul>
           </li>
-
+          <li><a href="https://github.com/grych/drab/blob/master/README.md#installation">Installation</a></li>
           <li><a href="https://hexdocs.pm/drab/api-reference.html">Docs</a></li>
-
-<%#
-          <li class="dropdown">
-            <a data-toggle="dropdown" class="dropdown-toggle" href="/drab/docs">Docs with Examples <b class="caret"></b></a>
-            <ul role="menu" class="dropdown-menu">
-              <li><a href="/drab/docs#drab">Drab</a></li>
-              <li><a href="/drab/docs#core">Drab.Core</a></li>
-              <li><a href="/drab/docs#query">Drab.Query</a></li>
-              <li><a href="/drab/docs#modal">Drab.Modal</a></li>
-              <li><a href="/drab/docs#waiter">Drab.Waiter</a></li>
-              <li><a href="/drab/docs#controller">Drab.Controller</a></li>
-              <li><a href="/drab/docs#commander">Drab.Commander</a></li>
-              <li><a href="/drab/docs#socket">Drab.Socket</a></li>
-              <li><a href="/drab/docs#client">Drab.Client</a></li>
-              <li><a href="/drab/docs#gen_commander">Mix.Tasks.Drab.Gen.Commander</a></li>
-            </ul>
-          </li>
- %>
-          <li><a href="/drab/nojquery">Naked Drab</a></li>
-          <li><a href="/drab/query">Drab.Query</a></li>
+          <li><a href="https://elixirforum.com/t/drab-remote-controlled-frontend-framework-for-phoenix/3277">elixirforum.com</a></li>
           <li><a href="https://github.com/grych/drab">Drab Source</a></li>
           <li><a href="https://github.com/grych/drab-poc">This Page Source</a></li>
+
+          <li><a href="/drab/nojquery">Naked Drab</a></li>
+          <li><a href="/drab/query">Drab.Query</a></li>
           <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="/drab">Sandboxes <b class="caret"></b></a>
             <ul role="menu" class="dropdown-menu">
@@ -82,8 +66,6 @@
             </ul>
           </li>
 
-
-          <li><a href="https://github.com/grych/drab/blob/master/README.md#installation">Installation</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li><a href="mailto:grych@tg.pl?Subject=Drab">Contact &nbsp;&nbsp;</a></li>
