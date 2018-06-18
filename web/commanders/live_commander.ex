@@ -253,6 +253,10 @@ defmodule DrabPoc.LiveCommander do
 
 
   def connected(socket) do
+    IO.inspect Drab.Presence.count_connections(same_controller(DrabPoc.LiveController))
+    IO.inspect same_controller(DrabPoc.LiveController)
+    broadcast_html socket, "#number_of_users", Drab.Presence.count_connections("__drab:controller:Elixir.DrabPoc.LiveController")
+
     # display chat join message
     nickname = get_store(socket, :nickname, anon_nickname(socket))
     joined = ~E"""
@@ -277,6 +281,8 @@ defmodule DrabPoc.LiveCommander do
 
 
   def disconnected(store, session) do
+    broadcast_html "controller:Elixir.DrabPoc.LiveController", "#number_of_users", Drab.Presence.count_connections("__drab:controller:Elixir.DrabPoc.LiveController")
+
     DrabPoc.Presence.remove_user(store[:my_drab_ref])
 
     removed_user = store[:nickname] || anon_with_country_code(session[:country_code])

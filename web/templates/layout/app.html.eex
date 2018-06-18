@@ -65,10 +65,11 @@
               <li><a href="https://github.com/grych/drab_example_nojquery">Naked Drab Example Project</a></li>
             </ul>
           </li>
+          <li><a href="mailto:grych@tg.pl?Subject=Drab">Contact &nbsp;&nbsp;</a></li>
 
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="mailto:grych@tg.pl?Subject=Drab">Contact &nbsp;&nbsp;</a></li>
+          <li><a title="number of connected users"><span id="number_of_users">-</span> &nbsp;&nbsp;</a></li>
         </ul>
       </nav>
     </div>
