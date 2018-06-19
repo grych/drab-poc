@@ -253,8 +253,8 @@ defmodule DrabPoc.LiveCommander do
 
 
   def connected(socket) do
-    IO.inspect Drab.Presence.count_connections(same_controller(DrabPoc.LiveController))
-    IO.inspect same_controller(DrabPoc.LiveController)
+    # IO.inspect Drab.Presence.count_connections(same_controller(DrabPoc.LiveController))
+    # IO.inspect same_controller(DrabPoc.LiveController)
     broadcast_html socket, "#number_of_users", Drab.Presence.count_connections("__drab:controller:Elixir.DrabPoc.LiveController")
 
     # display chat join message
