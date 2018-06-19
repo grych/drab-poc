@@ -255,7 +255,7 @@ defmodule DrabPoc.LiveCommander do
   def connected(socket) do
     # IO.inspect Drab.Presence.count_connections(same_controller(DrabPoc.LiveController))
     # IO.inspect same_controller(DrabPoc.LiveController)
-    broadcast_html socket, "#number_of_users", Drab.Presence.count_connections(socket)
+    broadcast_html socket, "#number_of_users", Drab.Presence.count_users(socket)
 
     # display chat join message
     nickname = get_store(socket, :nickname, anon_nickname(socket))
@@ -281,7 +281,7 @@ defmodule DrabPoc.LiveCommander do
 
 
   def disconnected(store, session) do
-    broadcast_html same_controller(DrabPoc.LiveController), "#number_of_users", Drab.Presence.count_connections(same_controller(DrabPoc.LiveController))
+    broadcast_html same_controller(DrabPoc.LiveController), "#number_of_users", Drab.Presence.count_users(same_controller(DrabPoc.LiveController))
 
     DrabPoc.Presence.remove_user(store[:my_drab_ref])
 
