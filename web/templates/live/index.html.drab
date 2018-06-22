@@ -41,6 +41,15 @@
   <div class="col-md-4 left-bordered">
 
     <div class="panel panel-default">
+      <div class="panel-heading">v0.8.3: Brand New Engine <span class="label label-default">2018-06-22</span></div>
+      <div class="panel-body">
+        <p>
+          <a href="https://github.com/grych/drab/releases/tag/v0.8.3">Subscribe and Presence</a> release, brings the ability to subscribe to the topic in a runtime and count the connected users. Now you can write a Chat with Drab ;)
+        </p>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
       <div class="panel-heading">v0.8.0: Brand New Engine <span class="label label-default">2018-05-09</span></div>
       <div class="panel-body">
         <p>
@@ -54,16 +63,6 @@
       <div class="panel-body">
         <p>
           Please read the <a href="https://github.com/grych/drab/releases/tag/v0.7.2">Release Notes</a> - API has been changed. Also, introduced the new feature: creating reusable components!
-        </p>
-      </div>
-    </div>
-
-    <div class="panel panel-default">
-      <div class="panel-heading">v0.7.0: Drab core rearranged <span class="label label-default">2018-01-22</span></div>
-      <div class="panel-body">
-        <p>
-          <a href="https://github.com/grych/drab/releases/tag/v0.7.0">v0.7.0</a> looks small, but it brings important
-          changes in the core.
         </p>
       </div>
     </div>
@@ -1057,7 +1056,7 @@ iex(4)> set_style socket, "p", backgroundColor: "red"
 <hr>
 
 <h4>
-  &copy;2016 - 2017 Tomek "Grych" Gryszkiewicz, <a href="mailto:grych@tg.pl">grych@tg.pl</a>
+  &copy;2016 - 2018 Tomek "Grych" Gryszkiewicz, <a href="mailto:grych@tg.pl">grych@tg.pl</a>
 </h4>
 <hr>
 <p>
