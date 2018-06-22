@@ -41,7 +41,7 @@
   <div class="col-md-4 left-bordered">
 
     <div class="panel panel-default">
-      <div class="panel-heading">v0.8.3: Brand New Engine <span class="label label-default">2018-06-22</span></div>
+      <div class="panel-heading">v0.8.3: Subscribe and Presence <span class="label label-default">2018-06-22</span></div>
       <div class="panel-body">
         <p>
           <a href="https://github.com/grych/drab/releases/tag/v0.8.3">Subscribe and Presence</a> release, brings the ability to subscribe to the topic in a runtime and count the connected users. Now you can write a Chat with Drab ;)
