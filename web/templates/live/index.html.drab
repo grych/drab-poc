@@ -44,7 +44,7 @@
       <div class="panel-heading">v0.8.3: Subscribe and Presence <span class="label label-default">2018-06-22</span></div>
       <div class="panel-body">
         <p>
-          <a href="https://github.com/grych/drab/releases/tag/v0.8.3">Subscribe and Presence</a> release, brings the ability to subscribe to the topic in a runtime and count the connected users. Now you can write a Chat with Drab ;)
+          <a href="https://github.com/grych/drab/releases/tag/v0.8.3">Subscribe and Presence</a> release, brings the ability to subscribe to the topic in a runtime and utilyze the <code>Phoenix.Presence</code> in an easy way.
         </p>
       </div>
     </div>
