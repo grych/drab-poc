@@ -23,6 +23,8 @@ config :logger, :console,
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"
 
+# config :drab, DrabPoc.Endpoint, otp_app: :drab_poc
+
 config :drab,
   disable_controls_when_disconnected: true,
   socket: "/drab/socket",
