@@ -226,11 +226,11 @@ end/%></code></pre>
     </p>
     <p>
       <br><br>
-      <button class="btn btn-primary" drab-event="click" drab-handler="replace_list">Replace List</button>
+      <button class="btn btn-primary" drab-click="replace_list">Replace List</button>
       <br><br>
-      <button class="btn btn-primary" drab-event="click" drab-handler="replace_title">Replace Title</button>
+      <button class="btn btn-primary" drab-click="replace_title">Replace Title</button>
       <br><br>
-      <button class="btn btn-primary" drab-event="click" drab-handler="add_to_list">Add to Existing List</button>
+      <button class="btn btn-primary" drab-click="add_to_list">Add to Existing List</button>
     </p>
   </div>
 

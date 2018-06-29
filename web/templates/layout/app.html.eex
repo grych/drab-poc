@@ -85,7 +85,7 @@
     </div> <!-- /container -->
 
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
-    <%= Drab.Client.js(@conn, user_id: 4, any_other: "test") %>
+    <%= Drab.Client.run(@conn, user_id: 4, any_other: "test") %>
     <script type="text/javascript">
 
     </script>

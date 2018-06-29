@@ -32,19 +32,19 @@ defmodule DrabPoc.LiveCommander do
   end
 
   defhandler add_to_list(socket, _sender) do
-    users = Drab.Live.peek(socket, :users)
+    {:ok, users} = Drab.Live.peek(socket, :users)
     Drab.Live.poke socket, users: users ++ ["Hegemon"]
   end
 
   defhandler clicked_sleep_button(socket, sender) do
     button_no = sender["data"]["sleep"] |> String.to_integer()
 
-    cl = peek socket, :sleep_button_classes
+    {:ok, cl} = peek socket, :sleep_button_classes
     poke socket, sleep_button_classes: %{cl | button_no => "btn-danger"}
 
     Process.sleep(button_no * 1000)
 
-    cl = peek socket, :sleep_button_classes
+    {:ok, cl} = peek socket, :sleep_button_classes
     poke socket, sleep_button_classes: %{cl | button_no => "btn-primary"}
   end
 
@@ -217,7 +217,7 @@ defmodule DrabPoc.LiveCommander do
 
 
   defhandler enlage_your_button_now(socket, _sender) do
-    poke socket, button_height: peek(socket, :button_height) + 2
+    poke socket, button_height: peek!(socket, :button_height) + 2
   end
 
   defp file_change_loop(socket, file_path) do

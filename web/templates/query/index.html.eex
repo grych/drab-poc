@@ -33,10 +33,10 @@ update(something, set: new_value, on: selector)/%></code></pre>
     <p>
       On the <b>client side</b> we have a basic HTML with the input and the button:
 <pre><code class="html"><%=~s(<input id="text_to_uppercase" value="uppercase me">
-<button drab-event="click" drab-handler="uppercase">Do it</button>)%></code></pre>
+<button drab="click:uppercase">Do it</button>)%></code></pre>
     </p>
     <p>
-      The only thing which might be considered new is the pair of <code>drab-event</code> and <code>drab-handler</code> attributes. What do this values mean? <code>drab-event</code> is obviously a name of the event, and <code>drab-handler</code> is a name of the <b>Elixir function on the server side</b>, in <code>DrabPoc.PageCommander</code> module (see the code below). Clicking on the <code>&lt;button&gt;</code> <b>in the browser</b> runs <code>DrabPoc.PageCommander.uppercase/2</code> <b>on the server.</b>
+      The only thing which might be considered new is a <code>drab="click:uppercase"</code> attribute. What do this value mean? <code>click</code> is obviously a name of the event, and <code>uppercase</code> is a name of the <b>Elixir function on the server side</b>, in <code>DrabPoc.PageCommander</code> module (see the code below). Clicking on the <code>&lt;button&gt;</code> <b>in the browser</b> runs <code>DrabPoc.PageCommander.uppercase/2</code> <b>on the server.</b>
 <pre><code class="elixir"><%=~s{defmodule DrabPoc.PageCommander do
   use Drab.Commander, modules: [Drab.Query, Drab.Modal, Drab.Waiter]
   defhandler uppercase(socket, sender) do
@@ -65,7 +65,7 @@ name = socket |> select(:vals, from: "input")
       This is a live demo. Click the button to launch <code>DrabPoc.QueryCommander.uppercase/2</code> on the server.
       <br><br>
       <input class="form-control" id="text_to_uppercase" value="uppercase me">
-      <button class="btn btn-primary" id="uppercase_button" drab-event="click" drab-handler="uppercase">Do it</button>
+      <button class="btn btn-primary" id="uppercase_button" drab="click:uppercase">Do it</button>
     </p>
   </div>
 </div>
@@ -84,7 +84,7 @@ name = socket |> select(:vals, from: "input")
       <pre><code class="html"><%=~s(<button drab-click="clicked_sleep_button" data-sleep="1">Sleep 1 second</button>
 <button drab-click="clicked_sleep_button" data-sleep="2">Sleep 2 seconds</button>
 <button drab-click="clicked_sleep_button" data-sleep="3">Sleep 3 seconds</button>)%></code></pre>
-    Did you notice <code>drab-click</code> attribute? This is a shorthand for <code>drab-event</code> and <code>drab-handler</code> combination. There is a number of such shorthands for most popular events, see documentation for more.
+    Did you notice <code>drab-click</code> attribute? This is a alternative way for <code>drab="event:handler"</code>. There is a number of such shorthands for most popular events, see documentation for more.
     </p>
     <p>
       On the server side the code is not very sophisticated as well. The whole functionality is to sleep for a few seconds. But the sleep interval is given with <code>data</code> property in <code>dom_sender</code> variable. Please notice that this variable contains more interesting values to be used, like <code>val</code>, <code>html</code> or <code>text</code>.
@@ -181,7 +181,7 @@ end/%></code></pre>
   <div class="col-md-8">
     <p>
       Let's move to some more complicated functionality. Assume having a process which is doing some stuff on the server side and we want to report back to the user after each completed step. We will use the progress bar controlled from the server. <br>
-      Client side is very simple, again. Please notice the <code>drab-handler</code> attribute - this time it will run <code>perform_long_process</code> function on the server side.
+      Client side is very simple, again. Please notice the <code>drab-click</code> attribute - this time it will run <code>perform_long_process</code> function on the server side.
 <pre><code class="html"><%=~s[<div class="progress">
   <div class="progress-bar" role="progressbar" style="width:0%">
   </div>
@@ -226,7 +226,7 @@ end/%></code></pre>
       |> update(:html, set: "#{Float.round(i * 100 / steps, 2)}%", on: ".progress-bar")
   end
   """%></code></pre>
-      Just before running the background process, the event handler (<code>perform_long_process/2</code> function) hides the main button (<code>execute(:hide, on: this(dom_sender)</code>) and then adds the Cancel button to the DOM tree with <code>insert("button html", after: "[drab-handler=perform_long_process])"</code>. Translating it to English again, it means <strong>insert</strong> <em>button html</em> <strong>after</strong> <em>all objects having <strong>drab-handler=perform_long_process</strong></em> properties. This shows the Cancel button, defined here:
+      Just before running the background process, the event handler (<code>perform_long_process/2</code> function) hides the main button (<code>execute(:hide, on: this(dom_sender)</code>) and then adds the Cancel button to the DOM tree with <code>insert("button html", after: "[drab-click=perform_long_process])"</code>. Translating it to English again, it means <strong>insert</strong> <em>button html</em> <strong>after</strong> <em>all objects having <strong>drab-click=perform_long_process</strong></em> properties. This shows the Cancel button, defined here:
     </p>
 <p>
 <pre><code class="elixir"><%=~S[defp cancel_button(socket, pid) do
