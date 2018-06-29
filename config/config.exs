@@ -25,15 +25,10 @@ import_config "#{Mix.env}.exs"
 
 # config :drab, DrabPoc.Endpoint, otp_app: :drab_poc
 
-config :drab,
+config :drab, DrabPoc.Endpoint,
   disable_controls_when_disconnected: true,
   socket: "/drab/socket",
   drab_store_storage: :local_storage,
-  # live_helper_modules: [Router.Helpers, ErrorHelpersRenamed, Gettext],
-  main_phoenix_app: :drab_poc,
-  endpoint: DrabPoc.Endpoint
-
-config :drab, DrabPoc.Endpoint,
   otp_app: :drab_poc
 
 config :phoenix, :template_engines,
