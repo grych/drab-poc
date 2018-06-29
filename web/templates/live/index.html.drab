@@ -40,6 +40,15 @@
 
   <div class="col-md-4 left-bordered">
 
+    <div class="panel panel-default" style="background-color: #FFE3DA;">
+      <div class="panel-heading">v0.9.0 - The Final API <span class="label label-default">2018-06-29</span></div>
+      <div class="panel-body">
+        <p>
+          <strong>BREAKING RELEASE! Drab API has been changed in 0.9.0!</strong> Good news are that this API will not change until 1.0. Anyway, please be aware that this release will break your existing code. <a href="https://github.com/grych/drab/releases/tag/v0.8.3">Do you want to know more?</a>
+        </p>
+      </div>
+    </div>
+
     <div class="panel panel-default">
       <div class="panel-heading">v0.8.3: Subscribe and Presence <span class="label label-default">2018-06-22</span></div>
       <div class="panel-body">
@@ -72,15 +81,6 @@
       <div class="panel-body">
         <p>
           <a href="https://github.com/grych/drab/releases/tag/v0.6.0">This version</a> introduces a completely rewritten <code>Drab.Live</code> module: it is not putting its <code>&lt;span&gt;</code> everywhere into your template. Also introduces <em>Shared Commanders</em>.
-        </p>
-      </div>
-    </div>
-
-    <div class="panel panel-default" style="background-color: #FFE3DA;">
-      <div class="panel-heading">v0.5.0 - living assigns <span class="label label-default">2017-07-17</span></div>
-      <div class="panel-body">
-        <p>
-          <strong>WARNING! Drab API has been completely changed in 0.5.0!</strong> <code>Drab.Query</code> (the jQuery based module) is no longer the default one. If you still want to use it, you must declare it in the commander with <code>use Drab.Commander, modules: [Drab.Query, Drab.Modal]</code>. Drab.Query based tutorial is still available <a href="/drab/query">here</a>.
         </p>
       </div>
     </div>
@@ -208,7 +208,7 @@ end/%></code></pre>
     <p>
       Last, but not least, is the possibility to get the current value of assigns. For this, we have a function called <code>peek/2</code>. In the example, the third button adds something to the existing list of users:
 <pre><code class="elixir"><%=~s/defhandler add_to_list(socket, _sender) do
-  users = Drab.Live.peek(socket, :users)
+  {:ok, users} = Drab.Live.peek(socket, :users)
   Drab.Live.poke socket, users: users ++ ["Hegemon"]
 end/%></code></pre>
     </p>
