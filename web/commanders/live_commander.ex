@@ -101,7 +101,13 @@ defmodule DrabPoc.LiveCommander do
 
   # /who or /w gives a presence list
   defp do_update_chat(socket, sender, "/w" <> _) do
-    users = DrabPoc.Presence.get_users() |> Map.values() |> Enum.sort |> Enum.join(", ")
+    # users = DrabPoc.Presence.get_users() |> Map.values() |> Enum.sort |> Enum.join(", ")
+    users = for {user, %{metas: metas}} <- Drab.Presence.list(socket), _ <- metas, do: user
+    users = users
+      |> Enum.sort()
+      |> Enum.map(&html_escape/1)
+      |> Enum.map(&safe_to_string/1)
+      |> Enum.join(", ")
     set_prop socket, this(sender), value: ""
     socket  |> add_chat_message(~E"""
       <span class='chat-system-message'>*** Connected users: <%= users %>.</span><br>
@@ -126,22 +132,23 @@ defmodule DrabPoc.LiveCommander do
     socket
       |> put_store(:nickname, new_nick)
       |> add_chat_message!(message)
-    DrabPoc.Presence.update_user(get_store(socket, :my_drab_ref), new_nick)
+    # DrabPoc.Presence.update_user(get_store(socket, :my_drab_ref), new_nick)
     update_presence_list!(socket)
   end
 
   defp anon_nickname(socket) do
-    country = get_session(socket, :country_code)
-    anon_with_country_code(country)
+    # country = get_session(socket, :country_code)
+    # anon_with_country_code(country)
+    get_session(socket, :nickname)
   end
 
-  defp anon_with_country_code(country) do
-    if country && country != :ZZ do
-      "Anonymous (#{country})"
-    else
-      "Anonymous"
-    end
-  end
+  # defp anon_with_country_code(country) do
+  #   if country && country != :ZZ do
+  #     "Anonymous (#{country})"
+  #   else
+  #     "Anonymous"
+  #   end
+  # end
 
   defp chat_message_js(message) do
     """
@@ -173,13 +180,12 @@ defmodule DrabPoc.LiveCommander do
   end
 
   defp update_presence_list!(socket_or_subject) do
-    users = DrabPoc.Presence.get_users()
-      |> Map.values()
+    users = for {user, %{metas: metas}} <- Drab.Presence.list(socket_or_subject), _ <- metas, do: user
+    users = users
       |> Enum.sort()
       |> Enum.map(&html_escape/1)
       |> Enum.map(&safe_to_string/1)
       |> Enum.join("<br>")
-    # socket_or_subject |> update!(:html, set: users, on: "#presence-list")
     broadcast_prop socket_or_subject, "#presence-list", innerHTML: users
   end
 
@@ -255,7 +261,7 @@ defmodule DrabPoc.LiveCommander do
   def connected(socket) do
     # IO.inspect Drab.Presence.count_connections(same_controller(DrabPoc.LiveController))
     # IO.inspect same_controller(DrabPoc.LiveController)
-    broadcast_html socket, "#number_of_users", Drab.Presence.count_users(socket)
+    broadcast_html socket, "#number_of_users", Drab.Presence.count_connections(socket)
 
     # display chat join message
     nickname = get_store(socket, :nickname, anon_nickname(socket))
@@ -266,9 +272,9 @@ defmodule DrabPoc.LiveCommander do
     info = "<span class='chat-system-message'>*** Type <b>/who</b> to get the presence list.</span><br>"
     socket |> add_chat_message(info)
 
-    ref = make_ref()
-    DrabPoc.Presence.add_user(ref, nickname)
-    put_store(socket, :my_drab_ref, ref)
+    # ref = make_ref()
+    # DrabPoc.Presence.add_user(ref, nickname)
+    # put_store(socket, :my_drab_ref, ref)
 
     update_presence_list!(socket)
 
@@ -281,11 +287,13 @@ defmodule DrabPoc.LiveCommander do
 
 
   def disconnected(store, session) do
-    broadcast_html same_controller(DrabPoc.LiveController), "#number_of_users", Drab.Presence.count_users(same_controller(DrabPoc.LiveController))
+    broadcast_html same_controller(DrabPoc.LiveController),
+      "#number_of_users",
+      Drab.Presence.count_connections(same_controller(DrabPoc.LiveController))
 
-    DrabPoc.Presence.remove_user(store[:my_drab_ref])
+    # DrabPoc.Presence.remove_user(store[:my_drab_ref])
 
-    removed_user = store[:nickname] || anon_with_country_code(session[:country_code])
+    removed_user = store[:nickname] || session[:nickname]
     html = ~E"<span class='chat-system-message'>*** <b><%= removed_user %></b> has left.</span><br>" |> safe_to_string()
     add_chat_message!(same_controller(DrabPoc.LiveController), html)
     # Drab is already dead, so we are broadcating using same_controller()

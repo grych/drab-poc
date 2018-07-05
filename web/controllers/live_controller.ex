@@ -6,6 +6,7 @@ defmodule DrabPoc.LiveController do
   def index(conn, _params) do
     conn = put_session(conn, :drab_test, "test string from the Plug Session, set in the Controller")
     conn = put_session(conn, :country_code, country_code(conn))
+    conn = put_session(conn, :nickname, "Anonymous #{country_code(conn)}")
     render conn, "index.html", text: "uppercase me",
       users: ["Dżesika", "Brajanek", "Zdzichu"], title: "Users List",
       sleep_button_classes: %{1 => "btn-primary", 2 => "btn-primary", 3 => "btn-primary"},
@@ -23,7 +24,7 @@ defmodule DrabPoc.LiveController do
       [ip] = get_req_header(conn, "x-forwarded-for")
       IP2Country.whereis(ip)
     rescue
-      _ -> nil
+      _ -> "N/A"
     end
   end
 end

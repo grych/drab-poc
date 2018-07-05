@@ -34,7 +34,7 @@ config :drab, DrabPoc.Endpoint,
 config :phoenix, :template_engines,
   drab: Drab.Live.Engine
 
-config :drab, :presence, true
+config :drab, :presence, id: [store: :nickname, session: :nickname]
 
 # config :drab_poc, DrabPoc.Endpoint,
 #   instrumenters: [Appsignal.Phoenix.Instrumenter]

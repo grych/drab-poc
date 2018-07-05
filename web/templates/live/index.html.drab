@@ -80,7 +80,7 @@
       <div class="panel-heading">v0.6.0: New, better living assigns <span class="label label-default">2017-10-31</span></div>
       <div class="panel-body">
         <p>
-          <a href="https://github.com/grych/drab/releases/tag/v0.6.0">This version</a> introduces a completely rewritten <code>Drab.Live</code> module: it is not putting its <code>&lt;span&gt;</code> everywhere into your template. Also introduces <em>Shared Commanders</em>.
+          <a href="https://github.com/grych/drab/releases/tag/v0.6.0">This version</a> introduces a completely rewritten <a href="https://hexdocs.pm/drab/Drab.Live.html"><code>Drab.Live</code></a> module: it is not putting its <code>&lt;span&gt;</code> everywhere into your template. Also introduces <em>Shared Commanders</em>.
         </p>
       </div>
     </div>
@@ -196,7 +196,7 @@ end
     Drab.Live.poke socket, users: ["Mścisław", "Bożydar", "Mściwój", "Bogumił", "Mirmił"]
   end
 end/%></code></pre>
-    What is going on here? We've just modified the assign <code>@users</code> with the new value. <code>Drab.Live.poke</code> pushes the new value and re-evaluate the corresponding part of the template. Notice that you don't have to <code>poke</code> all assigns, <strong>Drab</strong> remembers what was there previously, and replaces only the assigns you've poked (in this case, <code>@users</code>).
+    What is going on here? We've just modified the assign <code>@users</code> with the new value. <a href="https://hexdocs.pm/drab/Drab.Live.html"><code>Drab.Live.poke</code></a> pushes the new value and re-evaluate the corresponding part of the template. Notice that you don't have to <code>poke</code> all assigns, <strong>Drab</strong> remembers what was there previously, and replaces only the assigns you've poked (in this case, <code>@users</code>).
     </p>
     <p>
       The second button runs <code>replace_title</code> event handler, which changes the value of the <code>@title</code> assign:
@@ -344,7 +344,7 @@ end</code></pre>
       The code above runs 54 tasks asynchronously, which just wait some time (up to 4 seconds) and then communicate to the user by changing the bootstrap class from <code>label-danger</code> to <code>label-success</code>. After launching the background tasks, it waits (<code>Task.await/1</code>) for all of the tasks to finish and then informs the user by changing the overall status to "finished".
     </p>
     <p>
-      There are two new functions here: <code>set_attr/3</code> and <code>set_prop/3</code>. Both are members of <code>Drab.Element</code> module, which is the one for query and manipulate HTML element attributes and properties. They take the CSS selector as an argument, and modifies all the elements found by this selector.
+      There are two new functions here: <code>set_attr/3</code> and <code>set_prop/3</code>. Both are members of <a href="https://hexdocs.pm/drab/Drab.Element.html"><code>Drab.Element</code></a> module, which is the one for query and manipulate HTML element attributes and properties. They take the CSS selector as an argument, and modifies all the elements found by this selector.
     </p>
     <p>
       You may think: <b>what is the difference between this approach and running 54 AJAX requests which launches action on the controller side?</b> Well, in addition to <code>Drab</code>'s natural beauty, you can't do it with AJAX. You browser <a href="http://www.stevesouders.com/blog/2008/03/20/roundup-on-parallel-connections/">limits the number of simultaneous connections</a>.
@@ -494,7 +494,7 @@ end</code></pre>
       <pre><code class="elixir"><%=~S/defhandler sleep(_socket, _sender, interval) do
   Process.sleep(interval * 1000)
 end/%></code></pre>
-      Observe that when one button is "processing", you can click another one. This is because <strong>Drab requests are asynchronous on the server side</strong>. And this is a reason why buttons are disabled by default while processing - it is blocking the user from running the same action for few times. You may override this behaviour, see documentation for <code>Drab.Config</code>.
+      Observe that when one button is "processing", you can click another one. This is because <strong>Drab requests are asynchronous on the server side</strong>. And this is a reason why buttons are disabled by default while processing - it is blocking the user from running the same action for few times. You may override this behaviour, see documentation for <a href="https://hexdocs.pm/drab/Drab.Config.html"><code>Drab.Config</code></a>.
     </p>
   </div>
   <div class="col-md-4">
@@ -692,7 +692,7 @@ end/%></code></pre>
     <p>
       On the Commander side, the only difference is the line with the <code>poke</code>. You need to tell poke in which partial you want to update the assign. Do it by adding the partial name as a second argument of the <code>poke</code>. Notice that you may also specify the View, but without it, Drab takes the default view for the main template.
       <pre><code class="elixir"><%=~S/poke socket, "counter.html", countdown: options["seconds"] - i/%></code></pre>
-      Did you spot the performance difference between those two operations? <strong>Yes, <code>Drab.Live</code> works best with the small templates</strong>. This is because each time you <code>poke</code> anything, it must get the assigns from page, re-render the template and parse the html. It might be quite a long operation on a big, bad designed pages, like this one!
+      Did you spot the performance difference between those two operations? <strong>Yes, <a href="https://hexdocs.pm/drab/Drab.Live.html"><code>Drab.Live</code></a> works best with the small templates</strong>. This is because each time you <code>poke</code> anything, it must get the assigns from page, re-render the template and parse the html. It might be quite a long operation on a big, bad designed pages, like this one!
     </p>
 
 
@@ -864,49 +864,47 @@ end</code></pre>
   <div class="col-md-8">
 
     <p>
-      You probably realized that actual chat is a little bit more complicated then it was explained in the previous example. It shows users connects and disconnects, as well as the list of connected users (type in <code>/who</code> in the chat to see the list). To archive it, we are going to use Drab callbacks, defined with <code>onconnect/1</code> and <code>ondisconnect/1</code> macros. Again, please treat it only as an example of Drab features - there are better ways to tracking the presence in Phoenix.
+      You probably realized that actual chat is a little bit more complicated then it was explained in the previous example. It shows users connects and disconnects, as well as the list of connected users (type in <code>/who</code> in the chat to see the list). To archive it, we are going to use Drab callbacks, defined with <code>onconnect/1</code> and <code>ondisconnect/1</code> macros, along with <code>Drab.Presence</code>.
       <pre><code class="elixir">def connected(socket) do
-  nickname = get_store(socket, :nickname, &quot;Anonymous&quot;)
+  nickname = get_store(socket, :nickname, &quot;Anonymous&quot;) || get_session(socket, :nickname, &quot;Anonymous&quot;)
   joined = ~E&quot;&quot;&quot;
     &lt;span class='chat-system-message'&gt;*** &lt;b&gt;&lt;%= nickname %&gt;&lt;/b&gt; has joined the chat.&lt;/span&gt;&lt;br&gt;
     &quot;&quot;&quot; |&gt; safe_to_string()
   socket |&gt; add_chat_message!(joined)
 
-  ref = make_ref()
-  DrabPoc.Presence.add_user(ref, nickname)
-  put_store(socket, :my_drab_ref, ref)
+  update_presence_list!(socket)
 end</code></pre>
-    The code above is executed every time your browser connects to the server. First, we broadcasts the information to all to show them that some has joined the chat. Second, we store the information about connected user in the special store, <code>DrabPoc.Presence</code>. It is just a simple <code>Agent</code>, which stores key/value pairs. It is out of the scope of this tutorial, but if you are interested how it works, read <a href="https://github.com/grych/drab-poc/blob/master/lib/drab_poc/presence.ex">the friendly source</a>.
-    </p>
-    <p>
-      We are going to use a reference as a key, which will be stored on the client side with the Drab Store. We are going to need it while handling disconnects.
+    The code above is executed every time your browser connects to the server. First, we broadcasts the information to all to show them that someone has joined the chat. Second, we update the presence list - this will be explained later. <br>
+    We store your nickname in the Drab Store or, if it not set, we take it from the session - we already put "Anonymouos" with the country code to the session, in the controller.
     </p>
     <p>
       Let's move to the disconnect handler. As you can probably guess, it is executed when the browser disconnects from the server. It may be because of navigating away from the page, close the tab or because of the network issues. Disconnect handler is different than the others - it does not receive the <code>socket</code> as an argument. It is because the <code>socket</code> does not exist anymore! But we still have an access to Drab Store and Drab Session:
       <pre><code class="elixir">def disconnected(store, session) do
-  DrabPoc.Presence.remove_user(store[:my_drab_ref])
-  removed_user = store[:nickname] || anon_with_country_code(session[:country_code])
+  removed_user = store[:nickname] || session[:nickname]
   html = ~E&quot;&lt;%= removed_user %&gt; has left.&quot; |&gt; safe_to_string()
   add_chat_message!(same_controller(DrabPoc.PageController), html)
   update_presence_list!(same_controller(DrabPoc.PageController))
 end</code></pre>
-      We are going to use the Drab Store to retrieve the user's nickname, and the Drab process PID (remember, it was set previously in <code>onconnect</code> handler). First, we need to remove the connection information from the presence list. We could finish here, but it would be good to inform all other users that this person is gone. But how to broadcast the message, when the <code>socket</code> does not exist anymore?
+      We are going to use the Drab Store or session to retrieve the user's nickname. Then, it would it would be good to inform all other users that this person is gone. But how to broadcast the message, when the <code>socket</code> does not exist anymore?
     </p>
     <p>
       Drab's <strong>broadcasting functions can live without socket</strong>. Socket is needed only to find out to which browser send a message (so event handlers in Commander know which browser pressed a button). Broadcasts are just pushed into the void and being received by all the browsers which currently listen to the given topic. Because we set up the commander with <code>broadcasting :same_controller</code>, we can send the broadcast to <code>same_controller(Controller.Name)</code> instead of the socket.
     </p>
     <p>
-      As a bonus, we've got the list of connected users. Let's use it and do a live list of all the people currently connected to this page. First, create a function to update the panel on the right:
+      For tracking a presence, we are going to use <code>Drab.Presence</code>. First, we need to enable and configure it - we are going to use a <code>:nickname</code> stored in session or store as a tracking ID:
+      <pre><code class="elixir">config :drab, :presence, id: [store: :nickname, session: :nickname]</code></pre>
+      Such config first checks the store, and if it is not set, gets the user id from the session.
+      Now, it is easy to retrieve the list of connections from <code>Drab.Presence.list/1</code>:
       <pre><code class="elixir">defp update_presence_list!(socket_or_subject) do
-  users = DrabPoc.Presence.get_users()
-    |&gt; Map.values()
+  users = for {user, %{metas: metas}} &lt;- Drab.Presence.list(socket_or_subject), _ &lt;- metas, do: user
+  users = users
     |&gt; Enum.sort()
     |&gt; Enum.map(&amp;html_escape/1)
     |&gt; Enum.map(&amp;safe_to_string/1)
     |&gt; Enum.join(&quot;&lt;br&gt;&quot;)
   broadcast_prop socket_or_subject, &quot;#presence-list&quot;, innerHTML: users
 end</code></pre>
-      Second, run this function on connect, disconnect or nickname change. Voila!
+      Notice that we are counting all <code>metas</code>. This is because the user nickname is not unique in this sophisticated system!
     </p>
 
   </div>
