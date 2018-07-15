@@ -36,6 +36,8 @@ config :phoenix, :template_engines,
 
 config :drab, :presence, id: [store: :nickname, session: :nickname]
 
+config :drab, :default_modules, [Drab.Live, Drab.Element, Drab.Waiter, Drab.Modal]
+
 # config :drab_poc, DrabPoc.Endpoint,
 #   instrumenters: [Appsignal.Phoenix.Instrumenter]
 
