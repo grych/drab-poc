@@ -40,6 +40,15 @@
 
   <div class="col-md-4 left-bordered">
 
+    <div class="panel panel-default">
+      <div class="panel-heading">v0.9.1: jQueryless Modal <span class="label label-default">2017-07-25</span></div>
+      <div class="panel-body">
+        <p>
+          Everyone loves modals, but not everyone loves jQuery. <a href="https://github.com/grych/drab/releases/tag/v0.9.1">This version</a> removes jQuery dependency from <code>Drab.Modal</code> module!
+        </p>
+      </div>
+    </div>
+
     <div class="panel panel-default" style="background-color: #FFE3DA;">
       <div class="panel-heading">v0.9.0 - The Final API <span class="label label-default">2018-06-29</span></div>
       <div class="panel-body">
@@ -76,14 +85,7 @@
       </div>
     </div>
 
-    <div class="panel panel-default">
-      <div class="panel-heading">v0.6.0: New, better living assigns <span class="label label-default">2017-10-31</span></div>
-      <div class="panel-body">
-        <p>
-          <a href="https://github.com/grych/drab/releases/tag/v0.6.0">This version</a> introduces a completely rewritten <a href="https://hexdocs.pm/drab/Drab.Live.html"><code>Drab.Live</code></a> module: it is not putting its <code>&lt;span&gt;</code> everywhere into your template. Also introduces <em>Shared Commanders</em>.
-        </p>
-      </div>
-    </div>
+
 
 
  <h6>See all <a href="https://github.com/grych/drab/releases">Release Notes</a> to learn about the previous releases</h6>
