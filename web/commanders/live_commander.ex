@@ -3,7 +3,7 @@ defmodule DrabPoc.LiveCommander do
   require Logger
   import Phoenix.HTML
 
-  use Drab.Commander, modules: [Drab.Live, Drab.Element, Drab.Waiter]
+  use Drab.Commander
 
   onconnect :connected
   ondisconnect :disconnected
@@ -66,7 +66,7 @@ defmodule DrabPoc.LiveCommander do
       "finished in #{(end_at - begin_at)/1000} seconds"
   end
 
-  defhandler perform_long_process(socket, _sender) do
+  defhandler perform_long_process(socket, sender) do
     poke socket, progress_bar_class: "progress-bar-danger", long_process_button_text: "Processing..."
 
     steps = :rand.uniform(100)
@@ -75,7 +75,12 @@ defmodule DrabPoc.LiveCommander do
       poke socket, bar_width: Float.round(i * 100 / steps, 2)
     end
 
-    poke socket, progress_bar_class: "progress-bar-success", long_process_button_text: "Click me to restart"
+    case alert(socket, "Very Important Question", "Once again?", buttons: [ok: "Sure", cancel: "Nope"]) do
+      {:ok, _} ->
+        perform_long_process(socket, sender)
+      {:cancel, _} ->
+        poke socket, progress_bar_class: "progress-bar-success", long_process_button_text: "Restart"
+    end
   end
 
   defhandler changed_label(socket, sender) do
@@ -89,6 +94,7 @@ defmodule DrabPoc.LiveCommander do
   end
 
   defhandler show_counter(socket, _sender) do
+    alert(socket, "Counter", "<code>get_store(socket, :counter) == #{get_store(socket, :counter)}</code>")
     poke socket, counter: get_store(socket, :counter)
   end
 

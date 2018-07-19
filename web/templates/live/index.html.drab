@@ -40,6 +40,15 @@
 
   <div class="col-md-4 left-bordered">
 
+    <div class="panel panel-default">
+      <div class="panel-heading">v0.9.1: jQueryless Modal <span class="label label-default">2017-07-25</span></div>
+      <div class="panel-body">
+        <p>
+          Everyone loves modals, but not everyone loves jQuery. <a href="https://github.com/grych/drab/releases/tag/v0.9.1">This version</a> removes jQuery dependency from <code>Drab.Modal</code> module!
+        </p>
+      </div>
+    </div>
+
     <div class="panel panel-default" style="background-color: #FFE3DA;">
       <div class="panel-heading">v0.9.0 - The Final API <span class="label label-default">2018-06-29</span></div>
       <div class="panel-body">
@@ -76,14 +85,7 @@
       </div>
     </div>
 
-    <div class="panel panel-default">
-      <div class="panel-heading">v0.6.0: New, better living assigns <span class="label label-default">2017-10-31</span></div>
-      <div class="panel-body">
-        <p>
-          <a href="https://github.com/grych/drab/releases/tag/v0.6.0">This version</a> introduces a completely rewritten <a href="https://hexdocs.pm/drab/Drab.Live.html"><code>Drab.Live</code></a> module: it is not putting its <code>&lt;span&gt;</code> everywhere into your template. Also introduces <em>Shared Commanders</em>.
-        </p>
-      </div>
-    </div>
+
 
 
  <h6>See all <a href="https://github.com/grych/drab/releases">Release Notes</a> to learn about the previous releases</h6>
@@ -257,7 +259,7 @@ end/%></code></pre>
     </p>
     <p>
       We are going to live update the assigns of the template above from <code>perform_long_process/2</code> function in the commander:
-      <pre><code class="elixir">defhandler perform_long_process(socket, _sender) do
+      <pre><code class="elixir">defhandler perform_long_process(socket, sender) do
   poke socket, progress_bar_class: &quot;progress-bar-danger&quot;,
     long_process_button_text: &quot;Processing...&quot;
 
@@ -267,8 +269,12 @@ end/%></code></pre>
     poke socket, bar_width: Float.round(i * 100 / steps, 2)
   end
 
-  poke socket, progress_bar_class: &quot;progress-bar-success&quot;,
-    long_process_button_text: &quot;Click me to restart&quot;
+  case alert(socket, &quot;Very Important Question&quot;, &quot;Once again?&quot;, buttons: [ok: &quot;Sure&quot;, cancel: &quot;Nope&quot;]) do
+    {:ok, _} -&gt;
+      perform_long_process(socket, sender)
+    {:cancel, _} -&gt;
+      poke socket, progress_bar_class: &quot;progress-bar-success&quot;, long_process_button_text: &quot;Restart&quot;
+  end
 end</code></pre>
       This function simulates some process, which updates the User Interface after each step done. For more fun, we randomly choose the number of steps and the step "processing time".
     </p>
@@ -280,6 +286,9 @@ end</code></pre>
     </p>
     <p>
       Unlike attributes, properties may be bound to any JSON encodable value: a list, a map, etc. And because of this, properties syntax does have some limitations. The only valid sytax is <code>@property=&lt;%= expression %&gt;</code>, no quotes or apostrophes. You can only bind one expression to one property; you may not use string patterns, like you could with attributes.
+    </p>
+    <p>
+      At the very end, we want user to decide if we should run the process again. It can be done with the <a href="https://hexdocs.pm/drab/Drab.Modal.html"><code>Drab.Modal.alert</code></a> function - it shows the boostrap modal window and waits for the answer. In the meantime, the handler process is still alive. This can be very useful if you want to ask user if to commit or to rollback the changes!
     </p>
     <p>
       One more thing: you probably noticed that when the task is "processing", you can click another button in the page. This is because <strong>Drab requests are asynchronous on the server side</strong>. And this is a reason why buttons are disabled by default while processing - it is blocking the user from running the same action for few times. You may override this behavior in `config.exs` with:
@@ -721,14 +730,15 @@ end/%></code></pre>
     </p>
   </div>
   <div class="col-md-8">
-    <p><pre><code class="elixir"><%=~S/defhandler increase_counter(socket, _sender) do
+    <p><pre><code class="elixir"><%=~S[defhandler increase_counter(socket, _sender) do
   counter = get_store(socket, :counter) || 0
   put_store(socket, :counter, counter + 1)
 end
 
 defhandler show_counter(socket, _sender) do
+  alert(socket, "Counter", "<code>get_store(socket, :counter) == #{get_store(socket, :counter)}</code>")
   poke socket, counter: get_store(socket, :counter)
-end/%></code></pre>
+end]%></code></pre>
     </p>
   </div>
   <div class="col-md-4">
@@ -740,7 +750,7 @@ end/%></code></pre>
 
   <div class="col-md-8">
     <p>
-    Although Drab Store is a different entity than Plug Session (used in Controllers), there is a way to access the Session. First, you need to whitelist the keys you want to access in <code>access_session/1</code> macro (you may give it a list of atoms or a single atom). Whitelisting is due to security: it is kept in Token, on the client side, so it is signed but not encrypted. <br>
+    Although Drab Store is a different entity than Plug Session (used in Controllers), there is a way to access the Session. First, you need to whitelist the keys you want to access in <code>access_session/1</code> macro (you may give it a list of atoms or a single atom). <br>
 
     To show an example, we've put the key <code>:drab_test</code> to the Plug Session while rendering this page by the Controller:
     <pre><code class="elixir"><%=~S/defmodule DrabPoc.PageController do
@@ -904,7 +914,7 @@ end</code></pre>
     |&gt; Enum.join(&quot;&lt;br&gt;&quot;)
   broadcast_prop socket_or_subject, &quot;#presence-list&quot;, innerHTML: users
 end</code></pre>
-      Notice that we are counting all <code>metas</code>. This is because the user nickname is not unique in this sophisticated system!
+      Notice that we are counting all <code>metas</code>. This is because the user nickname is not unique in this sophisticated system. In the real world, you would use some unique identifier here.
     </p>
 
   </div>

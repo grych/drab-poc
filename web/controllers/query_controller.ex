@@ -15,6 +15,7 @@ defmodule DrabPoc.QueryController do
     country_code    = #{country_code(conn)}
     """
     conn = put_session(conn, :country_code, country_code(conn))
+    conn = put_session(conn, :nickname, "Anonymous #{country_code(conn)}")
     render conn, "index.html"
   end
 
