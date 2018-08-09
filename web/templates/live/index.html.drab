@@ -41,7 +41,7 @@
   <div class="col-md-4 left-bordered">
 
     <div class="panel panel-default">
-      <div class="panel-heading">v0.9.1: jQueryless Modal <span class="label label-default">2017-07-25</span></div>
+      <div class="panel-heading">v0.9.1: jQueryless Modal <span class="label label-default">2018-07-25</span></div>
       <div class="panel-body">
         <p>
           Everyone loves modals, but not everyone loves jQuery. <a href="https://github.com/grych/drab/releases/tag/v0.9.1">This version</a> removes jQuery dependency from <code>Drab.Modal</code> module!
@@ -806,6 +806,7 @@ end/%></code></pre>
       The following code is the whole chat application! We retrieve the nickname from the Drab Store (or set it to <i>Anonymous</i> if not found), compose the message to be displayed, and we are ready to go. First, we insert the message to the chat panel (used the <code>broadcast_insert</code> method with <code>:beforeend</code> modifier, so it is added at the bottom of the chat div). Second, clean up the message input. Third, scroll down chat to the bottom. All the changes of are broadcasted to all browsers viewing this page.
       <pre><code class="elixir">defhandler update_chat(socket, sender) do
   nick = get_store(socket, :nickname, &quot;Anonymous&quot;)
+  message = sender["value"]
   html = ~E&quot;&lt;strong&gt;&lt;%= nick %&gt;:&lt;/strong&gt; &lt;%= message %&gt;&lt;br&gt;&quot; |&gt; safe_to_string()
   broadcast_insert socket, &quot;#chat&quot;, :beforeend, html
   set_prop socket, this(sender), value: &quot;&quot;
@@ -836,6 +837,7 @@ end
 
 defhandler update_chat(socket, sender) do
   nick = get_store(socket, :nickname, &quot;Anonymous&quot;)
+  message = sender["value"]
   html = ~E&quot;&lt;strong&gt;&lt;%= nick %&gt;:&lt;/strong&gt; &lt;%= message %&gt;&lt;br&gt;&quot; |&gt; safe_to_string()
   set_prop socket, this(sender), value: &quot;&quot;
   add_chat_message! socket, html
