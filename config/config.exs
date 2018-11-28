@@ -34,6 +34,8 @@ config :drab, DrabPoc.Endpoint,
 config :phoenix, :template_engines,
   drab: Drab.Live.Engine
 
+config :phoenix, :json_library, Jason
+
 config :drab, :presence, id: [store: :nickname, session: :nickname]
 
 config :drab, :default_modules, [Drab.Live, Drab.Element, Drab.Waiter, Drab.Modal]

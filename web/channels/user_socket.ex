@@ -7,7 +7,7 @@ defmodule DrabPoc.UserSocket do
   channel "mychannel:*", DrabPoc.Channel
 
   ## Transports
-  transport :websocket, Phoenix.Transports.WebSocket
+  # transport :websocket, Phoenix.Transports.WebSocket
   # transport :longpoll, Phoenix.Transports.LongPoll
 
   def connect(_params, socket) do
