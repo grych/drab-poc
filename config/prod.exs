@@ -25,10 +25,10 @@ config :logger, :log,
   path: "logs/drab_poc.log",
   level: :info
 
-# config :drab_poc, :watch_file, "/var/log/nginx/access.log"
-# config :drab_poc, :watch_monitor, :inotify_monitor
-config :drab_poc, :watch_file, "/private/var/log/system.log"
-config :drab_poc, :watch_monitor, :kqueue_monitor
+config :drab_poc, :watch_file, "/var/log/nginx/access.log"
+config :drab_poc, :watch_monitor, :inotify_monitor
+# config :drab_poc, :watch_file, "/private/var/log/system.log"
+# config :drab_poc, :watch_monitor, :kqueue_monitor
 
 
 
