@@ -4,7 +4,7 @@
   "cowlib": {:hex, :cowlib, "2.7.0", "3ef16e77562f9855a2605900cedb15c1462d76fb1be6a32fc3ae91973ee543d2", [:rebar3], [], "hexpm"},
   "deppie": {:hex, :deppie, "1.1.2", "6e90b0baf70055ee85b5d87c1649f39acb05df3c24d4d46f90a4a03b8e57619f", [:mix], [{:global_flags, "~> 1.0", [hex: :global_flags, repo: "hexpm", optional: false]}], "hexpm"},
   "drab": {:hex, :drab, "0.7.4", "a72db9a4777b7ebb78e056d377efbf72c51a85e75785e6332a3142ccb390088c", [:mix], [{:cowboy, "~> 1.0 or ~> 2.2.2 or ~> 2.3", [hex: :cowboy, optional: false]}, {:deppie, "~> 1.0", [hex: :deppie, optional: false]}, {:floki, "~> 0.20", [hex: :floki, optional: false]}, {:gettext, "~> 0.11", [hex: :gettext, optional: false]}, {:jason, "~> 1.0", [hex: :jason, optional: false]}, {:phoenix, "~> 1.2", [hex: :phoenix, optional: false]}, {:phoenix_html, "~> 2.6", [hex: :phoenix_html, optional: false]}, {:phoenix_pubsub, "~> 1.0", [hex: :phoenix_pubsub, optional: false]}]},
-  "earmark": {:hex, :earmark, "1.0.3", "89bdbaf2aca8bbb5c97d8b3b55c5dd0cff517ecc78d417e87f1d0982e514557b", [:mix], [], "hexpm"},
+  "earmark": {:hex, :earmark, "1.3.0", "17f0c38eaafb4800f746b457313af4b2442a8c2405b49c645768680f900be603", [:mix], [], "hexpm"},
   "erlexec": {:hex, :erlexec, "1.2.2", "122edf6be532475dd44d2c99653439528e3b3799e2ee0125f2560bcca60a6716", [:rebar3], [], "hexpm"},
   "eternal": {:hex, :eternal, "1.2.1", "d5b6b2499ba876c57be2581b5b999ee9bdf861c647401066d3eeed111d096bc4", [:mix], [], "hexpm"},
   "file_system": {:hex, :file_system, "0.2.6", "fd4dc3af89b9ab1dc8ccbcc214a0e60c41f34be251d9307920748a14bf41f1d3", [:mix], [], "hexpm"},
